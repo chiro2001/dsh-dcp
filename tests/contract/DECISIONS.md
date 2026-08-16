@@ -117,3 +117,13 @@ full heuristic recompute === contextBreakdown.messageTokens`；
 - **[推断]** 在更大重复样本与稳定 provider 指标前，维持 marker 协议；开销
   门禁（active DCP artifact ≤ window 5% / ≤ 净节省 10%）在 M6.2 真实模型
   探针中继续跟踪。
+
+## M6.2 真实模型探针（2026-08-16，natural compress）
+
+- **[事实]** 5 次自然提示（无 XML 模板）：schema-valid 5/5；成功提交 4/5；
+  失败 1 次为 `range m0001..m0002 saves ~-2 tokens, below minNetSavingsTokens=1`。
+- **[推断]** 微小 range 上 marker 开销可抵消摘要净节省 → 提示词应引导模型
+  压缩“足够大”的闭合区间，或把净节省门禁对超短 range 显式提示；该观测进入
+  v0.2 提示词优化 backlog。
+- **[推断]** 单次 5 样本不足以定论模型可靠性；M6.2 后续扩到 ≥10 样本并记录
+  分布，再决定是否调整 prompt/adapter。

@@ -50,6 +50,7 @@
     "perf-smoke": "tsx scripts/perf-smoke.ts",
     "perf-hotpath": "tsx scripts/perf-hotpath.ts",
     "kv-ab": "bash -c 'set -a; source \"$HOME/litellm/.env\"; set +a; tsx scripts/kv-ab.ts'",
+    "probes:real": "bash -c 'set -a; source \"$HOME/litellm/.env\"; set +a; DSH_DCP_PROBES=${DSH_DCP_PROBES:-5} tsx scripts/real-model-probes.ts'",
     "e2e:real": "bash scripts/e2e-real-agent.sh",
     "check-all": "bash scripts/check-all.sh"
   },
