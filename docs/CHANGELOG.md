@@ -21,6 +21,9 @@
   追平、`docs/PROTOCOL.md` v1 固化。
 - **加固（M5）**：property/fuzz、覆盖率阈值、真实 perf smoke、e2e 安装冒烟、
   CI（typecheck/lint/test/coverage/build/package）+ e2e workflow。
+- **真实 Agent e2e（本地）**：隔离 DSH_HOME + 真实 dsh agent-loop + opencode go
+  `deepseek-v4-flash`；覆盖 compress 工具、边界 marker、命令生命周期。修复了
+  pre-step marker 注入缺失、插件在缺 `commands` 服务时静默不激活两个真实缺口。
 
 ### 已知限制（v0.1）
 

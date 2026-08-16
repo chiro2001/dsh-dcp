@@ -42,10 +42,16 @@ pnpm run check:package  # 构建产物/入口/声明验证
 bash scripts/check-all.sh            # 快速门禁
 bash scripts/check-all.sh --e2e      # 全量门禁（含 e2e）
 bash scripts/check-all.sh --coverage # 附加覆盖率门槛
+pnpm run e2e:real                   # 真实 Agent + 真实 LLM（opencode go / deepseek-v4-flash）
 ```
 
 门禁顺序：typecheck → lint → test → build → check:package → perf smoke →
 （可选）coverage →（可选）e2e。任一失败即停。
+
+- `e2e:real` 在隔离临时 DSH_HOME 中运行真实 dsh agent-loop；key 取自
+  `~/litellm/.env`（`OPENCODE_GO_API_KEY`），不打印、不落盘；无 key 自动跳过。
+- 本地 `/tmp` 受限（EDQUOT/-122）时，测试使用仓库内 `.tmp-vitest/` 作为
+  TMPDIR（已 gitignore）。
 
 ## 安装与更新（GitHub 源）
 

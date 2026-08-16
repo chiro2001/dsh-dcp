@@ -10,6 +10,9 @@ export interface ParsedBoundaryMarker {
   step: number
 }
 
+import { createUserMessage } from '@deepseek-ai/dsh-llm/message'
+import type { UserMessage } from '@deepseek-ai/dsh-llm'
+
 const MARKER_RE = /^<dcp-boundary ref="(m\d{4})" turn="(\d+)" step="(\d+)" \/>$/
 const ALIAS_RE = /^alias (m\d{4})=(n\d+)$/
 
@@ -29,6 +32,21 @@ export function parseBoundaryMarker(text: string): ParsedBoundaryMarker | undefi
 
 export function buildAlias(ref: string, targetId: string): string {
   return `alias ${ref}=${targetId}`
+}
+
+/** Logged step-entry marker message (protocol v1, candidate B). */
+export function buildStepMarkerMessage(
+  ref: string,
+  turn: number,
+  step: number,
+  nudgeText?: string,
+): UserMessage {
+  const base = buildBoundaryMarker(ref, turn, step)
+  const text = nudgeText ? `${base}\n${nudgeText}` : base
+  return createUserMessage({
+    content: [{ type: 'text', text }],
+    source: { kind: 'plugin', plugin: 'dsh-dcp' },
+  })
 }
 
 export function parseAlias(text: string): { ref: string; targetId: string } | undefined {

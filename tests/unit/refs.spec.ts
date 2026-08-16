@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest'
 import {
   buildAlias,
   buildBoundaryMarker,
+  buildStepMarkerMessage,
   parseAlias,
   parseBoundaryMarker,
 } from '../../src/refs/marker.js'
@@ -18,6 +19,18 @@ describe('boundary markers', () => {
     const alias = buildAlias('m0007', 'n12')
     expect(parseAlias(alias)).toEqual({ ref: 'm0007', targetId: 'n12' })
     expect(parseAlias('not an alias')).toBeUndefined()
+  })
+
+  it('builds a logged step marker with optional nudge text', () => {
+    const message = buildStepMarkerMessage('m0001', 1, 1, 'DCP compression recommended')
+    expect(message.source).toEqual({ kind: 'plugin', plugin: 'dsh-dcp' })
+    expect(message.content[0]?.type).toBe('text')
+    if (message.content[0]?.type === 'text') {
+      expect(message.content[0].text).toContain(
+        '<dcp-boundary ref="m0001" turn="1" step="1" />',
+      )
+      expect(message.content[0].text).toContain('DCP compression recommended')
+    }
   })
 })
 

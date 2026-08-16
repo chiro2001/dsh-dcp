@@ -67,6 +67,18 @@ pnpm 对 git 源插件执行 `prepare` 构建（本包已声明 `prepare: pnpm b
 - 无精确多节点 decompress；message-mode 与 Code Mode 延后。
 - purge-errors 默认关闭；子代理 child-session 深读取默认关闭。
 
+## 自测
+
+```bash
+pnpm test                 # 单测/契约/集成（含真实 e2e 的跳过逻辑）
+bash scripts/check-all.sh --coverage
+pnpm run e2e:real         # 真实 Agent + 真实 LLM（opencode go / deepseek-v4-flash）
+```
+
+`e2e:real` 在隔离的临时 DSH_HOME 中运行，key 从 `~/litellm/.env` 读取且不打印、
+不落盘；未配置 key 时自动跳过。本地 `/tmp` 受限时测试临时目录使用仓库内
+`.tmp-vitest/`（已 gitignore）。
+
 ## 文档
 
 - [docs/PLAN.md](docs/PLAN.md) — 详细实现规划（目标、架构决策、功能映射、
