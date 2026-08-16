@@ -1083,7 +1083,7 @@ bash scripts/check-all.sh --e2e
   稳定子集在 PR 跑，全量可手动/定时跑。
 - **[推断]** dsh rc 依赖使用 lockfile 与记录的兼容矩阵；升级 dsh 时先跑 M0 contract
   job，再允许普通 CI。
-- **[推断]** `release.yml` 只在全部门禁通过的 tag 构建；private 仓库通过固定 tag 的
+- **[推断]** `release.yml` 只在全部门禁通过的 tag 构建；public 仓库通过固定 tag 的
   git spec 安装。
 
 ---

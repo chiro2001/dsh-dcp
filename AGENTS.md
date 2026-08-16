@@ -12,7 +12,7 @@ dsh-dcp 是 DeepSeek Harness（dsh）的动态上下文管理插件：对标 ope
 
 - 参考实现：`opencode-dynamic-context-pruning/`（本工作区兄弟目录，v3.1.15）
 - 规划：`docs/PLAN.md`（当前唯一权威设计文档）
-- 仓库：`chiro2001/dsh-dcp`（private）
+- 仓库：`chiro2001/dsh-dcp`（public）
 
 ## 硬性约束
 
