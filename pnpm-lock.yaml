@@ -52,6 +52,9 @@ importers:
       '@deepseek-ai/dsh-settings':
         specifier: 0.1.0-rc.6
         version: 0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-brand@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)))(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1))(@deepseek-ai/schemastery@3.18.1)
+      '@deepseek-ai/dsh-settings-file':
+        specifier: 0.1.0-rc.6
+        version: 0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-atomic-write@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)))(@deepseek-ai/dsh-home-paths@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)))(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1))(@deepseek-ai/dsh-settings@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-brand@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)))(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1))(@deepseek-ai/schemastery@3.18.1))
       '@deepseek-ai/dsh-storage':
         specifier: 0.1.0-rc.6
         version: 0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1))
@@ -96,7 +99,7 @@ importers:
         version: 7.0.2
       vitest:
         specifier: ^4.1.10
-        version: 4.1.10(@types/node@26.2.0)(vite@8.2.1(@types/node@26.2.0)(esbuild@0.28.2)(tsx@4.23.12))
+        version: 4.1.10(@types/node@26.2.0)(vite@8.2.1(@types/node@26.2.0)(esbuild@0.28.2)(tsx@4.23.12)(yaml@2.9.0))
 
 packages:
   '@deepseek-ai/cordis@4.0.1':
@@ -150,6 +153,15 @@ packages:
       '@deepseek-ai/dsh-session': ^0.1.0-rc.6
       '@deepseek-ai/dsh-system-prompt': ^0.1.0-rc.6
       '@deepseek-ai/dsh-typert-protocol': ^0.1.0-rc.6
+
+  '@deepseek-ai/dsh-atomic-write@0.1.0-rc.6':
+    resolution:
+      {
+        integrity: sha512-Ot/2aygDzWuN4ypUkDJA6MpSlGbcvzzKnWAms0lg+2WUtPZr7O0cGb83K3TEO2NoAu0LJfVxlbo8Eya3tDaFtw==,
+      }
+    peerDependencies:
+      '@deepseek-ai/cordis': ^4.0.1
+      '@deepseek-ai/dsh-invariants': ^0.1.0-rc.6
 
   '@deepseek-ai/dsh-attachment@0.1.0-rc.6':
     resolution:
@@ -224,6 +236,15 @@ packages:
       '@deepseek-ai/dsh-invariants': ^0.1.0-rc.6
       '@deepseek-ai/dsh-llm': ^0.1.0-rc.6
       '@deepseek-ai/dsh-session': ^0.1.0-rc.6
+
+  '@deepseek-ai/dsh-home-paths@0.1.0-rc.6':
+    resolution:
+      {
+        integrity: sha512-gIiUBmqB3L8inFr+hvjZv2/i6EVJOHIHCHg7bBFVhcl4HDK94+8wUCXTLGy80tcuISzIQiIaLuJq/NhSmV9Amw==,
+      }
+    peerDependencies:
+      '@deepseek-ai/cordis': ^4.0.1
+      '@deepseek-ai/dsh-invariants': ^0.1.0-rc.6
 
   '@deepseek-ai/dsh-invariants@0.1.0-rc.6':
     resolution:
@@ -312,6 +333,18 @@ packages:
       '@deepseek-ai/dsh-llm': ^0.1.0-rc.6
       '@deepseek-ai/dsh-scope': ^0.1.0-rc.6
       '@deepseek-ai/dsh-typert-protocol': ^0.1.0-rc.6
+
+  '@deepseek-ai/dsh-settings-file@0.1.0-rc.6':
+    resolution:
+      {
+        integrity: sha512-OgwvP/dTlrWd8MRhjJbeolMJHDdyjLtvd+gS3z2mvCGDmNkkf0RxcB/8o2uoqe97iuklTWmy6cCws6dlmnDL+g==,
+      }
+    peerDependencies:
+      '@deepseek-ai/cordis': ^4.0.1
+      '@deepseek-ai/dsh-atomic-write': ^0.1.0-rc.6
+      '@deepseek-ai/dsh-home-paths': ^0.1.0-rc.6
+      '@deepseek-ai/dsh-invariants': ^0.1.0-rc.6
+      '@deepseek-ai/dsh-settings': ^0.1.0-rc.6
 
   '@deepseek-ai/dsh-settings@0.1.0-rc.6':
     resolution:
@@ -1659,6 +1692,13 @@ packages:
       }
     engines: { node: '>=18' }
 
+  chokidar@4.0.3:
+    resolution:
+      {
+        integrity: sha512-Qgzu8kfBvo+cA4962jnP1KkS6Dop5NS6g7R5LFYJr4b8Ub94PPQXUksCw9PvXoeXPRRddRNC5C1JQUR2SMGtnA==,
+      }
+    engines: { node: '>= 14.16.0' }
+
   convert-source-map@2.0.0:
     resolution:
       {
@@ -1957,6 +1997,13 @@ packages:
         integrity: sha512-5xZacEEufv3HSTPQuchrvV6soaiACMFnq1H8wkVioctoH3TRha9Sz66lOxRwPK/qZj7HPiSveih9yAyh98gvqA==,
       }
 
+  readdirp@4.0.1:
+    resolution:
+      {
+        integrity: sha512-GkMg9uOTpIWWKbSsgwb5fA4EavTR+SG/PMPoAY8hkhHfEEY0/vqljY+XHqtDf2cr2IJtoNRDbrrEpZUiZCkYRw==,
+      }
+    engines: { node: '>= 14.16.0' }
+
   resolve-pkg-maps@1.0.0:
     resolution:
       {
@@ -2222,6 +2269,14 @@ packages:
     engines: { node: '>=8' }
     hasBin: true
 
+  yaml@2.9.0:
+    resolution:
+      {
+        integrity: sha512-2AvhNX3mb8zd6Zy7INTtSpl1F15HW6Wnqj0srWlkKLcpYl/gMIMJiyuGq2KeI2YFxUPjdlB+3Lc10seMLtL4cA==,
+      }
+    engines: { node: '>= 14.6' }
+    hasBin: true
+
   yuku-ast@0.8.7:
     resolution:
       {
@@ -2278,6 +2333,11 @@ snapshots:
       '@deepseek-ai/dsh-system-prompt': 0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1))(@deepseek-ai/dsh-llm@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-attachment@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-brand@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)))(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)))(@deepseek-ai/dsh-brand@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)))(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1))(@deepseek-ai/dsh-timeout@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1))))(@deepseek-ai/dsh-scope@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)))
       '@deepseek-ai/dsh-typert-protocol': 0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1))
 
+  '@deepseek-ai/dsh-atomic-write@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1))':
+    dependencies:
+      '@deepseek-ai/cordis': 4.0.1
+      '@deepseek-ai/dsh-invariants': 0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)
+
   '@deepseek-ai/dsh-attachment@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-brand@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)))(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1))':
     dependencies:
       '@deepseek-ai/cordis': 4.0.1
@@ -2325,6 +2385,11 @@ snapshots:
       '@deepseek-ai/dsh-invariants': 0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)
       '@deepseek-ai/dsh-llm': 0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-attachment@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-brand@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)))(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)))(@deepseek-ai/dsh-brand@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)))(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1))(@deepseek-ai/dsh-timeout@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)))
       '@deepseek-ai/dsh-session': 0.1.0-rc.6(6fd26f59436a18b115f326d6060415e6)
+
+  '@deepseek-ai/dsh-home-paths@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1))':
+    dependencies:
+      '@deepseek-ai/cordis': 4.0.1
+      '@deepseek-ai/dsh-invariants': 0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)
 
   '@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)':
     dependencies:
@@ -2388,6 +2453,17 @@ snapshots:
       '@deepseek-ai/dsh-llm': 0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-attachment@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-brand@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)))(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)))(@deepseek-ai/dsh-brand@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)))(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1))(@deepseek-ai/dsh-timeout@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)))
       '@deepseek-ai/dsh-scope': 0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1))
       '@deepseek-ai/dsh-typert-protocol': 0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1))
+
+  '@deepseek-ai/dsh-settings-file@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-atomic-write@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)))(@deepseek-ai/dsh-home-paths@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)))(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1))(@deepseek-ai/dsh-settings@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-brand@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)))(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1))(@deepseek-ai/schemastery@3.18.1))':
+    dependencies:
+      '@deepseek-ai/cordis': 4.0.1
+      '@deepseek-ai/dsh-atomic-write': 0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1))
+      '@deepseek-ai/dsh-home-paths': 0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1))
+      '@deepseek-ai/dsh-invariants': 0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)
+      '@deepseek-ai/dsh-settings': 0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-brand@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)))(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1))(@deepseek-ai/schemastery@3.18.1)
+      '@deepseek-ai/schemastery': 3.18.1
+      chokidar: 4.0.3
+      yaml: 2.9.0
 
   '@deepseek-ai/dsh-settings@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-brand@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)))(@deepseek-ai/dsh-invariants@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1))(@deepseek-ai/schemastery@3.18.1)':
     dependencies:
@@ -2808,13 +2884,13 @@ snapshots:
       chai: 6.2.2
       tinyrainbow: 3.1.1
 
-  '@vitest/mocker@4.1.10(vite@8.2.1(@types/node@26.2.0)(esbuild@0.28.2)(tsx@4.23.12))':
+  '@vitest/mocker@4.1.10(vite@8.2.1(@types/node@26.2.0)(esbuild@0.28.2)(tsx@4.23.12)(yaml@2.9.0))':
     dependencies:
       '@vitest/spy': 4.1.10
       estree-walker: 3.0.3
       magic-string: 0.30.21
     optionalDependencies:
-      vite: 8.2.1(@types/node@26.2.0)(esbuild@0.28.2)(tsx@4.23.12)
+      vite: 8.2.1(@types/node@26.2.0)(esbuild@0.28.2)(tsx@4.23.12)(yaml@2.9.0)
 
   '@vitest/pretty-format@4.1.10':
     dependencies:
@@ -2921,6 +2997,10 @@ snapshots:
   cac@7.0.0: {}
 
   chai@6.2.2: {}
+
+  chokidar@4.0.3:
+    dependencies:
+      readdirp: 4.0.1
 
   convert-source-map@2.0.0: {}
 
@@ -3097,6 +3177,8 @@ snapshots:
 
   quansync@1.0.0: {}
 
+  readdirp@4.0.1: {}
+
   resolve-pkg-maps@1.0.0: {}
 
   rolldown-plugin-dts@0.27.14(rolldown@1.2.4)(typescript@7.0.2):
@@ -3218,7 +3300,7 @@ snapshots:
 
   verkit@0.3.2: {}
 
-  vite@8.2.1(@types/node@26.2.0)(esbuild@0.28.2)(tsx@4.23.12):
+  vite@8.2.1(@types/node@26.2.0)(esbuild@0.28.2)(tsx@4.23.12)(yaml@2.9.0):
     dependencies:
       lightningcss: 1.33.0
       picomatch: 4.0.5
@@ -3230,11 +3312,12 @@ snapshots:
       esbuild: 0.28.2
       fsevents: 2.3.3
       tsx: 4.23.12
+      yaml: 2.9.0
 
-  vitest@4.1.10(@types/node@26.2.0)(vite@8.2.1(@types/node@26.2.0)(esbuild@0.28.2)(tsx@4.23.12)):
+  vitest@4.1.10(@types/node@26.2.0)(vite@8.2.1(@types/node@26.2.0)(esbuild@0.28.2)(tsx@4.23.12)(yaml@2.9.0)):
     dependencies:
       '@vitest/expect': 4.1.10
-      '@vitest/mocker': 4.1.10(vite@8.2.1(@types/node@26.2.0)(esbuild@0.28.2)(tsx@4.23.12))
+      '@vitest/mocker': 4.1.10(vite@8.2.1(@types/node@26.2.0)(esbuild@0.28.2)(tsx@4.23.12)(yaml@2.9.0))
       '@vitest/pretty-format': 4.1.10
       '@vitest/runner': 4.1.10
       '@vitest/snapshot': 4.1.10
@@ -3251,7 +3334,7 @@ snapshots:
       tinyexec: 1.3.0
       tinyglobby: 0.2.17
       tinyrainbow: 3.1.1
-      vite: 8.2.1(@types/node@26.2.0)(esbuild@0.28.2)(tsx@4.23.12)
+      vite: 8.2.1(@types/node@26.2.0)(esbuild@0.28.2)(tsx@4.23.12)(yaml@2.9.0)
       why-is-node-running: 2.3.0
     optionalDependencies:
       '@types/node': 26.2.0
@@ -3262,6 +3345,8 @@ snapshots:
     dependencies:
       siginfo: 2.0.0
       stackback: 0.0.2
+
+  yaml@2.9.0: {}
 
   yuku-ast@0.8.7:
     dependencies:

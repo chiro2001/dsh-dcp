@@ -1,24 +1,51 @@
 /**
- * dsh-dcp 插件入口（M0 占位）。
+ * dsh-dcp plugin entry (M1): system guidance, compress tool, /dcp commands,
+ * settings namespace.
  *
- * M0 阶段只做宿主契约实验（tests/contract/），本文件保留最小可构建入口；
- * M1 按修订版 PLAN §5/§13 注册 systemPrompt section、compress 工具、
- * dcp/dcp-compress 命令、agent/pre-step 策略与 settings namespace。
+ * @module dsh-dcp
  */
 
 import type { Context } from '@deepseek-ai/cordis'
-import z from '@deepseek-ai/schemastery'
+import { Config, resolveConfig, unknownConfigKeys, type DcpConfig } from './config.js'
+import {
+  DCP_GUIDANCE_ORDER,
+  DCP_GUIDANCE_SECTION,
+  renderDcpGuidance,
+} from './prompts/system.js'
+import { createCompressTool } from './compress/tool.js'
+import { registerDcpCommands } from './commands/index.js'
 
 export const name = 'dsh-dcp'
 
-export const inject: string[] = []
+export const inject = ['sessions', 'tokenMeter', 'systemPrompt', 'tools', 'commands']
 
-export const Config = z.object({
-  enabled: z.boolean().default(true),
-  debug: z.boolean().default(false),
-})
+export { Config }
 
-export function apply(ctx: Context): void {
-  // M1: 真实注册逻辑
-  void ctx
+export function apply(ctx: Context, config: DcpConfig): void {
+  const resolved = resolveConfig(config)
+  const logger = ctx.logger('dsh-dcp')
+  const unknown = unknownConfigKeys(config as unknown as Record<string, unknown>)
+  if (unknown.length > 0) {
+    logger.warn('dcp config contains unknown keys: %s', unknown.join(', '))
+  }
+
+  ctx.systemPrompt.section({
+    name: DCP_GUIDANCE_SECTION,
+    order: DCP_GUIDANCE_ORDER,
+    text: () => renderDcpGuidance(resolved, resolved.manualMode.default),
+  })
+
+  if (resolved.compress.enabled) {
+    ctx.tools.register(createCompressTool(ctx, resolved))
+  }
+
+  registerDcpCommands(ctx, resolved)
+
+  const settings = ctx.get('settings') as
+    { register?: (ns: string, schema: unknown) => void } | undefined
+  settings?.register?.('dcp', Config)
+
+  if (resolved.debug) {
+    logger.info('dsh-dcp initialized', { transport: resolved.references.transport })
+  }
 }

@@ -1,5 +1,6 @@
 # 叠加在 dsh-base 之上；只挂载 dcp 服务，不包含任何 TUI/HTTP 组件。
-# inject 列表在 M0 契约实验后按实际公开 API 校准（M1）。
+# settings 为可选服务（ctx.get），不参与 inject。
 - insert:
     - id: dcp
       name: '@chiro2001/dsh-dcp'
+      inject: [sessions, tokenMeter, systemPrompt, tools, commands]
