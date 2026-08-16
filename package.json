@@ -49,6 +49,7 @@
     "check:package": "node scripts/check-package.mjs",
     "perf-smoke": "tsx scripts/perf-smoke.ts",
     "perf-hotpath": "tsx scripts/perf-hotpath.ts",
+    "kv-ab": "bash -c 'set -a; source \"$HOME/litellm/.env\"; set +a; tsx scripts/kv-ab.ts'",
     "e2e:real": "bash scripts/e2e-real-agent.sh",
     "check-all": "bash scripts/check-all.sh"
   },

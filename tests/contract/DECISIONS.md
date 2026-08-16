@@ -105,3 +105,15 @@ full heuristic recompute === contextBreakdown.messageTokens`；
   增量状态/cache。
 - **[事实]** alias 扫描已优化为一次性 replacement map（O(n)），不再是
   逐 marker × 全日志扫描。
+
+## M6.1 在线 KV cache A/B（2026-08-16，opencode go / deepseek-v4-flash）
+
+- **[事实]** 固定微转录（warmup 后各 2 次）：DCP off 两组均为
+  input=99 / cacheRead=0；DCP marker on 两组均为 input=139 /
+  cacheRead=128（92.1% cache-read ratio）。marker 使该转录输入 +40 token。
+- **[推断]** 两侧 cache 指标不对称（off 完全 0，on 高命中），无法归因于
+  marker 本身 → 按 recommendation §3.2 标记 **inconclusive**；不据此宣称
+  “marker 无损 KV cache”。
+- **[推断]** 在更大重复样本与稳定 provider 指标前，维持 marker 协议；开销
+  门禁（active DCP artifact ≤ window 5% / ≤ 净节省 10%）在 M6.2 真实模型
+  探针中继续跟踪。

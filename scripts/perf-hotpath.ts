@@ -14,7 +14,10 @@ import type { TokenMeasurement } from '@deepseek-ai/dsh-token-meter'
 
 function buildCorpus(turnCount: number): Session {
   const session = Session.create(SessionId(`hotpath-${turnCount}`))
+  const refs = new Set<string>()
   for (let turn = 1; turn <= turnCount; turn++) {
+    const ref = `m${String(turn).padStart(4, '0')}`
+    refs.add(ref)
     session.append('turn/start', { turn })
     session.append(
       'user/message',
@@ -22,7 +25,7 @@ function buildCorpus(turnCount: number): Session {
         content: [
           {
             type: 'text',
-            text: `<dcp-boundary ref="m${String(turn).padStart(4, '0')}" turn="${turn}" step="1" />`,
+            text: `<dcp-boundary ref="${ref}" turn="${turn}" step="1" />`,
           },
           { type: 'text', text: `user ${turn}` },
         ],
@@ -75,6 +78,15 @@ function buildCorpus(turnCount: number): Session {
       )
       session.append('compaction/end', { compactionId: nativeId, turn: null })
     }
+  }
+  if (refs.size !== turnCount) {
+    throw new Error(`perf-hotpath: marker ref collision at ${turnCount} turns`)
+  }
+  const state = reduceDcpState(session.events)
+  if (state.maxMarkerNumber !== turnCount) {
+    throw new Error(
+      `perf-hotpath: maxMarkerNumber=${state.maxMarkerNumber}, expected ${turnCount}`,
+    )
   }
   return session
 }
