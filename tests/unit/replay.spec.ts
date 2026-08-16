@@ -1,4 +1,5 @@
 import { afterEach, beforeEach, describe, expect, it } from 'vitest'
+import { Session, SessionId } from '@deepseek-ai/dsh-session'
 import { CompactionId, compactCheckpointSource } from '@deepseek-ai/dsh-compaction'
 import { createUserMessage } from '@deepseek-ai/dsh-llm/message'
 import { mountContractFixture, type ContractFixture } from '../contract/fixture.js'
@@ -178,5 +179,57 @@ describe('dcp replay state', () => {
     expect(state.blocks[0]?.membership).toBe('absorbed-native')
     expect(state.activeBlockRefs).toEqual([])
     expect(state.boundaryRefs[0]?.active).toBe(false)
+  })
+
+  it('consumes alias deltas after native shadowing', () => {
+    const session = Session.create(SessionId('replay-alias'))
+    const marker = session.append(
+      'user/message',
+      createUserMessage({
+        content: [{ type: 'text', text: '<dcp-boundary ref="m0001" turn="1" step="1" />' }],
+        source: { kind: 'plugin', plugin: 'dsh-dcp' },
+      }),
+      { surfaceOp: 'append' },
+    )
+    const nativeId = CompactionId('alias-native')
+    session.append('compaction/start', { compactionId: nativeId, turn: null })
+    session.append('compaction/summary', {
+      compactionId: nativeId,
+      summary: [{ type: 'text', text: 'native' }],
+      shadowedRange: { start: marker.seq, end: marker.seq },
+      shadowedSeqs: [marker.seq],
+      shadowedTokenCount: 1,
+      provider: 'mock',
+      model: 'mock',
+    })
+    const replacement = session.append(
+      'user/message',
+      createUserMessage({
+        content: [{ type: 'text', text: 'native' }],
+        source: compactCheckpointSource(nativeId),
+      }),
+      {
+        surfaceOp: { op: 'replace', start: marker.seq, end: marker.seq },
+        sourceEventSeqs: [marker.seq],
+      },
+    )
+    session.append('compaction/end', { compactionId: nativeId, turn: null })
+    session.append(
+      'user/message',
+      createUserMessage({
+        content: [
+          {
+            type: 'text',
+            text: `<dcp-boundary ref="m0002" turn="2" step="1" />\nalias m0001=s${replacement.seq}`,
+          },
+        ],
+        source: { kind: 'plugin', plugin: 'dsh-dcp' },
+      }),
+      { surfaceOp: 'append' },
+    )
+
+    const state = reduceDcpState([...session.events])
+    expect(state.aliases).toContainEqual({ ref: 'm0001', seq: replacement.seq })
+    expect(state.maxMarkerNumber).toBe(2)
   })
 })

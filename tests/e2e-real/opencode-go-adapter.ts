@@ -37,29 +37,72 @@ interface ParsedToolInvocation {
   arguments: string
 }
 
+function extractItems(value: string): Array<Record<string, string>> {
+  const items: Array<Record<string, string>> = []
+  const itemRe = /<item>([\s\S]*?)<\/item>/g
+  let match: RegExpExecArray | null
+  while ((match = itemRe.exec(value)) !== null) {
+    items.push(extractParameters(match[1]!) as Record<string, string>)
+  }
+  return items
+}
+
+/** Extract `<parameter name="...">` values, respecting nested parameters. */
+function extractParameters(body: string): Record<string, unknown> {
+  const parameters: Record<string, unknown> = {}
+  const openRe = /<parameter name="([^"]+)">/g
+  let open: RegExpExecArray | null
+  while ((open = openRe.exec(body)) !== null) {
+    const name = open[1]!
+    const closeRe = /<\/parameter>|<parameter name="/g
+    closeRe.lastIndex = openRe.lastIndex
+    let depth = 1
+    let end = -1
+    let close: RegExpExecArray | null
+    while ((close = closeRe.exec(body)) !== null) {
+      if (close[0] === '<parameter name="') {
+        depth++
+      } else {
+        depth--
+        if (depth === 0) {
+          end = close.index
+          break
+        }
+      }
+    }
+    if (end === -1) continue
+    const value = body.slice(openRe.lastIndex, end)
+    if (name === 'content') {
+      const items = extractItems(value)
+      parameters[name] = items.length > 0 ? items : value.trim()
+    } else {
+      parameters[name] = value.trim()
+    }
+    openRe.lastIndex = end + '</parameter>'.length
+  }
+  return parameters
+}
+
 /**
  * The opencode go gateway's deepseek-v4-flash returns tool calls as inline
  * XML text (`<invoke name="...">`) instead of the OpenAI tool_calls channel.
  * Parse them back into real tool-call blocks.
  */
-function parseXmlToolCalls(content: string): { text: string; calls: ParsedToolInvocation[] } {
+export function parseXmlToolCalls(
+  content: string,
+  nextId: () => string,
+): { text: string; calls: ParsedToolInvocation[] } {
   const calls: ParsedToolInvocation[] = []
   const invocationRe = /<invoke name="([^"]+)">([\s\S]*?)<\/invoke>/g
   let cleaned = content
   let match: RegExpExecArray | null
-  let index = 0
   while ((match = invocationRe.exec(content)) !== null) {
     const name = match[1]!
     const body = match[2]!
     cleaned = cleaned.replace(match[0], '')
-    const parameters: Record<string, string> = {}
-    const parameterRe = /<parameter name="([^"]+)">([\s\S]*?)<\/parameter>/g
-    let parameter: RegExpExecArray | null
-    while ((parameter = parameterRe.exec(body)) !== null) {
-      parameters[parameter[1]!] = parameter[2]!.trim()
-    }
+    const parameters = extractParameters(body)
     calls.push({
-      id: `call_${index++}`,
+      id: nextId(),
       name,
       arguments: JSON.stringify(parameters),
     })
@@ -113,6 +156,8 @@ function toOpenAiMessages(options: GenerateOptions): OpenAiMessage[] {
 }
 
 export class OpenCodeGoAdapter extends LlmAdapter {
+  private callCounter = 0
+
   constructor(private readonly config: OpenCodeGoAdapterConfig) {
     super()
   }
@@ -200,7 +245,7 @@ export class OpenCodeGoAdapter extends LlmAdapter {
     }
 
     const rawContent = choice.message?.content ?? ''
-    const parsed = parseXmlToolCalls(rawContent)
+    const parsed = parseXmlToolCalls(rawContent, () => `call_${this.callCounter++}`)
     const content = parsed.text
     if (content.length > 0) {
       yield { type: 'block-start', index: 0, blockType: 'text' }

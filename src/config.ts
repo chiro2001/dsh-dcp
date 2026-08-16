@@ -208,6 +208,17 @@ export function resolveConfig(input: unknown): DcpConfig {
   if (resolved.compress.minNetSavingsTokens <= 0) {
     throw new Error('dcp config: compress.minNetSavingsTokens must be positive')
   }
+  const raw = (input ?? {}) as Record<string, unknown>
+  const references = raw.references as Record<string, unknown> | undefined
+  if (references?.transport !== undefined && references.transport !== 'marker') {
+    throw new Error('dcp config: references.transport only supports "marker" in v0.1')
+  }
+  const subagents = raw.subagents as Record<string, unknown> | undefined
+  if (subagents?.enableCompressionInChild === true || subagents?.readChildSession === true) {
+    throw new Error(
+      'dcp config: subagents.enableCompressionInChild/readChildSession are unsupported in v0.1',
+    )
+  }
   return resolved
 }
 

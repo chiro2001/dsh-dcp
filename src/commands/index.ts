@@ -93,4 +93,14 @@ export function registerDcpCommands(ctx: Context, config: DcpConfig): void {
       }
     },
   })
+
+  ctx.commands.register({
+    name: 'dcp-compress',
+    description: 'Trigger DCP manual compression',
+    input: { hint: '[focus]' },
+    async handler(invocation: CommandInvocation) {
+      const focus = invocation.rawInput.trim()
+      return { kind: 'success', text: scheduleCompress(invocation.agent, focus).text }
+    },
+  })
 }

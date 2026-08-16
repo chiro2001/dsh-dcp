@@ -141,10 +141,14 @@ describe.skipIf(!enabled)('real agent + real model (opencode go, isolated env)',
 
     const invocation =
       '<invoke name="compress">' +
+      '<parameter name="topic">first turn</parameter>' +
+      '<parameter name="content">' +
+      '<item>' +
       '<parameter name="startRef">m0001</parameter>' +
       '<parameter name="endRef">m0002</parameter>' +
-      '<parameter name="topic">first turn</parameter>' +
       '<parameter name="summary">compressed first turn</parameter>' +
+      '</item>' +
+      '</parameter>' +
       '</invoke>'
     let attempts = 0
     while (compressCalls.length === 0 && attempts < 3) {

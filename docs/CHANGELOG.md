@@ -1,5 +1,21 @@
 # CHANGELOG
 
+## Unreleased（v0.1.0-rc.2 准备）
+
+- M6.0 协议一致性第一批：
+  - marker alias 接线：pre-step 在 native 遮蔽后生成 `alias mNNNN=s<seq>`，
+    replay 消费 alias，resolver 经 alias 解析陈旧 ref；
+  - ref 宽度放宽为 `m\d+`（支持 m10000）；
+  - config fail-closed：`references.transport` 仅支持 marker，
+    `subagents.*` 未支持项直接拒绝；`enabled=false` 时不再注册；
+  - nudge 补 minRatio 重置与无容量迭代阈值；
+  - 会话统计排除 native compaction shadow price；
+  - multi-range inline cleanup 按下标映射，避免中间失败错位；
+  - recovery 使用真实 request header 的 provider/model；
+  - opencode-go 适配器支持嵌套 `content[]` XML 与全局唯一 call id；
+  - 注册 `dcp-compress` 命令；peerDependencies 收窄为有界范围；
+  - package.json 补 SPDX license / repository / publishConfig。
+
 ## 0.1.0-rc.1 (2026-08-16)
 
 首个可安装里程碑。实现按修订版 PLAN（M0–M5）推进，全部以测试门禁验收。

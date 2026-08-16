@@ -58,7 +58,13 @@ export function prepareRange(
   topic: string,
 ): PrepareResult {
   const surface = [...session.surface.nodes]
-  const resolved = resolveRange(surface, state.boundaryRefs, entry.startRef, entry.endRef)
+  const resolved = resolveRange(
+    surface,
+    state.boundaryRefs,
+    entry.startRef,
+    entry.endRef,
+    state.aliases,
+  )
   if (!resolved.ok) return { ok: false, errors: [resolved.reason] }
 
   const shadowedSeqs = surface.slice(resolved.startPosition, resolved.endPosition)
@@ -201,6 +207,7 @@ export function prepareBatch(
       state.boundaryRefs,
       entry.startRef,
       entry.endRef,
+      state.aliases,
     )
     if (!result.ok) return { ok: false, errors: [result.reason] }
     resolved.push({

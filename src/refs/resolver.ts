@@ -15,12 +15,19 @@ export function resolveBoundaryPosition(
   surface: readonly number[],
   boundaryRefs: readonly DcpBoundaryRecord[],
   ref: string,
+  aliases: readonly { ref: string; seq: number }[] = [],
 ): { position: number; seq: number } | undefined {
   const record = boundaryRefs.find((entry) => entry.ref === ref)
-  if (!record || !record.active) return undefined
-  const position = surface.indexOf(record.seq)
-  if (position === -1) return undefined
-  return { position, seq: record.seq }
+  if (record && record.active) {
+    const position = surface.indexOf(record.seq)
+    if (position !== -1) return { position, seq: record.seq }
+  }
+  const alias = aliases.find((entry) => entry.ref === ref)
+  if (alias) {
+    const position = surface.indexOf(alias.seq)
+    if (position !== -1) return { position, seq: alias.seq }
+  }
+  return undefined
 }
 
 /**
@@ -32,12 +39,13 @@ export function resolveRange(
   boundaryRefs: readonly DcpBoundaryRecord[],
   startRef: string,
   endRef: string,
+  aliases: readonly { ref: string; seq: number }[] = [],
 ): ResolveRangeResult {
-  const start = resolveBoundaryPosition(surface, boundaryRefs, startRef)
+  const start = resolveBoundaryPosition(surface, boundaryRefs, startRef, aliases)
   if (!start) {
     return { ok: false, reason: `startRef ${startRef} is not an active boundary` }
   }
-  const end = resolveBoundaryPosition(surface, boundaryRefs, endRef)
+  const end = resolveBoundaryPosition(surface, boundaryRefs, endRef, aliases)
   if (!end) {
     return { ok: false, reason: `endRef ${endRef} is not an active boundary` }
   }

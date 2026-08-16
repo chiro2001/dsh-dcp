@@ -22,7 +22,7 @@ export function cleanupInlineSummary(
   session: Session,
   tokenMeter: TokenMeter,
   compressCallId: string,
-  blockRefs: string[],
+  blockRefsByIndex: Array<string | undefined>,
 ): CleanupResult {
   let authorSeq: number | undefined
   let original: (typeof session.events)[number] | undefined
@@ -54,7 +54,9 @@ export function cleanupInlineSummary(
       if (Array.isArray(parsed.content)) {
         for (const [entryIndex, entry] of parsed.content.entries()) {
           if (entry && typeof entry.summary === 'string') {
-            entry.summary = `[stored in ${blockRefs[entryIndex] ?? blockRefs[0] ?? 'b?'}]`
+            const ref = blockRefsByIndex[entryIndex]
+            if (ref === undefined) continue
+            entry.summary = `[stored in ${ref}]`
             rewritten = true
           }
         }

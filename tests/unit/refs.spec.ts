@@ -6,7 +6,7 @@ import {
   parseAlias,
   parseBoundaryMarker,
 } from '../../src/refs/marker.js'
-import { resolveRange } from '../../src/refs/resolver.js'
+import { resolveBoundaryPosition, resolveRange } from '../../src/refs/resolver.js'
 import type { DcpBoundaryRecord } from '../../src/protocol/replay.js'
 
 describe('boundary markers', () => {
@@ -16,8 +16,9 @@ describe('boundary markers', () => {
     expect(parseBoundaryMarker(marker)).toEqual({ ref: 'm0007', turn: 4, step: 2 })
     expect(parseBoundaryMarker('<dcp-message-id>b1</dcp-message-id>')).toBeUndefined()
 
-    const alias = buildAlias('m0007', 'n12')
-    expect(parseAlias(alias)).toEqual({ ref: 'm0007', targetId: 'n12' })
+    const alias = buildAlias('m0007', '42')
+    expect(alias).toBe('alias m0007=s42')
+    expect(parseAlias(alias)).toEqual({ ref: 'm0007', targetId: '42' })
     expect(parseAlias('not an alias')).toBeUndefined()
   })
 
@@ -43,7 +44,7 @@ describe('boundary resolver', () => {
   ]
 
   it('resolves half-open positional ranges', () => {
-    const resolved = resolveRange(surface, refs, 'm0001', 'm0002')
+    const resolved = resolveRange(surface, refs, 'm0001', 'm0002', [])
     expect(resolved).toEqual({
       ok: true,
       startSeq: 10,
@@ -54,8 +55,18 @@ describe('boundary resolver', () => {
   })
 
   it('fails on stale, missing, or reversed refs', () => {
-    expect(resolveRange(surface, refs, 'm0003', 'm0001').ok).toBe(false)
-    expect(resolveRange(surface, refs, 'm0001', 'm9999').ok).toBe(false)
-    expect(resolveRange(surface, refs, 'm0002', 'm0001').ok).toBe(false)
+    expect(resolveRange(surface, refs, 'm0003', 'm0001', []).ok).toBe(false)
+    expect(resolveRange(surface, refs, 'm0001', 'm9999', []).ok).toBe(false)
+    expect(resolveRange(surface, refs, 'm0002', 'm0001', []).ok).toBe(false)
+  })
+
+  it('resolves stale markers through aliases and fails without one', () => {
+    const aliases = [{ ref: 'm0003', seq: 40 }]
+    expect(resolveRange(surface, refs, 'm0003', 'm0001', aliases).ok).toBe(false)
+    expect(resolveBoundaryPosition(surface, refs, 'm0003', aliases)).toEqual({
+      position: 3,
+      seq: 40,
+    })
+    expect(resolveBoundaryPosition(surface, refs, 'm0009', [])).toBeUndefined()
   })
 })

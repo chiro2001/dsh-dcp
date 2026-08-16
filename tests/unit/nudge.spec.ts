@@ -6,7 +6,7 @@ import { resolveConfig } from '../../src/config.js'
 import { computeNudge } from '../../src/prompts/nudge.js'
 import { buildBoundaryMarker } from '../../src/refs/marker.js'
 
-function sessionWithMarkers(count: number): Session {
+function sessionWithMarkers(count: number, withContext = true): Session {
   const session = Session.create(SessionId('nudge-test'))
   for (let index = 1; index <= count; index++) {
     session.append('turn/start', { turn: index })
@@ -39,7 +39,9 @@ function sessionWithMarkers(count: number): Session {
     session.append('step/end', { turn: index, step: 1 })
     session.append('turn/end', { turn: index, reason: { kind: 'completed' } })
   }
-  session.append('request/context', { provider: 'mock', model: 'mock', contextWindow: 1000 })
+  if (withContext) {
+    session.append('request/context', { provider: 'mock', model: 'mock', contextWindow: 1000 })
+  }
   return session
 }
 
@@ -67,5 +69,9 @@ describe('nudge (M3)', () => {
 
     const lowPressure = computeNudge(sessionWithMarkers(9), fakeMeasure(500), config)
     expect(lowPressure.text).toBeUndefined()
+    expect(lowPressure.stepsSinceNudge).toBe(0)
+
+    const noWindow = computeNudge(sessionWithMarkers(13, false), fakeMeasure(0), config)
+    expect(noWindow.text).toContain('without pressure data')
   })
 })

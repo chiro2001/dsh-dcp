@@ -31,4 +31,16 @@ describe('dcp config', () => {
     expect(unknownConfigKeys({ permission: 'allow' })).toEqual(['permission'])
     expect(unknownConfigKeys({ enabled: true })).toEqual([])
   })
+
+  it('fails closed on unsupported v0.1 options', () => {
+    expect(() => resolveConfig({ references: { transport: 'context-tool' } })).toThrow(
+      /transport/,
+    )
+    expect(() => resolveConfig({ subagents: { readChildSession: true } })).toThrow(
+      /unsupported/,
+    )
+    expect(() => resolveConfig({ subagents: { enableCompressionInChild: true } })).toThrow(
+      /unsupported/,
+    )
+  })
 })

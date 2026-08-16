@@ -65,6 +65,10 @@ export function executeCompressRange(
 
   const blocks: CompressBlockResult[] = []
   const failed: FailedRange[] = []
+  const blockRefsByIndex: Array<string | undefined> = Array.from(
+    { length: args.content.length },
+    () => undefined,
+  )
   const authorSeq = findAuthorSeq(session, meta.compressCallId)
   for (const [index, entry] of args.content.entries()) {
     try {
@@ -96,6 +100,7 @@ export function executeCompressRange(
         compressedMessages: prepared.shadowedSeqs.length,
         compressedTokens: prepared.tokensIn - prepared.tokensOut,
       })
+      blockRefsByIndex[index] = prepared.blockRef
     } catch (error) {
       failed.push({
         startRef: entry.startRef,
@@ -107,12 +112,7 @@ export function executeCompressRange(
 
   const cleanup =
     blocks.length > 0
-      ? cleanupInlineSummary(
-          session,
-          tokenMeter,
-          meta.compressCallId,
-          blocks.map((block) => block.blockRef),
-        )
+      ? cleanupInlineSummary(session, tokenMeter, meta.compressCallId, blockRefsByIndex)
       : { cleaned: false, warning: 'no blocks committed; cleanup skipped' }
 
   return {

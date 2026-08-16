@@ -104,6 +104,9 @@ function appendRecoveryBracket(
   const turn = openTurnOf(session.events)
   if (turn === null) throw new Error('recovery mutation requires an open turn (control turn)')
   const target = session.events[targetSeq]
+  const header = session.requestHeader()
+  const provider = header?.config.provider ?? 'unknown'
+  const model = header?.config.model ?? 'unknown'
   const shadowedTokenCount =
     target?.type === 'user/message' ? tokenMeter.estimateMessage(target.data) : 0
   const compactionId = meta.compactionId
@@ -114,8 +117,8 @@ function appendRecoveryBracket(
     shadowedRange: { start: targetSeq, end: targetSeq },
     shadowedSeqs: [targetSeq],
     shadowedTokenCount,
-    provider: 'mock',
-    model: 'mock',
+    provider,
+    model,
   })
   session.append(
     'user/message',

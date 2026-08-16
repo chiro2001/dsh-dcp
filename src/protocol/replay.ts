@@ -6,6 +6,7 @@
 
 import { foldSurface, type SessionEvent } from '@deepseek-ai/dsh-session'
 import { decodeDcpMeta, type DcpCheckpointMetaV1, type DcpDiagnostic } from './metadata.js'
+import { parseAlias } from '../refs/marker.js'
 import {
   foldPruneReplacements,
   reconcileBlockMembership,
@@ -31,6 +32,7 @@ export interface DcpReplayState {
   blocks: DcpBlockRecord[]
   activeBlockRefs: string[]
   boundaryRefs: DcpBoundaryRecord[]
+  aliases: Array<{ ref: string; seq: number }>
   pruneReplacements: Map<number, number>
   diagnostics: DcpDiagnostic[]
   maxBlockNumber: number
@@ -38,9 +40,9 @@ export interface DcpReplayState {
   manualMode: boolean
 }
 
-const BOUNDARY_MARKER = /<dcp-boundary ref="(m\d{4})"[^>]*\/>/g
+const BOUNDARY_MARKER = /<dcp-boundary ref="(m\d+)"[^>]*\/>/g
 const BLOCK_REF = /^b([1-9]\d*)$/
-const MESSAGE_REF = /^m(\d{4})$/
+const MESSAGE_REF = /^m(\d+)$/
 
 export function emptyDcpState(): DcpReplayState {
   return {
@@ -49,6 +51,7 @@ export function emptyDcpState(): DcpReplayState {
     blocks: [],
     activeBlockRefs: [],
     boundaryRefs: [],
+    aliases: [],
     pruneReplacements: new Map(),
     diagnostics: [],
     maxBlockNumber: 0,
@@ -68,6 +71,7 @@ export function reduceDcpState(
   const surface = foldSurface(events)
   const surfaceSeqs = new Set(surface.nodes)
   const membership = reconcileBlockMembership(events)
+  const aliasCandidates: Array<{ ref: string; seq: number }> = []
 
   for (const event of events) {
     if (event.type !== 'user/message') continue
@@ -95,6 +99,10 @@ export function reduceDcpState(
 
     const source = event.data.source as unknown as { plugin?: string }
     if (source.plugin === 'dsh-dcp') {
+      const text = event.data.content
+        .filter((block) => block.type === 'text')
+        .map((block) => (block.type === 'text' ? block.text : ''))
+        .join('\n')
       for (const match of event.data.content[0]?.type === 'text'
         ? event.data.content[0].text.matchAll(BOUNDARY_MARKER)
         : []) {
@@ -103,7 +111,15 @@ export function reduceDcpState(
         const markerNumber = Number(MESSAGE_REF.exec(ref)?.[1] ?? 0)
         state.maxMarkerNumber = Math.max(state.maxMarkerNumber, markerNumber)
       }
+      for (const line of text.split('\n')) {
+        const alias = parseAlias(line)
+        if (alias) aliasCandidates.push({ ref: alias.ref, seq: Number(alias.targetId) })
+      }
     }
+  }
+
+  for (const alias of aliasCandidates) {
+    if (events[alias.seq] !== undefined) state.aliases.push(alias)
   }
 
   state.pruneReplacements = foldPruneReplacements(events)

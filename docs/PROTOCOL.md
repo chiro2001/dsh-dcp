@@ -17,7 +17,7 @@
   `<dcp-boundary ref="mNNNN" turn="T" step="S" />`（user message，
   source.plugin = `dsh-dcp`）。
 - 原生 compaction 遮蔽 marker 后，下一条 marker 追加 alias delta：
-  `alias mNNNN=<target-id>`，保持旧引用可解析。
+  `alias mNNNN=s<seq>`（seq 为遮蔽它的原生 checkpoint 节点），保持旧引用可解析。
 - 引用一律按 **surface position** 解析，绝不按 seq 数值大小。
 - range 是 half-open：`[startRef, endRef)`；endRef 节点本身不被压缩。
 - 活跃压缩块也是边界：`bN` 可作 startRef/endRef（嵌套压缩）。

@@ -27,14 +27,38 @@ export function computeSessionStats(events: readonly SessionEvent[]): SessionSta
   let pruneReplacements = 0
   let markerTokens = 0
 
-  for (const event of events) {
+  for (let index = 0; index < events.length; index++) {
+    const event = events[index]!
     switch (event.type) {
-      case 'compaction/summary':
-        shadowedTokens += event.data.shadowedTokenCount
+      case 'compaction/summary': {
+        const next = events[index + 1]
+        const isDcp =
+          next?.type === 'user/message' &&
+          next.surfaceOp !== 'append' &&
+          decodeDcpMeta(next.data.source).ok
+        if (isDcp) shadowedTokens += event.data.shadowedTokenCount
         break
-      case 'compaction/prune':
-        pruneReplacements++
+      }
+      case 'compaction/prune': {
+        const next = events[index + 1]
+        const nextText =
+          next?.type === 'tool/result' || next?.type === 'assistant/message'
+            ? next.data.message.content
+                .flatMap((block) => (block.type === 'tool-result' ? block.content : [block]))
+                .filter((block) => block.type === 'text')
+                .map((block) => (block.type === 'text' ? block.text : ''))
+                .join('\n')
+            : next?.type === 'user/message'
+              ? next.data.content
+                  .filter((block) => block.type === 'text')
+                  .map((block) => (block.type === 'text' ? block.text : ''))
+                  .join('\n')
+              : ''
+        const isDcp =
+          nextText.includes('[duplicate ') || nextText.includes('[errored tool unit removed]')
+        if (isDcp) pruneReplacements++
         break
+      }
       case 'user/message': {
         const text = event.data.content
           .filter((block) => block.type === 'text')
