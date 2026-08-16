@@ -27,7 +27,7 @@ export interface SessionStats {
   expansionTokens: number
   /** Heuristic tokens of boundary markers. */
   markerTokens: number
-  /** Signed estimated history reduction: shadowed + prune - checkpoint + expansion. */
+  /** Signed estimated history reduction: shadowed + prune - checkpoint + expansion - marker. */
   historyReduction: number
 }
 
@@ -130,6 +130,7 @@ export function computeSessionStats(
     pruneTokens,
     expansionTokens,
     markerTokens,
-    historyReduction: shadowedTokens + pruneTokens - checkpointTokens + expansionTokens,
+    historyReduction:
+      shadowedTokens + pruneTokens - checkpointTokens + expansionTokens - markerTokens,
   }
 }

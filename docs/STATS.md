@@ -10,17 +10,17 @@
 
 ## SessionStats（signed ledger）
 
-| 字段                | 语义                                                                       |
-| ------------------- | -------------------------------------------------------------------------- |
-| `blockCount`        | 历史 DCP summary + expansion 事务数                                        |
-| `activeBlockCount`  | 当前 surface 上的 active DCP block 数（gauge）                             |
-| `pruneReplacements` | DCP 去重/错误单元清理的替换数                                              |
-| `shadowedTokens`    | DCP summary 遮蔽的 heuristic token 总量                                    |
-| `checkpointTokens`  | DCP checkpoint 与 prune 替换文本的 estimate                                |
-| `pruneTokens`       | 被清理原始工具结果的 estimate                                              |
-| `expansionTokens`   | semantic expansion 的有符号 delta（通常为负）                              |
-| `markerTokens`      | boundary marker 的 estimate（单独列出）                                    |
-| `historyReduction`  | `shadowed + prune - checkpoint + expansion`（有符号；负值显示为 overhead） |
+| 字段                | 语义                                                                                |
+| ------------------- | ----------------------------------------------------------------------------------- |
+| `blockCount`        | 历史 DCP summary + expansion 事务数                                                 |
+| `activeBlockCount`  | 当前 surface 上的 active DCP block 数（gauge）                                      |
+| `pruneReplacements` | DCP 去重/错误单元清理的替换数                                                       |
+| `shadowedTokens`    | DCP summary 遮蔽的 heuristic token 总量                                             |
+| `checkpointTokens`  | DCP checkpoint 与 prune 替换文本的 estimate                                         |
+| `pruneTokens`       | 被清理原始工具结果的 estimate                                                       |
+| `expansionTokens`   | semantic expansion 的有符号 delta（通常为负）                                       |
+| `markerTokens`      | boundary marker 的 estimate（单独列出）                                             |
+| `historyReduction`  | `shadowed + prune - checkpoint + expansion - marker`（有符号；负值显示为 overhead） |
 
 不再使用 clamp 后的 `netSavedTokens`；负数如实呈现为 `history overhead`。
 

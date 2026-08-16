@@ -27,6 +27,16 @@ export interface DcpDomainAggregate {
   ledger: SessionStats
 }
 
+export type DcpStatsStatus = 'current' | 'stale' | 'unavailable'
+
+export interface DcpStatsSyncResult {
+  status: DcpStatsStatus
+  reason?: string
+  record?: DcpDomainRecordV1
+  aggregate?: DcpDomainAggregate
+  observedCursor: number
+}
+
 export async function syncDomainStats(
   store: DcpStatsStore,
   sessionId: string,
@@ -46,6 +56,45 @@ export async function syncDomainStats(
   }
   await store.write(sessionId, record)
   return record
+}
+
+export async function syncStatsWithStatus(
+  store: DcpStatsStore | undefined,
+  sessionId: string,
+  events: readonly SessionEvent[],
+  estimateMessage?: (message: Message) => number,
+): Promise<DcpStatsSyncResult> {
+  const observedCursor = events.length
+  if (store === undefined) {
+    return { status: 'unavailable', reason: 'storageDomain not wired', observedCursor }
+  }
+  const existing = store.read(sessionId)
+  if (existing !== undefined && existing.eventCount > observedCursor) {
+    return {
+      status: 'stale',
+      reason: `stored cursor ${existing.eventCount} ahead of observed ${observedCursor}`,
+      record: existing,
+      aggregate: aggregateDomainStats(store),
+      observedCursor,
+    }
+  }
+  try {
+    const record = await syncDomainStats(store, sessionId, events, estimateMessage)
+    return {
+      status: 'current',
+      record,
+      aggregate: aggregateDomainStats(store),
+      observedCursor,
+    }
+  } catch (error) {
+    return {
+      status: 'stale',
+      reason: error instanceof Error ? error.message : String(error),
+      record: existing,
+      aggregate: aggregateDomainStats(store),
+      observedCursor,
+    }
+  }
 }
 
 export function aggregateDomainStats(store: DcpStatsStore): DcpDomainAggregate {

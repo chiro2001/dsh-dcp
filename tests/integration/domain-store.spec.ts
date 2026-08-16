@@ -67,7 +67,7 @@ describe('M7.0: real dsh-storage-json domain wiring', () => {
   it('persists per-session snapshots and survives reopen', async () => {
     if (!ctx) throw new Error('ctx missing')
     const ids = []
-    for (let index = 0; index < 5; index++) ids.push(await buildSessionWithBlock())
+    for (let index = 0; index < 10; index++) ids.push(await buildSessionWithBlock())
 
     const handle = await openDcpStatsStore(ctx)
     expect(handle).toBeDefined()
@@ -81,7 +81,7 @@ describe('M7.0: real dsh-storage-json domain wiring', () => {
       )
     }
     for (const record of records) expect(record.ledger.blockCount).toBe(1)
-    expect(aggregateDomainStats(handle.store).sessionCount).toBe(5)
+    expect(aggregateDomainStats(handle.store).sessionCount).toBe(10)
     await handle.close()
     await ctx.fiber.dispose()
     ctx = undefined
@@ -97,7 +97,7 @@ describe('M7.0: real dsh-storage-json domain wiring', () => {
       const loaded = reopened.store.read(ids[0]!)
       expect(loaded?.eventCount).toBe(records[0]!.eventCount)
       expect(loaded?.ledger.blockCount).toBe(1)
-      expect(aggregateDomainStats(reopened.store).sessionCount).toBe(5)
+      expect(aggregateDomainStats(reopened.store).sessionCount).toBe(10)
       await reopened.close()
     }
     await fresh.dispose()

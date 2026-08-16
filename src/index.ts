@@ -115,25 +115,25 @@ export function apply(ctx: Context, config: DcpConfig): void {
     { register?: (ns: string, schema: unknown) => void } | undefined
   settings?.register?.('dcp', Config)
 
-  if (ctx.get('storageDomain') !== undefined) {
-    ctx.inject(['storageDomain'], async (child): Promise<() => void> => {
-      try {
-        const handle = await openDcpStatsStore(child)
-        if (!handle) return () => {}
-        registerDcpStatsStore(child, handle.store)
-        return () => {
-          unregisterDcpStatsStore(child)
-          void handle.close()
-        }
-      } catch (error) {
-        logger.warn(
-          'dcp stats domain unavailable: %s',
-          error instanceof Error ? error.message : String(error),
-        )
-        return () => {}
+  ctx.inject(['storageDomain'], async (child): Promise<() => Promise<void>> => {
+    try {
+      const handle = await openDcpStatsStore(child)
+      if (!handle) return async () => {}
+      // Register on the outer plugin context so command closures (which
+      // capture `ctx`) resolve the same store identity.
+      registerDcpStatsStore(ctx, handle.store)
+      return async () => {
+        unregisterDcpStatsStore(ctx)
+        await handle.close()
       }
-    })
-  }
+    } catch (error) {
+      logger.warn(
+        'dcp stats domain unavailable: %s',
+        error instanceof Error ? error.message : String(error),
+      )
+      return async () => {}
+    }
+  })
 
   if (resolved.debug) {
     logger.info('dsh-dcp initialized', { transport: resolved.references.transport })

@@ -1,5 +1,17 @@
 # CHANGELOG
 
+## 0.1.0-rc.4 (2026-08-16)
+
+- round-0005 P0 关闭：
+  - 生产拓扑：store 注册到外层 context，late-provide 后 `/dcp stats` 从
+    unavailable 转 current（真实插件路径测试，不再手工注册）；
+  - 三态状态机：`current | stale | unavailable` 带 reason/cursor/旧视图，
+    log regression 不再误报 current；disposer await close；
+  - ledger：marker 计入 `historyReduction`
+    （`shadowed + prune - checkpoint + expansion - marker`）；
+  - domain record schema 收紧并校验 ledger 方程（v1）；
+  - 10-session 真实 JSON reopen 聚合测试。
+
 ## 0.1.0-rc.3 (2026-08-16)
 
 - M6.3（round-0003 建议）：

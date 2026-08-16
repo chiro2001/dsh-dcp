@@ -36,14 +36,30 @@ export async function renderDomainStats(ctx: Context, agent: Agent): Promise<str
     agent.session.events,
     (message) => ctx.tokenMeter.estimateMessage(message),
   )
-  if (result.record === undefined || result.aggregate === undefined) {
-    return ['persistent domain: unavailable or stale (storageDomain not wired / sync failed)']
+  if (result.status === 'unavailable') {
+    return [`persistent domain: unavailable (${result.reason ?? 'storageDomain not wired'})`]
+  }
+  if (result.status === 'stale') {
+    const aggregate = result.aggregate
+    return [
+      `persistent domain: stale (${result.reason ?? 'sync failed'})`,
+      ...(aggregate === undefined
+        ? []
+        : [
+            `  sessions (old view): ${aggregate.sessionCount}`,
+            `  blocks (old view):   ${aggregate.ledger.blockCount}`,
+          ]),
+      `  observed cursor: ${result.observedCursor}`,
+    ]
+  }
+  if (!result.record || !result.aggregate) {
+    return ['persistent domain: current (unexpected missing data)']
   }
   return [
     'persistent domain: current (single-process scope)',
-    `  sessions:          ${result.aggregate.sessionCount}`,
-    `  blocks:            ${result.aggregate.ledger.blockCount}`,
-    `  history reduction: ~${result.aggregate.ledger.historyReduction}`,
+    `  sessions:          ${result.aggregate?.sessionCount ?? 0}`,
+    `  blocks:            ${result.aggregate?.ledger.blockCount ?? 0}`,
+    `  history reduction: ~${result.aggregate?.ledger.historyReduction ?? 0}`,
     `  last sync:         ${result.record.updatedAt}`,
   ]
 }

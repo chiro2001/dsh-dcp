@@ -91,4 +91,25 @@ describe('session stats (M6.0 native exclusion)', () => {
     expect(stats.historyReduction).toBe(stats.shadowedTokens - stats.checkpointTokens)
     expect(stats.activeBlockCount).toBeGreaterThanOrEqual(1)
   })
+
+  it('keeps the signed ledger equation including marker cost', () => {
+    const session = Session.create(SessionId('stats-equation'))
+    session.append(
+      'user/message',
+      createUserMessage({
+        content: [{ type: 'text', text: '<dcp-boundary ref="m0001" turn="1" step="1" />' }],
+        source: { kind: 'plugin', plugin: 'dsh-dcp' },
+      }),
+      { surfaceOp: 'append' },
+    )
+    const stats = computeSessionStats([...session.events])
+    expect(stats.historyReduction).toBe(
+      stats.shadowedTokens +
+        stats.pruneTokens -
+        stats.checkpointTokens +
+        stats.expansionTokens -
+        stats.markerTokens,
+    )
+    expect(stats.markerTokens).toBeGreaterThan(0)
+  })
 })

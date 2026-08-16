@@ -21,7 +21,15 @@ describe('M7.0: domain failure and catch-up semantics', () => {
     await fixture.dispose()
   })
 
-  it('degrades to stale/unavailable when writes fail', async () => {
+  it('shows unavailable when no store is wired', async () => {
+    const agent = {
+      session: { id: SessionId('no-store'), events: [] as never[] },
+    } as never
+    const lines = await renderDomainStats(fixture.ctx, agent)
+    expect(lines.join('\n')).toContain('unavailable (storageDomain not wired)')
+  })
+
+  it('shows stale when writes fail', async () => {
     const failing: DcpStatsStore = {
       read: () => undefined,
       write: async () => {
@@ -34,7 +42,42 @@ describe('M7.0: domain failure and catch-up semantics', () => {
       session: { id: SessionId('fail-session'), events: [] as never[] },
     } as never
     const lines = await renderDomainStats(fixture.ctx, agent)
-    expect(lines.join('\n')).toContain('unavailable or stale')
+    expect(lines.join('\n')).toContain('persistent domain: stale')
+    expect(lines.join('\n')).toContain('backend down')
+    unregisterDcpStatsStore(fixture.ctx)
+  })
+
+  it('shows stale with the old durable view after a write failure', async () => {
+    const existing: DcpDomainRecordV1 = {
+      v: 1,
+      eventCount: 2,
+      ledger: {
+        blockCount: 1,
+        activeBlockCount: 1,
+        pruneReplacements: 0,
+        shadowedTokens: 100,
+        checkpointTokens: 20,
+        pruneTokens: 0,
+        expansionTokens: 0,
+        markerTokens: 5,
+        historyReduction: 75,
+      },
+      updatedAt: '2026-08-16T00:00:00.000Z',
+    }
+    const failing: DcpStatsStore = {
+      read: () => existing,
+      write: async () => {
+        throw new Error('backend down')
+      },
+      list: () => [['s1', existing] as [string, DcpDomainRecordV1]][Symbol.iterator](),
+    }
+    registerDcpStatsStore(fixture.ctx, failing)
+    const agent = {
+      session: { id: SessionId('stale-session'), events: [null, null, null] as never[] },
+    } as never
+    const lines = await renderDomainStats(fixture.ctx, agent)
+    expect(lines.join('\n')).toContain('persistent domain: stale')
+    expect(lines.join('\n')).toContain('sessions (old view): 1')
     unregisterDcpStatsStore(fixture.ctx)
   })
 

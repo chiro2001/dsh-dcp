@@ -7,12 +7,7 @@
 import type { Context } from '@deepseek-ai/cordis'
 import { defineDomain, domainTable } from '@deepseek-ai/dsh-storage-domain'
 import { z } from 'zod'
-import {
-  aggregateDomainStats,
-  syncDomainStats,
-  type DcpDomainRecordV1,
-  type DcpStatsStore,
-} from './domain.js'
+import { syncStatsWithStatus, type DcpDomainRecordV1, type DcpStatsStore } from './domain.js'
 import type { SessionEvent } from '@deepseek-ai/dsh-session'
 import type { Message } from '@deepseek-ai/dsh-llm'
 
@@ -28,12 +23,23 @@ const ledgerSchema = z.object({
   historyReduction: z.number(),
 })
 
-const recordSchema = z.object({
-  v: z.literal(1),
-  eventCount: z.number(),
-  ledger: ledgerSchema,
-  updatedAt: z.string(),
-})
+const recordSchema = z
+  .object({
+    v: z.literal(1),
+    eventCount: z.number().int().nonnegative(),
+    ledger: ledgerSchema,
+    updatedAt: z.string(),
+  })
+  .refine(
+    (record) =>
+      record.ledger.historyReduction ===
+      record.ledger.shadowedTokens +
+        record.ledger.pruneTokens -
+        record.ledger.checkpointTokens +
+        record.ledger.expansionTokens -
+        record.ledger.markerTokens,
+    { message: 'ledger historyReduction equation mismatch' },
+  )
 
 export const dcpStatsDomainSpec = defineDomain({
   name: 'dcp_stats',
@@ -91,16 +97,7 @@ export async function syncToDomain(
   sessionId: string,
   events: readonly SessionEvent[],
   estimateMessage?: (message: Message) => number,
-): Promise<{
-  record?: DcpDomainRecordV1
-  aggregate?: ReturnType<typeof aggregateDomainStats>
-}> {
+) {
   const store = getDcpStatsStore(ctx)
-  if (store === undefined) return {}
-  try {
-    const record = await syncDomainStats(store, sessionId, events, estimateMessage)
-    return { record, aggregate: aggregateDomainStats(store) }
-  } catch {
-    return {}
-  }
+  return syncStatsWithStatus(store, sessionId, events, estimateMessage)
 }
