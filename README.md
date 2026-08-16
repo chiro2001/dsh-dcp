@@ -67,6 +67,13 @@ pnpm 对 git 源插件执行 `prepare` 构建（本包已声明 `prepare: pnpm b
 - 无精确多节点 decompress；message-mode 与 Code Mode 延后。
 - purge-errors 默认关闭；子代理 child-session 深读取默认关闭。
 
+## 兼容矩阵
+
+- 实测支持：dsh `0.1.0-rc.6`（M0 contract、deterministic AgentLoop、重启、
+  e2e 安装、真实模型 smoke 全部通过）。
+- 其他 dsh 版本：未实测前不进入 peer 范围（当前 peer 精确锁定
+  `0.1.0-rc.6`）；新版本需先跑相同矩阵再扩范围。
+
 ## 自测
 
 ```bash
