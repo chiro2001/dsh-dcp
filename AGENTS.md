@@ -62,8 +62,12 @@ bash scripts/check-all.sh --coverage # 附加覆盖率门槛
 - 每轮使用不可覆盖的 `expert-advice/round-NNNN/`：
   `prompt.md`（请求与问题）、`context.md`（commit、输入文件、执行方式）、
   `response.md`（模型最终回复）、`decision.md`（执行 Agent 逐项处置）。
-- 咨询模型：`gpt-5.6-sol`，reasoning effort `max`；沙箱 `workspace-write`，
-  但只允许写 `round-NNNN/` 目录内的输出文档，不得改动源码、规划、测试或构建。
+- 咨询以非交互 `codex exec` 启动：profile `sss`（已配置
+  `model="gpt-5.6-sol"`、`model_reasoning_effort="max"`），沙箱
+  `workspace-write`，`-C` 指向仓库根，`-o` 落盘 `response.md`，stdin 喂
+  `prompt.md`。模型只允许写 `round-NNNN/` 目录：`revised-plan.md` 由模型
+  直接写，`response.md` 由 CLI `-o` 自动落盘，不得改动源码、规划、测试或构建。
+  精确命令见 `expert-advice/round-NNNN/context.md`。
 - `prompt.md` 必须要求：对现状的反驳、最可能遗漏的风险、按信息增益排序的
   1–3 个实验、方向性判断、以及“事实/推断/需实验”三类标注。
 - 顶级模型建议不是证明，不自动改变规划；执行 Agent 阅读 `response.md` 后写
@@ -97,4 +101,3 @@ bash scripts/check-all.sh --coverage # 附加覆盖率门槛
   配置、风险）
 - `expert-advice/README.md`：咨询归档说明；`expert-advice/round-0001/`：首轮咨询
 - `README.md`：使用者简介与范围说明
-

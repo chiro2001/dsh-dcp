@@ -58,15 +58,24 @@
 
 ## 执行方式（本次咨询的等价命令）
 
-流程参照参考项目的“顶级模型咨询流程”（`docs/06-agent-iteration-protocol.md`
-§5）执行。由于本咨询发生在 Codex 会话内，等价于：
+流程参照参考项目的“顶级模型咨询流程”执行（非交互 `codex exec`）。已核对本机
+CLI：`codex-cli 0.147.0`，profile `sss` 存在且已配置
+`model="gpt-5.6-sol"`、`model_reasoning_effort="max"`；`-o` 对应
+`--output-last-message`。实际命令（从仓库根目录执行）：
 
-```text
-model: gpt-5.6-sol
-reasoning effort: max
-沙箱: workspace-write，但只允许写 expert-advice/round-0001/ 下的输出文档
-输出: response.md（最终回复 + 修订摘要）；revised-plan.md（完整修订版 PLAN）
+```sh
+cd /home/chiro/projects/dsh-dynamic-context-pruning/dsh-dynamic-context-pruning
+codex -p sss \
+  -c 'model="gpt-5.6-sol"' \
+  -c 'model_reasoning_effort="max"' \
+  -s workspace-write \
+  -C "$PWD" \
+  exec -o expert-advice/round-0001/response.md - < expert-advice/round-0001/prompt.md
 ```
+
+`response.md` 由 CLI 的 `-o` 落盘（模型最终自然语言回复）；`revised-plan.md`
+由模型在会话内直接写入（完整修订版 PLAN）。两者都位于
+`expert-advice/round-0001/` 内。
 
 执行 Agent 在收到 `response.md` 后写 `decision.md`，并把接受的修订落到
 `docs/PLAN.md`。
@@ -77,4 +86,3 @@ reasoning effort: max
   TUI 的那个仓库）；其父目录与 dsh 源码 checkout 相邻，注意不要误入。
 - 不修改 `docs/PLAN.md`、README、源码、测试或任何 round 目录之外的文件。
 - 不执行 pnpm/npm/git 写操作、构建、测试或安装。
-
