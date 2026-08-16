@@ -1,0 +1,13 @@
+dsh-dcp
+Copyright (c) 2026 Chiro
+
+Licensed under the GNU Affero General Public License, version 3 or later
+(see LICENSE).
+
+This product's design and product behavior reference OpenCode Dynamic Context
+Pruning (opencode-dynamic-context-pruning, v3.1.15,
+https://github.com/Opencode-DCP/opencode-dynamic-context-pruning, GNU AGPL v3).
+The implementation in this repository is independent: host integration,
+protocol, prompts, and code are written for DeepSeek Harness, and no source
+code of the reference plugin is copied.
+
