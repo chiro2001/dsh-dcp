@@ -6,6 +6,7 @@
  */
 
 import type { Context } from '@deepseek-ai/cordis'
+import type { PreStepDecision } from '@deepseek-ai/dsh-agent'
 import { Config, resolveConfig, unknownConfigKeys, type DcpConfig } from './config.js'
 import {
   DCP_GUIDANCE_ORDER,
@@ -14,6 +15,9 @@ import {
 } from './prompts/system.js'
 import { createCompressTool } from './compress/tool.js'
 import { registerDcpCommands } from './commands/index.js'
+import { reduceDcpState } from './protocol/replay.js'
+import { applyAutomaticStrategies } from './strategies/index.js'
+import { isDcpControlMessage } from './strategies/control.js'
 
 export const name = 'dsh-dcp'
 
@@ -40,6 +44,23 @@ export function apply(ctx: Context, config: DcpConfig): void {
   }
 
   registerDcpCommands(ctx, resolved)
+
+  ctx.on(
+    'agent/pre-step',
+    async ({ agent, messages, signal }, next): Promise<PreStepDecision> => {
+      const decision = await next()
+      if (signal.aborted) return decision
+      const state = reduceDcpState(agent.session.events, resolved.manualMode.default)
+      if (messages.some(isDcpControlMessage)) {
+        applyAutomaticStrategies(agent.session, ctx.tokenMeter, resolved, state.manualMode)
+        return { kind: 'enter', messages: [] }
+      }
+      if (decision.kind === 'enter') {
+        applyAutomaticStrategies(agent.session, ctx.tokenMeter, resolved, state.manualMode)
+      }
+      return decision
+    },
+  )
 
   const settings = ctx.get('settings') as
     { register?: (ns: string, schema: unknown) => void } | undefined

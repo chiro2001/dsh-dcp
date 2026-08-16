@@ -5,13 +5,14 @@
  * @module dsh-dcp/compress/prepare
  */
 
-import { deriveEventMessage, type Session, type SessionEvent } from '@deepseek-ai/dsh-session'
+import { deriveEventMessage, type Session } from '@deepseek-ai/dsh-session'
 import { toolPairingBalancedBefore } from '@deepseek-ai/dsh-compaction'
 import type { TokenMeter } from '@deepseek-ai/dsh-token-meter'
 import { createUserMessage } from '@deepseek-ai/dsh-llm/message'
 import type { DcpConfig } from '../config.js'
 import type { DcpReplayState } from '../protocol/replay.js'
 import { resolveRange } from '../refs/resolver.js'
+import { turnOfSeq } from '../protocol/turns.js'
 import {
   collectProtectedAppendix,
   hardProtectedForm,
@@ -45,22 +46,6 @@ export function buildCheckpointText(
 ): string {
   const body = summary.trim()
   return `[Compressed conversation section]\n${body}${protectedAppendix}\n\n<dcp-message-id>${blockRef}</dcp-message-id>`
-}
-
-function turnOfSeq(events: readonly SessionEvent[], seq: number): number | undefined {
-  let currentTurn: number | undefined
-  for (let index = 0; index <= seq && index < events.length; index++) {
-    const event = events[index]!
-    if (event.type === 'turn/start') currentTurn = event.data.turn
-    if (event.type === 'turn/end') currentTurn = undefined
-    if (index === seq) {
-      if (event.type === 'assistant/message' || event.type === 'tool/result') {
-        return event.data.turn
-      }
-      return currentTurn
-    }
-  }
-  return undefined
 }
 
 export function prepareRange(

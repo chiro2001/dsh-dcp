@@ -84,3 +84,12 @@ full heuristic recompute === contextBreakdown.messageTokens`；
   覆盖（修订版 PLAN §4 E-03 的剩余矩阵）。
 - 工具管线并发（多 compress/deny/abort/timeout、Code Mode 子调用拒绝）：
   M3/M4 门禁，v0.1 的 `compress` 保持 exclusive + 宿主 approval。
+
+## M3 补充决策（2026-08-16）
+
+- **[事实]** `tool/result` content-only replace 在**开放 turn 但无开放 step**
+  （`agent/pre-step` 位置）同样合法 —— 自动策略可挂在 pre-step。
+- **[事实]** 已剪枝的 `tool/result` 是 replacement 节点（`surfaceOp !== 'append'`），
+  策略据此幂等，多次 pre-step/重启不会重复替换。
+- **message-mode 实验项**：延后。v0.1 `compress.mode` 仅 `range`（config schema
+  拒绝 `message`）；安全子集（无 tool-call 单节点）留待 v0.2 决策门。

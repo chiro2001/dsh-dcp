@@ -35,7 +35,7 @@ export interface DcpReplayState {
   diagnostics: DcpDiagnostic[]
   maxBlockNumber: number
   maxMarkerNumber: number
-  manualMode: false
+  manualMode: boolean
 }
 
 const BOUNDARY_MARKER = /<dcp-boundary ref="(m\d{4})"[^>]*\/>/g
@@ -58,9 +58,13 @@ export function emptyDcpState(): DcpReplayState {
 }
 
 /** Canonical cold replay: fold the complete log once. */
-export function reduceDcpState(events: readonly SessionEvent[]): DcpReplayState {
+export function reduceDcpState(
+  events: readonly SessionEvent[],
+  manualDefault = false,
+): DcpReplayState {
   const state = emptyDcpState()
   state.log = [...events]
+  state.manualMode = manualDefault
   const surface = foldSurface(events)
   const surfaceSeqs = new Set(surface.nodes)
   const membership = reconcileBlockMembership(events)
@@ -103,6 +107,24 @@ export function reduceDcpState(events: readonly SessionEvent[]): DcpReplayState 
   }
 
   state.pruneReplacements = foldPruneReplacements(events)
+
+  // Manual mode derives from successful command lifecycle pairs.
+  const pendingCommands = new Map<string, string>()
+  for (const event of events) {
+    if (event.type === 'command/run') {
+      if (event.data.name === 'dcp' && event.data.args !== undefined) {
+        pendingCommands.set(String(event.data.commandId), event.data.args.trim())
+      }
+    }
+    if (event.type === 'command/done') {
+      const args = pendingCommands.get(String(event.data.commandId))
+      if (event.data.kind === 'success' && args !== undefined) {
+        if (args === 'manual on') state.manualMode = true
+        if (args === 'manual off') state.manualMode = false
+      }
+      pendingCommands.delete(String(event.data.commandId))
+    }
+  }
   return state
 }
 
