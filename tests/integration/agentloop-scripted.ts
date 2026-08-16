@@ -9,14 +9,18 @@ import { CallId } from '@deepseek-ai/dsh-llm/brand'
 export interface ScriptedStep {
   text?: string
   toolCalls?: Array<{ id: string; name: string; arguments: string }>
+  hang?: boolean
 }
 
 /** Deterministic adapter for AgentLoop integration tests (no network). */
 export class ScriptedAdapter extends LlmAdapter {
   dispatchCount = 0
 
-  constructor(private readonly script: ScriptedStep[]) {
+  script: ScriptedStep[]
+
+  constructor(script: ScriptedStep[]) {
     super()
+    this.script = script
   }
 
   providerInfo(provider: string) {
@@ -26,6 +30,25 @@ export class ScriptedAdapter extends LlmAdapter {
   async *stream(_options: GenerateOptions): AsyncIterable<StreamChunk> {
     const step = this.script[Math.min(this.dispatchCount, this.script.length - 1)]!
     this.dispatchCount++
+    if (step.hang) {
+      const aborted = new Promise<never>((_resolve, reject) => {
+        if (_options.signal?.aborted) {
+          reject(new DOMException('aborted', 'AbortError'))
+          return
+        }
+        _options.signal?.addEventListener(
+          'abort',
+          () => reject(new DOMException('aborted', 'AbortError')),
+          { once: true },
+        )
+      })
+      await aborted.catch(() => {})
+      yield {
+        type: 'finish',
+        reason: { kind: 'aborted', failure: { message: 'aborted', code: 'ABORTED' } },
+      }
+      return
+    }
     if (step.text) {
       yield { type: 'block-start', index: 0, blockType: 'text' }
       yield { type: 'text-delta', index: 0, text: step.text }

@@ -1,6 +1,6 @@
 # CHANGELOG
 
-## Unreleased（v0.1.0-rc.2 准备）
+## 0.1.0-rc.2 (2026-08-16)
 
 - M6.0 协议一致性第一批：
   - marker alias 接线：pre-step 在 native 遮蔽后生成 `alias mNNNN=s<seq>`，
@@ -23,6 +23,9 @@
   - 系统提示/帮助/checkpoint 文本快照。
   - 命令矩阵：非法参数 fail-closed、`dcp-compress` 注册；
   - inline cleanup 下标映射（部分失败不错位）。
+  - deterministic AgentLoop 扩展矩阵：guard deny 无 DCP mutation、in-flight
+    abort 无残留状态、单消息多 compress 各块独立提交与清理、native coexist
+    alias 全链路（pre-step 生成 → replay 消费 → 经 alias 压缩成功）。
 
 ## 0.1.0-rc.1 (2026-08-16)
 
