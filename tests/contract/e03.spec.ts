@@ -6,6 +6,25 @@ import { buildHistorySession } from './helpers.js'
 import { reconcileBlockMembership } from './e03-helpers.js'
 import { classifyCompactionPrefix } from '../../src/protocol/recovery.js'
 
+function dcpSource(compactionId: string, blockRef: string, kind = 'summary') {
+  return {
+    ...compactCheckpointSource(CompactionId(compactionId)),
+    dcp: {
+      v: 1,
+      kind,
+      blockRef,
+      mode: 'range',
+      topic: 't',
+      startRef: 'm0001',
+      endRef: 'm0002',
+      authorMessageId: 'a',
+      compressCallId: 'c',
+      consumedBlockRefs: [],
+      protectedKinds: [],
+    },
+  } as never
+}
+
 describe('E-03: concurrency, crash, and native compaction state machine', () => {
   let fixture: ContractFixture
 
@@ -16,25 +35,6 @@ describe('E-03: concurrency, crash, and native compaction state machine', () => 
   afterEach(async () => {
     await fixture.dispose()
   })
-
-  function dcpSource(compactionId: string, blockRef: string, kind = 'summary') {
-    return {
-      ...compactCheckpointSource(CompactionId(compactionId)),
-      dcp: {
-        v: 1,
-        kind,
-        blockRef,
-        mode: 'range',
-        topic: 't',
-        startRef: 'm0001',
-        endRef: 'm0002',
-        authorMessageId: 'a',
-        compressCallId: 'c',
-        consumedBlockRefs: [],
-        protectedKinds: [],
-      },
-    } as never
-  }
 
   it('classifies every crash point of a compaction bracket', () => {
     const { session, seqs } = buildHistorySession(fixture.ctx)
@@ -96,7 +96,7 @@ describe('E-03: concurrency, crash, and native compaction state machine', () => 
   })
 
   it('an orphan start before session/end-seed is stale, after it is live', () => {
-    const { session, seqs } = buildHistorySession(fixture.ctx)
+    const { session } = buildHistorySession(fixture.ctx)
 
     session.append('turn/start', { turn: 3 })
     session.append('step/start', { turn: 3, step: 1 })

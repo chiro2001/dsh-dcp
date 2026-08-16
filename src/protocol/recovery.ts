@@ -6,7 +6,6 @@
  */
 
 import type { SessionEvent } from '@deepseek-ai/dsh-session'
-import type {} from '@deepseek-ai/dsh-compaction'
 
 export type PartialCommitClass =
   | 'none'
