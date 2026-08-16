@@ -32,6 +32,7 @@
   },
   "scripts": {
     "build": "tsdown",
+    "prepare": "pnpm build",
     "typecheck": "tsc --noEmit",
     "lint": "oxlint src tests scripts && prettier --check .",
     "format": "prettier --write .",

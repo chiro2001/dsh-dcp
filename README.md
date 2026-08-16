@@ -19,8 +19,20 @@ HTTP/SSE 桥并拉起官方 TUI），它属于界面层；实现本插件时**�
 ## 安装预览
 
 ```bash
-dsh plugin --profile web add github:chiro2001/dsh-dcp
+dsh plugin --profile web add chiro2001/dsh-dcp
 ```
+
+安装源为 GitHub 私有仓库 `chiro2001/dsh-dcp`（npm 包名
+`@chiro2001/dsh-dcp`，未发布 registry）。固定版本/分支：
+
+```bash
+dsh plugin --profile web add 'github:chiro2001/dsh-dcp#v0.1.0-rc.1'
+dsh plugin --profile web add 'github:chiro2001/dsh-dcp#develop'
+```
+
+pnpm 对 git 源插件执行 `prepare` 构建（本包已声明 `prepare: pnpm build`），
+必要时按 pnpm 提示在 profile 的 `pnpm-workspace.yaml` 放行
+`esbuild`/`koffi` 构建脚本；`lib/` 构建产物也随仓库提交，保证直装可用。
 
 安装后插件以 `dsh.bundle.patch` 声明的 `cordis.patch.yml` 挂载到 profile，
 并注册：

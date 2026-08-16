@@ -38,6 +38,25 @@ full heuristic recompute === contextBreakdown.messageTokens`；
 - 不写 `dcp/*` 自定义事件：**维持**。
 - exact decompress：**维持延期**，v0.1 只做 raw show / semantic expansion。
 
-## E-02 — 待完成
+## E-02 — 通过（2026-08-16，默认候选 B）
+
+契约测试 `tests/contract/e02.spec.ts`（30 组合成转录，确定性 PRNG）。
+
+### 指标与结论
+
+- A（每步完整 system index）：每步产生一次 `request/header change`；
+  **按决策规则淘汰**，不作为默认。
+- B（日志化原位 boundary marker + alias delta）：header churn 0，陈旧 ref
+  率 < 5%，每步 marker 开销 < 50 token，可解析率 ≥ C 的 90%。
+- C（静态 guidance + 按需 `dcp_context`）：header churn 0、解析率 100%，
+  但每次压缩多一个模型 step。
+
+### 决策
+
+- **协议 v1 默认采用 B**：每个 step 入口追加小型日志化
+  `<dcp-boundary ref="mNNNN" ... />`；被原生 compaction 遮蔽的 marker 用
+  alias delta 保持引用可解析。
+- C 保留为可配置 fallback / 低压会话模式。
+- A 不提供；refs 一律按 surface position 解析，不依赖 seq 数值排序。
 
 ## E-03 — 待完成
