@@ -182,7 +182,7 @@ describe('M2: multi-range, nesting, protection, stats', () => {
     const stats = computeSessionStats([...session.events])
     expect(stats.blockCount).toBe(1)
     expect(stats.shadowedTokens).toBeGreaterThan(0)
-    expect(stats.netSavedTokens).toBeGreaterThan(0)
+    expect(stats.historyReduction).toBeGreaterThan(0)
     expect(stats.markerTokens).toBeGreaterThan(0)
   })
 

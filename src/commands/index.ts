@@ -9,7 +9,7 @@ import type { CommandInvocation } from '@deepseek-ai/dsh-commands'
 import type { DcpConfig } from '../config.js'
 import { renderHelp } from './help.js'
 import { renderContext } from './context.js'
-import { renderStats } from './stats.js'
+import { renderDomainStats, renderStats } from './stats.js'
 import { currentManualMode, manualResult } from './manual.js'
 import { scheduleSweep } from './sweep.js'
 import { scheduleCompress } from './compress.js'
@@ -30,8 +30,11 @@ export function registerDcpCommands(ctx: Context, config: DcpConfig): void {
           return { kind: 'success', text: renderHelp() }
         case 'context':
           return { kind: 'success', text: renderContext(ctx, invocation.agent) }
-        case 'stats':
-          return { kind: 'success', text: renderStats(ctx, invocation.agent) }
+        case 'stats': {
+          const sessionText = renderStats(ctx, invocation.agent)
+          const domainText = await renderDomainStats(ctx, invocation.agent)
+          return { kind: 'success', text: `${sessionText}\n\n${domainText.join('\n')}` }
+        }
         case 'manual': {
           const current = currentManualMode(invocation.agent, config)
           const result = manualResult(current, tokens[1])

@@ -22,6 +22,11 @@ import { applyExpansion, applyRecompress } from './commands/recovery.js'
 import { buildStepMarkerMessage } from './refs/marker.js'
 import { computeNudge } from './prompts/nudge.js'
 import { collectNativeAliases } from './refs/alias.js'
+import {
+  openDcpStatsStore,
+  registerDcpStatsStore,
+  unregisterDcpStatsStore,
+} from './stats/domain-store.js'
 
 export const name = 'dsh-dcp'
 
@@ -109,6 +114,26 @@ export function apply(ctx: Context, config: DcpConfig): void {
   const settings = ctx.get('settings') as
     { register?: (ns: string, schema: unknown) => void } | undefined
   settings?.register?.('dcp', Config)
+
+  if (ctx.get('storageDomain') !== undefined) {
+    ctx.inject(['storageDomain'], async (child): Promise<() => void> => {
+      try {
+        const handle = await openDcpStatsStore(child)
+        if (!handle) return () => {}
+        registerDcpStatsStore(child, handle.store)
+        return () => {
+          unregisterDcpStatsStore(child)
+          void handle.close()
+        }
+      } catch (error) {
+        logger.warn(
+          'dcp stats domain unavailable: %s',
+          error instanceof Error ? error.message : String(error),
+        )
+        return () => {}
+      }
+    })
+  }
 
   if (resolved.debug) {
     logger.info('dsh-dcp initialized', { transport: resolved.references.transport })

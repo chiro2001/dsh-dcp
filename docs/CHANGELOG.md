@@ -8,6 +8,12 @@
     （forced 8/10、autonomous 0/10、correction 2/5、nested 2/5）；
   - 净节省不足提示方向拆分（更大更旧区间或更紧凑摘要，不再建议“更小”）；
   - README/AGENTS/CHANGELOG 统一 public + 当前 tag + npm NO-GO。
+  - M7.0 起步：统计改为 signed ledger（shadowed/prune/checkpoint/expansion/
+    marker，historyReduction 不再 clamp，负值显示 overhead）；domain record v1
+    （eventCount + ledger + updatedAt）；真实 dsh-storage-json 接线
+    （DomainFacility/KvTable，动态子 fiber、可降级）；`/dcp stats` 展示
+    session + persistent domain（current/stale/unavailable，单进程口径）；
+    reopen 持久化集成测试。
 
 ### 决策
 

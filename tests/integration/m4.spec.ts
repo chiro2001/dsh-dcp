@@ -92,9 +92,9 @@ describe('M4: recovery commands and aggregate stats', () => {
     session.append('turn/end', { turn: 5, reason: { kind: 'completed' } })
   })
 
-  it('syncs domain aggregates idempotently with catch-up', () => {
+  it('syncs domain aggregates idempotently with catch-up', async () => {
     const writes: Array<{ id: string; record: unknown }> = []
-    const memory = new Map<string, ReturnType<typeof syncDomainStats>>()
+    const memory = new Map<string, Awaited<ReturnType<typeof syncDomainStats>>>()
     const store: DcpStatsStore = {
       read: (id) => memory.get(id),
       write: (id, record) => {
@@ -118,13 +118,13 @@ describe('M4: recovery commands and aggregate stats', () => {
       },
     )
 
-    const first = syncDomainStats(store, 'session-1', [...session.events])
-    expect(first.aggregate.blockCount).toBe(1)
+    const first = await syncDomainStats(store, 'session-1', [...session.events])
+    expect(first.ledger.blockCount).toBe(1)
     expect(writes).toHaveLength(1)
 
     // A fresh store with the same events writes again; an up-to-date store is a no-op.
-    const second = syncDomainStats(store, 'session-1', [...session.events])
-    expect(second.lastProcessedSeq).toBe(first.lastProcessedSeq)
+    const second = await syncDomainStats(store, 'session-1', [...session.events])
+    expect(second.eventCount).toBe(first.eventCount)
     expect(writes).toHaveLength(1)
   })
 })

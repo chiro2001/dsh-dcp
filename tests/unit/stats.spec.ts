@@ -88,5 +88,7 @@ describe('session stats (M6.0 native exclusion)', () => {
     const stats = computeSessionStats([...session.events])
     expect(stats.shadowedTokens).toBe(50)
     expect(stats.blockCount).toBe(1)
+    expect(stats.historyReduction).toBe(stats.shadowedTokens - stats.checkpointTokens)
+    expect(stats.activeBlockCount).toBeGreaterThanOrEqual(1)
   })
 })
