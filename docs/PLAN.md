@@ -33,23 +33,22 @@
 - **消息边界体系**：`mNNNN`（消息引用）与 `bN`（压缩块引用），供模型选择压缩范围。
 - **统计与状态**：会话内/跨会话 token 节省统计；会话状态可重放重建、可持久化。
 
-### 1.2 与 dsh-oc 的关系及约束
+### 1.2 与既有 TUI 插件的关系及约束
 
-`~/projects/dsh-oc` 是此前实现的 **TUI 前端插件**：它在 dsh 进程内提供
-OpenCode 兼容 HTTP/SSE 桥并拉起官方 opencode TUI，属于“前端/界面”目标。
+项目存在一个目标不同的既有 **TUI 前端插件**（在 dsh 进程内提供 HTTP/SSE 桥
+并拉起官方 TUI）。它属于“前端/界面”目标，与 dsh-dcp 的上下文管理目标不同，
+直接参考会引入错误的架构假设（HTTP 路由、终端协议、二进制管理等）。
 
-> **约束声明**：本项目的实现阶段**不要直接查看或复用 `~/projects/dsh-oc` 的
-> 代码与文档**。它属于 TUI 插件，与 dsh-dcp 的上下文管理目标不同，直接参考会
-> 引入错误的架构假设（HTTP 路由、opencode 协议、二进制管理等）。规划阶段为了
-> 对齐项目背景做过浏览，但后续实现只依据：
+> **约束声明**：本项目的实现阶段**不要直接查看或复用该 TUI 插件的代码与
+> 文档**。规划阶段为了对齐项目背景做过浏览，但后续实现只依据：
 >
 > 1. opencode-dcp 的原理与公开实现（行为、提示词、状态语义）；
 > 2. dsh 官方扩展点文档与源码（`deepseek-harness` 仓库）；
 > 3. dsh-dcp 自身的需求。
 
-dsh-dcp 与 dsh-oc 唯一允许的相似点：同为外置 profile bundle，使用
-`package.json#dsh.bundle` + `cordis.patch.yml` 的挂载方式（这是 dsh 插件
-标准格式，不是 dsh-oc 的私有设计）。
+dsh-dcp 与既有 TUI 插件唯一允许的相似点：同为外置 profile bundle，使用
+`package.json#dsh.bundle` + `cordis.patch.yml` 的挂载方式（这是 dsh 插件的
+标准格式，不属于任何插件的私有设计）。
 
 ### 1.3 非目标（首版不做）
 
@@ -335,7 +334,7 @@ dsh-dynamic-context-pruning/          ← 本地工作区（本仓库）
 ├─ cordis.patch.yml                   # 仅插入 dcp 行
 ├─ LICENSE / NOTICE                   # 见 §13
 ├─ README.md
-├─ AGENTS.md                          # 开发/自测门槛（对齐 dsh-oc 风格，但独立编写）
+├─ AGENTS.md                          # 开发/自测门槛（独立编写）
 ├─ docs/
 │  ├─ PLAN.md                         # 本文
 │  ├─ PROTOCOL.md                     # dcp/* 事件与表面替换协议（M4 后定稿）
@@ -415,7 +414,7 @@ dsh-dynamic-context-pruning/          ← 本地工作区（本仓库）
 ```
 
 > peer 版本在开始编码时按本机 `deepseek-harness` checkout 的实际版本核对
-> （当前 root 为 `0.1.0-rc.5`，dsh-oc 已按 `rc.6` 开发，采用 `>=0.1.0-rc.5`）。
+> （当前 root 为 `0.1.0-rc.5`；采用 `>=0.1.0-rc.5`，编码时按实际可用版本校准）。
 
 ### 7.3 cordis.patch.yml
 
@@ -439,7 +438,7 @@ dsh --profile web
 ```
 
 pnpm 对 git 源插件的 `prepare` 构建需要 allowBuilds 放行，文档中给出指引
-（与 dsh-oc 相同）。
+（与 dsh 其他 git 源插件相同）。
 
 ---
 
@@ -590,7 +589,7 @@ tests/
   - 同时挂载 `dsh-compaction-basic` 时互不破坏。
 - 命令处理器用 Cordis 迷你上下文 + `ctx.commands` stub 或真实 registry 测试。
 
-### 9.5 e2e（无 TUI，因此比 dsh-oc 更轻）
+### 9.5 e2e（无 TUI，轻量）
 
 - 全部基于 `headless`-风格 profile（`dsh plugin --profile e2e add <repo>`）
   或 API 驱动，**不需要 tmux/PTY**；mock LLM 提供脚本化响应（包括发起
@@ -627,7 +626,7 @@ tests/
 
 ### 10.1 本地一键门禁：`scripts/check-all.sh`
 
-按 dsh-oc 的组织方式，但按 dsh-dcp 的实际内容裁剪：
+本地一键门禁（按本仓库实际内容裁剪）：
 
 ```bash
 bash scripts/check-all.sh            # 快速门禁
@@ -666,7 +665,7 @@ bash scripts/check-all.sh --coverage # 附加覆盖率门槛
 
 Node 版本：主跑 22；e2e 额外跑 24（覆盖 dsh 支持矩阵的上下界）。
 
-### 10.3 分支与提交规范（对齐 dsh-oc 的组织习惯）
+### 10.3 分支与提交规范
 
 - `main`：稳定发布线；`develop`：集成交付线。
 - 功能分支：`feat-*` / `fix-*` / `docs-*` / `perf-*` / `test-*` / `chore-*`。

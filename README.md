@@ -7,15 +7,14 @@ DeepSeek Harness（dsh）的动态上下文管理插件：对标
 
 > **状态**：规划阶段。详细方案见 [docs/PLAN.md](docs/PLAN.md)。
 
-## 与 dsh-oc 的关系
+## 范围说明
 
-`~/projects/dsh-oc` 是此前实现的 **TUI 前端插件**（把 opencode 官方 TUI 接到 dsh
-上），与 dsh-dcp 的**上下文管理**目标不同。
-
-> 本项目在实现阶段**不要直接查看或复用 `~/projects/dsh-oc` 的代码与文档**；
-> 规划阶段为了对齐项目背景做过浏览，但 dsh-dcp 的设计依据是 opencode-dcp 的原理
-> 与 dsh 官方扩展点文档。两者的 bundle 结构（`cordis.patch.yml`）可以相似，但
-> dsh-dcp 不包含任何 TUI/HTTP 桥代码。
+dsh-dcp 是纯**上下文管理**插件：不含任何 TUI、前端或 HTTP 桥组件，也不启动
+外部终端程序。项目存在一个目标不同的既有 TUI 前端插件（在 dsh 进程内提供
+HTTP/SSE 桥并拉起官方 TUI），它属于界面层；实现本插件时**不要直接查看或复用
+该 TUI 插件的代码与文档**。dsh-dcp 的设计依据是 opencode-dcp 的原理与 dsh
+官方扩展点文档，bundle 结构使用 dsh 插件标准格式
+（`package.json#dsh.bundle` + `cordis.patch.yml`）。
 
 ## 安装预览
 
@@ -35,4 +34,3 @@ dsh plugin --profile web add github:chiro2001/dsh-dcp
 
 - [docs/PLAN.md](docs/PLAN.md) — 详细实现规划（目标、架构决策、功能映射、
   模块设计、里程碑、测试、风险）
-
