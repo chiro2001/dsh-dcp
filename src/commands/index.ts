@@ -12,6 +12,10 @@ import { renderContext } from './context.js'
 import { renderStats } from './stats.js'
 import { currentManualMode, manualResult } from './manual.js'
 import { scheduleSweep } from './sweep.js'
+import { scheduleCompress } from './compress.js'
+import { renderBlockShow } from './recovery.js'
+import { reduceDcpState } from '../protocol/replay.js'
+import { controlMessage } from '../strategies/control.js'
 
 export function registerDcpCommands(ctx: Context, config: DcpConfig): void {
   ctx.commands.register({
@@ -35,6 +39,52 @@ export function registerDcpCommands(ctx: Context, config: DcpConfig): void {
         }
         case 'sweep':
           return { kind: 'success', text: scheduleSweep(invocation.agent).text }
+        case 'compress': {
+          const focus = tokens.slice(1).join(' ')
+          return { kind: 'success', text: scheduleCompress(invocation.agent, focus).text }
+        }
+        case 'show': {
+          const ref = tokens[1]?.toLowerCase()
+          if (!ref || !/^b\d+$/.test(ref)) {
+            return { kind: 'error', text: 'Usage: /dcp show <bN> [--raw]' }
+          }
+          const state = reduceDcpState(invocation.agent.session.events)
+          return {
+            kind: 'success',
+            text: renderBlockShow(
+              invocation.agent.session,
+              state,
+              ref,
+              tokens.includes('--raw'),
+            ),
+          }
+        }
+        case 'decompress': {
+          const ref = tokens[1]?.toLowerCase()
+          if (!ref || !/^b\d+$/.test(ref)) {
+            return { kind: 'error', text: 'Usage: /dcp decompress <bN> [--into-context]' }
+          }
+          if (tokens.includes('--into-context')) {
+            invocation.agent.followup(controlMessage(`expand ${ref}`))
+            return {
+              kind: 'success',
+              text: `${ref} will be expanded into quoted context in a control turn.`,
+            }
+          }
+          const state = reduceDcpState(invocation.agent.session.events)
+          return {
+            kind: 'success',
+            text: `${renderBlockShow(invocation.agent.session, state, ref, true)}\n\nNote: model context is unchanged (raw show only). Use --into-context to expand.`,
+          }
+        }
+        case 'recompress': {
+          const ref = tokens[1]?.toLowerCase()
+          if (!ref || !/^b\d+$/.test(ref)) {
+            return { kind: 'error', text: 'Usage: /dcp recompress <bN>' }
+          }
+          invocation.agent.followup(controlMessage(`recompress ${ref}`))
+          return { kind: 'success', text: `${ref} will be re-compressed in a control turn.` }
+        }
         default:
           return {
             kind: 'error',

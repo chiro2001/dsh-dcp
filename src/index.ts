@@ -17,7 +17,8 @@ import { createCompressTool } from './compress/tool.js'
 import { registerDcpCommands } from './commands/index.js'
 import { reduceDcpState } from './protocol/replay.js'
 import { applyAutomaticStrategies } from './strategies/index.js'
-import { isDcpControlMessage } from './strategies/control.js'
+import { isDcpControlMessage, parseControl } from './strategies/control.js'
+import { applyExpansion, applyRecompress } from './commands/recovery.js'
 
 export const name = 'dsh-dcp'
 
@@ -52,7 +53,19 @@ export function apply(ctx: Context, config: DcpConfig): void {
       if (signal.aborted) return decision
       const state = reduceDcpState(agent.session.events, resolved.manualMode.default)
       if (messages.some(isDcpControlMessage)) {
-        applyAutomaticStrategies(agent.session, ctx.tokenMeter, resolved, state.manualMode)
+        for (const message of messages) {
+          const control = parseControl(message)
+          if (!control) continue
+          if (control.kind === 'sweep') {
+            applyAutomaticStrategies(agent.session, ctx.tokenMeter, resolved, state.manualMode)
+          }
+          if (control.kind === 'expand' && control.arg) {
+            applyExpansion(agent.session, ctx.tokenMeter, control.arg)
+          }
+          if (control.kind === 'recompress' && control.arg) {
+            applyRecompress(agent.session, ctx.tokenMeter, control.arg)
+          }
+        }
         return { kind: 'enter', messages: [] }
       }
       if (decision.kind === 'enter') {

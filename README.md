@@ -46,3 +46,5 @@ pnpm 对 git 源插件执行 `prepare` 构建（本包已声明 `prepare: pnpm b
 
 - [docs/PLAN.md](docs/PLAN.md) — 详细实现规划（目标、架构决策、功能映射、
   模块设计、里程碑、测试、风险）
+- [docs/PROTOCOL.md](docs/PROTOCOL.md) — 协议 v1（边界、持久化、命令、恢复、
+  与原生 compaction 共存）

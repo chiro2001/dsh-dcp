@@ -33,3 +33,12 @@ export function maxTurn(events: readonly SessionEvent[]): number {
   }
   return maximum
 }
+
+export function openTurnOf(events: readonly SessionEvent[]): number | null {
+  let current: number | null = null
+  for (const event of events) {
+    if (event.type === 'turn/start') current = event.data.turn
+    if (event.type === 'turn/end') current = null
+  }
+  return current
+}

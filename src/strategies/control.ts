@@ -23,3 +23,26 @@ export function isDcpControlMessage(message: {
     (block) => block.type === 'text' && block.text?.startsWith(DCP_CONTROL_PREFIX),
   )
 }
+
+export type ControlKind = 'sweep' | 'expand' | 'recompress'
+
+export interface ParsedControl {
+  kind: ControlKind
+  arg?: string
+}
+
+export function parseControl(message: {
+  content: readonly { type: string; text?: string }[]
+}): ParsedControl | undefined {
+  const text = message.content.find(
+    (block) => block.type === 'text' && block.text?.startsWith(DCP_CONTROL_PREFIX),
+  )?.text
+  if (!text) return undefined
+  const body = text.slice(DCP_CONTROL_PREFIX.length).trim()
+  if (body === 'sweep') return { kind: 'sweep' }
+  const expand = /^expand (b\d+)$/.exec(body)
+  if (expand) return { kind: 'expand', arg: expand[1] }
+  const recompress = /^recompress (b\d+)$/.exec(body)
+  if (recompress) return { kind: 'recompress', arg: recompress[1] }
+  return undefined
+}

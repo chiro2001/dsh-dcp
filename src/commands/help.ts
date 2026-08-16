@@ -12,8 +12,10 @@ export function renderHelp(): string {
     '  /dcp stats     show DCP statistics',
     '  /dcp manual [on|off|status]',
     '  /dcp sweep     run automatic pruning in a control turn',
-    '  /dcp compress  trigger a compression turn (M4)',
-    '  /dcp decompress <bN> / recompress <bN> (M4)',
+    '  /dcp compress [focus]',
+    '  /dcp show <bN> [--raw]',
+    '  /dcp decompress <bN> [--into-context]',
+    '  /dcp recompress <bN>',
     'The model-facing `compress` tool performs range compression.',
   ].join('\n')
 }
