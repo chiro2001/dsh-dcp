@@ -30,7 +30,7 @@ echo "== package check =="
 pnpm check:package
 
 echo "== perf smoke =="
-node scripts/perf-smoke.mjs
+pnpm perf-smoke
 
 if [[ "$COVERAGE" == "1" ]]; then
   echo "== coverage =="
@@ -42,4 +42,3 @@ if [[ "$E2E" == "1" ]]; then
 fi
 
 echo "check-all: PASSED"
-
