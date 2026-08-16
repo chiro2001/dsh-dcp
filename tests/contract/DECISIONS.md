@@ -141,3 +141,16 @@ full heuristic recompute === contextBreakdown.messageTokens`；
   cordis.patch.yml/docs。
 - **[推断]** npm 发布保持 NO-GO（owner 决策公开策略前）；GitHub 源为正式
   安装路径（见 docs/RELEASE.md）。
+
+## M6.3 探针 oracle 重写（2026-08-16，round-0003）
+
+- **[事实]** 重写后四组：forced（显式 tool+refs，transport 口径）10/10
+  schema-valid、8/10 committed（2 次 ~0 token 净节省被正确拒绝）；
+  autonomous（无 tool/refs 提示，默认 256 门槛）**0/10**；correction（不给
+  正确 refs）schema 4/5、committed 2/5；nested（b1..m0003 判定新块消费 b1 +
+  appendix）committed 2/5、prior-block 2/5。
+- **[推断]** autonomous 0/10 证伪“当前提示词足以自然工作”→ v0.2 不新增
+  模型驱动模式；range 工具 + 手动/显式触发为 v0.2 边界。
+- **[推断]** correction/nested 自主恢复与嵌套触发不足 → 提示词/产品边界
+  backlog；不以低 commit 率降低收益门槛。
+- **[事实]** Code Mode `exec.parent` 在 mutation 前拒绝已实现并单测。

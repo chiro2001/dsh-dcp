@@ -21,7 +21,8 @@ export function renderDcpGuidance(config: DcpConfig, manualMode: boolean): strin
     '- Do not compress the current turn, active tool work, protected user instructions, or protected tool outputs.',
     '- Protected content may be appended verbatim after your summary; do not omit it.',
     '- Each completed compression replaces the range with a summary checkpoint marked `<dcp-message-id>bN</dcp-message-id>`.',
-    '- If the requested range is invalid or would not save enough tokens, the tool returns no-op guidance; retry with a smaller or safer range.',
+    '- If a range is invalid (stale, overlapping, protected, or cuts an open tool pair), retry with a current, closed, safer range.',
+    '- If a range is valid but saves too few tokens, do not retry the same small range: choose a LARGER older closed range or write a more compact high-fidelity summary; otherwise leave it uncompressed.',
   ]
   if (manualMode) {
     lines.push(

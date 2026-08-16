@@ -58,10 +58,10 @@ pnpm run e2e:real                   # 真实 Agent + 真实 LLM（opencode go / 
 ```bash
 dsh plugin --profile web add chiro2001/dsh-dcp                  # 默认分支
 dsh plugin --profile web add 'github:chiro2001/dsh-dcp#develop' # 指定分支
-dsh plugin --profile web add 'github:chiro2001/dsh-dcp#v0.1.0-rc.1'
+dsh plugin --profile web add 'github:chiro2001/dsh-dcp#v0.1.0-rc.3'
 ```
 
-- npm 包名 `@chiro2001/dsh-dcp`，安装/更新一律走 GitHub 私有仓库
+- npm 包名 `@chiro2001/dsh-dcp`，安装/更新一律走 GitHub 仓库
   `chiro2001/dsh-dcp`；重复执行 add 即更新到该源最新。
 - git 源安装会执行 `prepare`（`pnpm build`）；pnpm 11 需在 profile 的
   `pnpm-workspace.yaml` 放行 `esbuild`/`koffi` 构建脚本（与 dsh 其他

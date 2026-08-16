@@ -1,5 +1,21 @@
 # CHANGELOG
 
+## 0.1.0-rc.3 (2026-08-16)
+
+- M6.3（round-0003 建议）：
+  - Code Mode fail-closed：`run_code` 子调用在 mutation 前明确拒绝并单测；
+  - 探针 oracle 重写：forced/autonomous/correction/nested 四组，结果如实记录
+    （forced 8/10、autonomous 0/10、correction 2/5、nested 2/5）；
+  - 净节省不足提示方向拆分（更大更旧区间或更紧凑摘要，不再建议“更小”）；
+  - README/AGENTS/CHANGELOG 统一 public + 当前 tag + npm NO-GO。
+
+### 决策
+
+- autonomous 0/10：模型在无显式指令时不会自主调用 compress →
+  **v0.2 不新增模型驱动模式**，维持 range 工具 + 手动/显式触发。
+- correction 2/5、nested 2/5：结构错误后的自主恢复与嵌套触发可靠性不足，
+  进入提示词/产品边界 backlog；不据此扩大模型驱动功能。
+
 ## 0.1.0-rc.2 (2026-08-16)
 
 - M6.0 协议一致性第一批：

@@ -97,7 +97,7 @@ function summarizeProbe(events: readonly SessionEvent[]): ProbeResult {
   }
 }
 
-async function probeNatural(ctx: Context, index: number): Promise<ProbeResult> {
+async function probeForced(ctx: Context, index: number): Promise<ProbeResult> {
   const agent = ctx.agentLoop.create(SessionId(`probe-${index}-${Date.now()}`), {
     provider: 'go',
     model,
@@ -109,6 +109,30 @@ async function probeNatural(ctx: Context, index: number): Promise<ProbeResult> {
     user(
       'Second turn: boundary markers m0001 and m0002 are visible. Use the compress tool on range m0001..m0002 with a short summary, then confirm in one line.',
     ),
+  )
+  await waitForIdle(ctx, agent)
+  return summarizeProbe([...agent.session.events])
+}
+
+async function probeAutonomous(ctx: Context, index: number): Promise<ProbeResult> {
+  const agent = ctx.agentLoop.create(SessionId(`autonomous-${index}-${Date.now()}`), {
+    provider: 'go',
+    model,
+    maxTokens: 1000,
+  })
+  const paragraph =
+    'We are building a context management plugin for an agent harness. ' +
+    'It replaces closed conversation ranges with high-fidelity summaries, keeps protected ' +
+    'tool outputs verbatim, deduplicates repeated tool calls, and exposes recovery commands. ' +
+    'The boundary protocol logs markers per step so the model can reference closed ranges. ' +
+    'Nested compression preserves prior block summaries in an appendix. ' +
+    'Automatic strategies run before each request and remain idempotent across restarts.'
+  agent.followup(
+    user(`First turn: read and retain the following context for later work:\n\n${paragraph}`),
+  )
+  await waitForIdle(ctx, agent)
+  agent.followup(
+    user('Second turn: continue working on the retained context and reply briefly.'),
   )
   await waitForIdle(ctx, agent)
   return summarizeProbe([...agent.session.events])
@@ -128,11 +152,26 @@ async function probeCorrection(ctx: Context, index: number): Promise<ProbeResult
   await waitForIdle(ctx, agent)
   agent.followup(
     user(
-      'Third turn: the previous range was invalid. Retry compress with m0001..m0002 and a short summary.',
+      'Third turn: the previous range was invalid. Retry with a valid closed range that can actually be compressed.',
     ),
   )
   await waitForIdle(ctx, agent)
-  return summarizeProbe([...agent.session.events])
+  const events = [...agent.session.events]
+  const result = summarizeProbe(events)
+  const firstError = events.some(
+    (event, index) =>
+      event.type === 'tool/result' &&
+      event.data.message.content[0]?.isError &&
+      events
+        .slice(0, index)
+        .some(
+          (call) =>
+            call.type === 'tool/call' &&
+            String(call.data.callId) === String(event.data.message.source.callId),
+        ),
+  )
+  result.committed = result.committed && firstError
+  return result
 }
 
 async function probeNested(ctx: Context, index: number): Promise<ProbeResult> {
@@ -155,7 +194,18 @@ async function probeNested(ctx: Context, index: number): Promise<ProbeResult> {
     ),
   )
   await waitForIdle(ctx, agent)
-  const result = summarizeProbe([...agent.session.events])
+  const events = [...agent.session.events]
+  const state = reduceDcpState(events)
+  const newBlocks = state.blocks.filter((block) => block.meta.kind === 'summary')
+  const nestedCommitted =
+    newBlocks.length >= 2 &&
+    newBlocks.at(-1)!.meta.consumedBlockRefs.includes('b1') &&
+    state.activeBlockRefs.includes(newBlocks.at(-1)!.ref)
+  const base = summarizeProbe(events)
+  const result: ProbeResult = {
+    schemaValid: base.schemaValid,
+    committed: nestedCommitted,
+  }
   const text = agent.session
     .deriveMessages()
     .flatMap((message) => message.content)
@@ -186,13 +236,15 @@ async function main(): Promise<void> {
     resolveConfig({ compress: { retainRecentTurns: 1, minNetSavingsTokens: 1 } }),
   )
 
-  const scenario = process.env.DSH_DCP_PROBE_SCENARIO ?? 'natural'
+  const scenario = process.env.DSH_DCP_PROBE_SCENARIO ?? 'forced'
   const runner =
     scenario === 'correction'
       ? probeCorrection
       : scenario === 'nested'
         ? probeNested
-        : probeNatural
+        : scenario === 'autonomous'
+          ? probeAutonomous
+          : probeForced
   const results: ProbeResult[] = []
   for (let index = 0; index < count; index++) {
     results.push(await runner(ctx, index))

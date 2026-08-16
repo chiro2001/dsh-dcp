@@ -70,6 +70,11 @@ export function createCompressTool(ctx: Context, config: DcpConfig) {
       render: (_args, value) => [{ type: 'text', text: value }],
     },
     async execute(args, exec) {
+      if (exec.parent !== undefined) {
+        throw new Error(
+          'compress cannot be executed from a run_code sub-call; use native tool presentation or /dcp compress',
+        )
+      }
       if (!exec.agent) throw new Error('compress requires an agent session')
       const session = exec.agent.session
       const callId = String(exec.callId)
