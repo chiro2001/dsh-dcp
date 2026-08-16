@@ -1,0 +1,10 @@
+node_modules/
+dist/
+lib/
+coverage/
+*.tsbuildinfo
+*.log
+.DS_Store
+pnpm-debug.log*
+.dsh/
+
