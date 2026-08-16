@@ -5,6 +5,7 @@
  */
 
 import { foldSurface, type SessionEvent } from '@deepseek-ai/dsh-session'
+import { isCompactCheckpointSource } from '@deepseek-ai/dsh-compaction'
 import { decodeDcpMeta, type DcpCheckpointMetaV1, type DcpDiagnostic } from './metadata.js'
 import { parseAlias } from '../refs/marker.js'
 import {
@@ -93,7 +94,7 @@ export function reduceDcpState(
         seq: event.seq,
         active: membership.get(decoded.meta.blockRef) === 'active',
       })
-    } else {
+    } else if (isCompactCheckpointSource(event.data.source as never)) {
       state.diagnostics.push({ ...decoded.diagnostic, seq: event.seq })
     }
 

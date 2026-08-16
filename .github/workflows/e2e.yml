@@ -37,5 +37,5 @@ jobs:
       - name: Install
         run: pnpm install --frozen-lockfile
 
-      - name: e2e install
-        run: bash scripts/e2e-install.sh
+      - name: e2e gate (deterministic + install)
+        run: bash scripts/check-all.sh --e2e

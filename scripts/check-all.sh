@@ -38,7 +38,14 @@ if [[ "$COVERAGE" == "1" ]]; then
 fi
 
 if [[ "$E2E" == "1" ]]; then
-  echo "== e2e (not implemented yet) =="
+  echo "== deterministic e2e (contract + integration) =="
+  pnpm vitest run tests/contract tests/integration
+  if command -v dsh >/dev/null 2>&1; then
+    echo "== e2e install (isolated DSH_HOME) =="
+    bash scripts/e2e-install.sh
+  else
+    echo "e2e install skipped: dsh CLI not found"
+  fi
 fi
 
 echo "check-all: PASSED"

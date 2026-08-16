@@ -15,6 +15,12 @@
   - opencode-go 适配器支持嵌套 `content[]` XML 与全局唯一 call id；
   - 注册 `dcp-compress` 命令；peerDependencies 收窄为有界范围；
   - package.json 补 SPDX license / repository / publishConfig。
+  - replay 不再对普通消息产生 metadata 误报诊断；
+  - control mutation 失败写入日志；
+  - deterministic AgentLoop 矩阵（scripted adapter：compress 主链路、
+    control turn 零 LLM dispatch、重启重建、请求不变式由 invariant 强制）；
+  - `check-all.sh --e2e` 真实执行 contract+integration+隔离安装；
+  - 系统提示/帮助/checkpoint 文本快照。
 
 ## 0.1.0-rc.1 (2026-08-16)
 

@@ -1,0 +1,50 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`text snapshots (M6.0) > system guidance and help stay stable > checkpoint 1`] = `
+"[Compressed conversation section]
+summary
+
+<dcp-message-id>b1</dcp-message-id>"
+`;
+
+exports[`text snapshots (M6.0) > system guidance and help stay stable > guidance-auto 1`] = `
+"## Dynamic Context Pruning (DCP)
+
+You may compress closed, completed conversation ranges with the \`compress\` tool when they are no longer needed verbatim. This frees context for continuing work.
+
+- Ranges are half-open: \`startRef\` is included, \`endRef\` is excluded.
+- Only choose ranges that are closed and do not cut an in-flight tool call/result pair.
+- Do not compress the current turn, active tool work, protected user instructions, or protected tool outputs.
+- Protected content may be appended verbatim after your summary; do not omit it.
+- Each completed compression replaces the range with a summary checkpoint marked \`<dcp-message-id>bN</dcp-message-id>\`.
+- If the requested range is invalid or would not save enough tokens, the tool returns no-op guidance; retry with a smaller or safer range."
+`;
+
+exports[`text snapshots (M6.0) > system guidance and help stay stable > guidance-manual 1`] = `
+"## Dynamic Context Pruning (DCP)
+
+You may compress closed, completed conversation ranges with the \`compress\` tool when they are no longer needed verbatim. This frees context for continuing work.
+
+- Ranges are half-open: \`startRef\` is included, \`endRef\` is excluded.
+- Only choose ranges that are closed and do not cut an in-flight tool call/result pair.
+- Do not compress the current turn, active tool work, protected user instructions, or protected tool outputs.
+- Protected content may be appended verbatim after your summary; do not omit it.
+- Each completed compression replaces the range with a summary checkpoint marked \`<dcp-message-id>bN</dcp-message-id>\`.
+- If the requested range is invalid or would not save enough tokens, the tool returns no-op guidance; retry with a smaller or safer range.
+
+Manual mode is active: do not call \`compress\` unless explicitly triggered by \`/dcp compress\`."
+`;
+
+exports[`text snapshots (M6.0) > system guidance and help stay stable > help 1`] = `
+"DCP commands:
+  /dcp help      show this help
+  /dcp context   show token usage breakdown for the current session
+  /dcp stats     show DCP statistics
+  /dcp manual [on|off|status]
+  /dcp sweep     run automatic pruning in a control turn
+  /dcp compress [focus]
+  /dcp show <bN> [--raw]
+  /dcp decompress <bN> [--into-context]
+  /dcp recompress <bN>
+The model-facing \`compress\` tool performs range compression."
+`;

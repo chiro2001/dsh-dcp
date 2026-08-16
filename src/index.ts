@@ -67,10 +67,14 @@ export function apply(ctx: Context, config: DcpConfig): void {
             applyAutomaticStrategies(agent.session, ctx.tokenMeter, resolved, state.manualMode)
           }
           if (control.kind === 'expand' && control.arg) {
-            applyExpansion(agent.session, ctx.tokenMeter, control.arg)
+            const result = applyExpansion(agent.session, ctx.tokenMeter, control.arg)
+            if (!result.ok)
+              ctx.logger('dsh-dcp').warn('control expand failed: %s', result.error)
           }
           if (control.kind === 'recompress' && control.arg) {
-            applyRecompress(agent.session, ctx.tokenMeter, control.arg)
+            const result = applyRecompress(agent.session, ctx.tokenMeter, control.arg)
+            if (!result.ok)
+              ctx.logger('dsh-dcp').warn('control recompress failed: %s', result.error)
           }
         }
         return { kind: 'enter', messages: [] }
