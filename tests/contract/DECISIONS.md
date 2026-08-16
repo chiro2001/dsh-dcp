@@ -127,3 +127,17 @@ full heuristic recompute === contextBreakdown.messageTokens`；
   v0.2 提示词优化 backlog。
 - **[推断]** 单次 5 样本不足以定论模型可靠性；M6.2 后续扩到 ≥10 样本并记录
   分布，再决定是否调整 prompt/adapter。
+
+## M6.2 探针终版（2026-08-16）
+
+- **[事实]** natural ×10：schema-valid 10/10，committed 9/10（唯一失败为
+  微小 range 净节省不足）；correction ×5：schema-valid 5/5，committed 5/5
+  （模型在收到 invalid/stale ref 与净节省错误后均能纠正并提交）；nested ×5：
+  schema-valid 5/5，committed 5/5，prior-block preserved 4/5。
+- **[推断]** 自然调用可靠性达到 recommendation 8/10 阈值；nested 1/5 未带
+  `Included prior blocks` 头（摘要可能保留事实但未用标准段），进入提示词
+  优化 backlog。
+- **[事实]** `pnpm pack --dry-run` 通过；tarball 含 lib/LICENSE/NOTICE/
+  cordis.patch.yml/docs。
+- **[推断]** npm 发布保持 NO-GO（owner 决策公开策略前）；GitHub 源为正式
+  安装路径（见 docs/RELEASE.md）。

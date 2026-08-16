@@ -26,6 +26,10 @@
   - deterministic AgentLoop 扩展矩阵：guard deny 无 DCP mutation、in-flight
     abort 无残留状态、单消息多 compress 各块独立提交与清理、native coexist
     alias 全链路（pre-step 生成 → replay 消费 → 经 alias 压缩成功）。
+  - M6.1：长会话热路径门禁（1k/4k/16k/50k 近线性，暂不实现增量 replay）、
+    真实 KV cache A/B（inconclusive）、marker 唯一性断言。
+  - M6.2：dsh peers 精确锁定实测 rc.6、真实模型三场景探针（natural 9/10、
+    correction 5/5、nested 5/5）、发布决策文档（GitHub 源正式；npm NO-GO）。
 
 ## 0.1.0-rc.1 (2026-08-16)
 
