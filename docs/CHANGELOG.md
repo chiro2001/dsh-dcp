@@ -21,6 +21,8 @@
     control turn 零 LLM dispatch、重启重建、请求不变式由 invariant 强制）；
   - `check-all.sh --e2e` 真实执行 contract+integration+隔离安装；
   - 系统提示/帮助/checkpoint 文本快照。
+  - 命令矩阵：非法参数 fail-closed、`dcp-compress` 注册；
+  - inline cleanup 下标映射（部分失败不错位）。
 
 ## 0.1.0-rc.1 (2026-08-16)
 

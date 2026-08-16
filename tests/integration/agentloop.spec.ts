@@ -155,4 +155,39 @@ describe('deterministic AgentLoop matrix (M6.0)', () => {
       [...agent.session.events].filter((event) => event.type === 'assistant/message'),
     ).toHaveLength(1)
   })
+
+  it('commands fail closed on illegal arguments and register dcp-compress', async () => {
+    if (!ctx || !adapter) throw new Error('harness not mounted')
+    const agent = ctx.agentLoop.create(SessionId('command-matrix'), {
+      provider: 'scripted',
+      model: 'scripted',
+    })
+
+    expect(ctx.commands.find(agent, 'dcp-compress')).toBeDefined()
+    const unknown = await ctx.commands.execute(
+      agent,
+      '/dcp unknown',
+      new AbortController().signal,
+    )
+    expect(unknown?.result.kind).toBe('error')
+    const missingShow = await ctx.commands.execute(
+      agent,
+      '/dcp show',
+      new AbortController().signal,
+    )
+    expect(missingShow?.result.kind).toBe('error')
+    const badShow = await ctx.commands.execute(
+      agent,
+      '/dcp show x',
+      new AbortController().signal,
+    )
+    expect(badShow?.result.kind).toBe('error')
+    const manual = await ctx.commands.execute(
+      agent,
+      '/dcp manual status',
+      new AbortController().signal,
+    )
+    expect(manual?.result.kind).toBe('success')
+    expect(manual?.result.text).toContain('OFF')
+  })
 })
