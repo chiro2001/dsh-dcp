@@ -19,9 +19,9 @@ import { reduceDcpState } from './protocol/replay.js'
 import { applyAutomaticStrategies } from './strategies/index.js'
 import { isDcpControlMessage, parseControl } from './strategies/control.js'
 import { applyExpansion, applyRecompress } from './commands/recovery.js'
-import { buildAlias, buildStepMarkerMessage } from './refs/marker.js'
+import { buildStepMarkerMessage } from './refs/marker.js'
 import { computeNudge } from './prompts/nudge.js'
-import { decodeDcpMeta } from './protocol/metadata.js'
+import { collectNativeAliases } from './refs/alias.js'
 
 export const name = 'dsh-dcp'
 
@@ -88,25 +88,11 @@ export function apply(ctx: Context, config: DcpConfig): void {
           ctx.tokenMeter.measure(agent.session),
           resolved,
         )
-        const aliasLines: string[] = []
-        const emittedAliases = new Set(currentState.aliases.map((alias) => alias.ref))
-        for (const marker of currentState.boundaryRefs) {
-          if (marker.active || emittedAliases.has(marker.ref)) continue
-          if (aliasLines.length >= resolved.references.maxAliasEntries) break
-          let replacementSeq: number | undefined
-          for (const event of agent.session.events) {
-            if (event.type !== 'user/message' || event.surfaceOp === 'append') continue
-            if ((event.sourceEventSeqs ?? []).includes(marker.seq)) {
-              if (!decodeDcpMeta(event.data.source).ok) {
-                replacementSeq = event.seq
-                break
-              }
-            }
-          }
-          if (replacementSeq !== undefined) {
-            aliasLines.push(buildAlias(marker.ref, String(replacementSeq)))
-          }
-        }
+        const aliasLines = collectNativeAliases(
+          agent.session,
+          currentState,
+          resolved.references.maxAliasEntries,
+        )
         const marker = buildStepMarkerMessage(
           ref,
           turn,

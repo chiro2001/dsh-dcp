@@ -32,6 +32,9 @@ pnpm check:package
 echo "== perf smoke =="
 pnpm perf-smoke
 
+echo "== perf hotpath =="
+pnpm perf-hotpath
+
 if [[ "$COVERAGE" == "1" ]]; then
   echo "== coverage =="
   pnpm vitest run --coverage

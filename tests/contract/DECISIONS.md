@@ -93,3 +93,15 @@ full heuristic recompute === contextBreakdown.messageTokens`；
   策略据此幂等，多次 pre-step/重启不会重复替换。
 - **message-mode 实验项**：延后。v0.1 `compress.mode` 仅 `range`（config schema
   拒绝 `message`）；安全子集（无 tool-call 单节点）留待 v0.2 决策门。
+
+## M6.1 初始实验（2026-08-16，长会话热路径）
+
+- **[事实]** 完整 pre-step 等价热路径（replay + nudge + alias scan）在
+  1k/4k/16k/50k 事件上：9.8 / 20.9 / 60.2 / 188.9 ms；T(4n)/T(n) ≈ 2.1–3.1
+  （门禁 ≤6），未触发“当前热路径非近线性”证伪。
+- **[推断]** 50k 事件单次 ~190ms、近线性增长 → **暂不实现增量 replay**；
+  `applyDcpEvents()` 保持“拼接后全量 refold”仅作为等价性参考，生产入口继续
+  使用冷 replay。若后续 50k+ p95 超 100ms 或增长率 >6，再实现被生产消费的
+  增量状态/cache。
+- **[事实]** alias 扫描已优化为一次性 replacement map（O(n)），不再是
+  逐 marker × 全日志扫描。

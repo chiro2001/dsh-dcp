@@ -48,6 +48,7 @@
     "test:watch": "mkdir -p .tmp-vitest && TMPDIR=$PWD/.tmp-vitest vitest",
     "check:package": "node scripts/check-package.mjs",
     "perf-smoke": "tsx scripts/perf-smoke.ts",
+    "perf-hotpath": "tsx scripts/perf-hotpath.ts",
     "e2e:real": "bash scripts/e2e-real-agent.sh",
     "check-all": "bash scripts/check-all.sh"
   },
