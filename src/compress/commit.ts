@@ -79,7 +79,7 @@ export function commitRange(
         endRef: prepared.entry.endRef,
         authorMessageId: meta.authorMessageId,
         compressCallId: meta.compressCallId,
-        consumedBlockRefs: [],
+        consumedBlockRefs: prepared.consumedBlockRefs,
         protectedKinds: prepared.protectedKinds,
       }),
     }),

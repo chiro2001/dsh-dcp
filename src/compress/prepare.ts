@@ -12,7 +12,11 @@ import { createUserMessage } from '@deepseek-ai/dsh-llm/message'
 import type { DcpConfig } from '../config.js'
 import type { DcpReplayState } from '../protocol/replay.js'
 import { resolveRange } from '../refs/resolver.js'
-import { collectProtectedAppendix } from '../protection/classify.js'
+import {
+  collectProtectedAppendix,
+  hardProtectedForm,
+  type PriorBlock,
+} from '../protection/classify.js'
 import type { CompressRangeEntry } from './schema.js'
 
 export interface PreparedRange {
@@ -27,6 +31,8 @@ export interface PreparedRange {
   tokensOut: number
   checkpointText: string
   protectedKinds: string[]
+  consumedBlockRefs: string[]
+  blockRef: string
 }
 
 export type PrepareResult =
@@ -104,27 +110,46 @@ export function prepareRange(
     }
   }
 
-  // Nested/atomic checkpoints are M2; refuse ranges containing checkpoints now.
-  const activeBlockSeqs = new Set(
-    state.blocks.filter((block) => block.membership === 'active').map((block) => block.seq),
-  )
+  // Hard-protected instruction/snapshot forms may never be shadowed.
   for (const seq of shadowedSeqs) {
-    if (activeBlockSeqs.has(seq)) {
+    const event = session.events[seq]
+    if (
+      event?.type === 'user/message' &&
+      hardProtectedForm((event.data.source as { form?: unknown }).form)
+    ) {
       return {
         ok: false,
         errors: [
-          `range ${entry.startRef}..${entry.endRef} contains active compression block; nesting lands in M2`,
+          `range ${entry.startRef}..${entry.endRef} contains a hard-protected instruction/snapshot node`,
         ],
       }
     }
   }
+
+  // Nested blocks: active DCP checkpoints inside the range are consumed and
+  // their summaries carried forward verbatim.
+  const consumedBlocks = state.blocks.filter(
+    (block) => block.membership === 'active' && shadowedSeqs.includes(block.seq),
+  )
+  const consumedBlockRefs = consumedBlocks.map((block) => block.ref)
+  const priorBlocks: PriorBlock[] = consumedBlocks.map((block) => {
+    const event = session.events[block.seq]
+    const text =
+      event?.type === 'user/message'
+        ? event.data.content
+            .filter((content) => content.type === 'text')
+            .map((content) => (content.type === 'text' ? content.text : ''))
+            .join('\n')
+        : ''
+    return { ref: block.ref, text }
+  })
 
   const tokensIn = shadowedSeqs.reduce((sum, seq) => {
     const message = deriveEventMessage(events[seq]!)
     return sum + (message ? tokenMeter.estimateMessage(message) : 0)
   }, 0)
 
-  const appendix = collectProtectedAppendix(session, shadowedSeqs, config)
+  const appendix = collectProtectedAppendix(session, shadowedSeqs, config, priorBlocks)
   const checkpointText = buildCheckpointText(blockRef, entry.summary, appendix.text)
   const checkpointMessage = createUserMessage({
     content: [{ type: 'text', text: checkpointText }],
@@ -154,6 +179,78 @@ export function prepareRange(
       tokensOut,
       checkpointText,
       protectedKinds: appendix.kinds,
+      consumedBlockRefs,
+      blockRef,
     },
   }
+}
+
+export type PrepareBatchResult =
+  { ok: true; prepared: PreparedRange[] } | { ok: false; errors: string[] }
+
+/** Prepare all ranges in surface order, reject overlaps, allocate block refs. */
+export function prepareBatch(
+  session: Session,
+  tokenMeter: TokenMeter,
+  config: DcpConfig,
+  state: DcpReplayState,
+  args: { topic: string; content: CompressRangeEntry[] },
+  firstBlockNumber: number,
+): PrepareBatchResult {
+  if (args.content.length === 0) return { ok: false, errors: ['content must not be empty'] }
+  if (args.content.length > config.compress.maxRangesPerCall) {
+    return {
+      ok: false,
+      errors: [`content accepts at most ${config.compress.maxRangesPerCall} range(s)`],
+    }
+  }
+
+  const resolved: Array<{
+    entry: CompressRangeEntry
+    startPosition: number
+    endPosition: number
+  }> = []
+  for (const entry of args.content) {
+    const result = resolveRange(
+      [...session.surface.nodes],
+      state.boundaryRefs,
+      entry.startRef,
+      entry.endRef,
+    )
+    if (!result.ok) return { ok: false, errors: [result.reason] }
+    resolved.push({
+      entry,
+      startPosition: result.startPosition,
+      endPosition: result.endPosition,
+    })
+  }
+  for (let index = 1; index < resolved.length; index++) {
+    const previous = resolved[index - 1]!
+    const current = resolved[index]!
+    if (current.startPosition < previous.endPosition) {
+      return {
+        ok: false,
+        errors: [
+          `ranges must be in surface order and non-overlapping: ${previous.entry.startRef}..${previous.entry.endRef} overlaps ${current.entry.startRef}..${current.entry.endRef}`,
+        ],
+      }
+    }
+  }
+
+  const prepared: PreparedRange[] = []
+  for (const [index, resolvedEntry] of resolved.entries()) {
+    const blockRef = `b${firstBlockNumber + index}`
+    const result = prepareRange(
+      session,
+      tokenMeter,
+      config,
+      state,
+      resolvedEntry.entry,
+      blockRef,
+      args.topic,
+    )
+    if (!result.ok) return { ok: false, errors: result.errors }
+    prepared.push(result.prepared)
+  }
+  return { ok: true, prepared }
 }

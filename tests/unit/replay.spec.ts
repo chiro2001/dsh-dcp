@@ -136,9 +136,12 @@ describe('dcp replay state', () => {
 
     let state = reduceDcpState([...session.events])
     expect(state.blocks[0]?.membership).toBe('active')
-    expect(state.boundaryRefs).toEqual([
-      { ref: 'm0007', seq: expect.any(Number), active: true },
-    ])
+    expect(state.boundaryRefs).toEqual(
+      expect.arrayContaining([
+        { ref: 'm0007', seq: expect.any(Number), active: true },
+        { ref: 'b1', seq: checkpoint.seq, active: true },
+      ]),
+    )
     expect(state.maxMarkerNumber).toBe(7)
 
     // Native compaction absorbs the DCP checkpoint.

@@ -187,8 +187,8 @@ describe('compress range pipeline (M1)', () => {
       },
     )
 
-    expect(result.blockRef).toBe('b1')
-    expect(result.compressedMessages).toBeGreaterThan(0)
+    expect(result.blocks[0]?.blockRef).toBe('b1')
+    expect(result.blocks[0]?.compressedMessages).toBeGreaterThan(0)
     expect(result.cleanupWarning).toBeUndefined()
 
     const derived = session.deriveMessages()
@@ -253,7 +253,7 @@ describe('compress range pipeline (M1)', () => {
         step: 1,
         message: createToolResultMessage({
           callId: CallId('dcp-call'),
-          content: [{ type: 'text', text: result.blockRef }],
+          content: [{ type: 'text', text: result.blocks[0]!.blockRef }],
           isError: false,
         }),
       },
@@ -302,13 +302,13 @@ describe('compress range pipeline (M1)', () => {
         {
           topic: 't',
           content: [
-            { startRef: 'm0001', endRef: 'm0002', summary: 'x' },
+            { startRef: 'm0001', endRef: 'm0003', summary: 'x' },
             { startRef: 'm0002', endRef: 'm0004', summary: 'y' },
           ],
         },
         meta,
       ),
-    ).toThrow(/multiple ranges/)
+    ).toThrow(/overlaps/)
 
     expect(() =>
       executeCompressRange(
@@ -319,5 +319,21 @@ describe('compress range pipeline (M1)', () => {
         meta,
       ),
     ).toThrow(/minNetSavingsTokens/)
+
+    const multi = executeCompressRange(
+      session,
+      fixture.ctx.tokenMeter,
+      config,
+      {
+        topic: 't',
+        content: [
+          { startRef: 'm0001', endRef: 'm0002', summary: 'x' },
+          { startRef: 'm0002', endRef: 'm0004', summary: 'y' },
+        ],
+      },
+      meta,
+    )
+    expect(multi.blocks.map((block) => block.blockRef)).toEqual(['b1', 'b2'])
+    expect(multi.failed).toEqual([])
   })
 })

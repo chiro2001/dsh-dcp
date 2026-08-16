@@ -79,6 +79,12 @@ export function reduceDcpState(events: readonly SessionEvent[]): DcpReplayState 
       if (record.membership === 'active') state.activeBlockRefs.push(record.ref)
       const blockNumber = Number(BLOCK_REF.exec(decoded.meta.blockRef)?.[1] ?? 0)
       state.maxBlockNumber = Math.max(state.maxBlockNumber, blockNumber)
+      // Active blocks are also boundary refs (bN) so ranges can nest.
+      state.boundaryRefs.push({
+        ref: decoded.meta.blockRef,
+        seq: event.seq,
+        active: membership.get(decoded.meta.blockRef) === 'active',
+      })
     } else {
       state.diagnostics.push({ ...decoded.diagnostic, seq: event.seq })
     }

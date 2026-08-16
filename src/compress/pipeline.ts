@@ -1,24 +1,52 @@
 /**
- * compress range pipeline: validate -> prepare -> commit -> inline cleanup.
+ * compress pipeline: validate -> prepare batch -> commit each range ->
+ * inline cleanup.
  *
  * @module dsh-dcp/compress/pipeline
  */
 
 import type { Session } from '@deepseek-ai/dsh-session'
 import type { TokenMeter } from '@deepseek-ai/dsh-token-meter'
+import { CompactionId } from '@deepseek-ai/dsh-compaction'
 import type { DcpConfig } from '../config.js'
 import { reduceDcpState } from '../protocol/replay.js'
 import { validateCompressArgs, type CompressRangeArgs } from './schema.js'
-import { prepareRange } from './prepare.js'
+import { prepareBatch, prepareRange } from './prepare.js'
 import { commitRange, type CommitMeta } from './commit.js'
 import { cleanupInlineSummary } from './inline-cleanup.js'
 
-export interface CompressRangeResult {
+export interface CompressBlockResult {
   blockRef: string
   checkpointSeq: number
   compressedMessages: number
   compressedTokens: number
+}
+
+export interface FailedRange {
+  startRef: string
+  endRef: string
+  error: string
+}
+
+export interface CompressRangeResult {
+  blocks: CompressBlockResult[]
+  failed: FailedRange[]
   cleanupWarning?: string
+}
+
+function findAuthorSeq(session: Session, compressCallId: string): number | undefined {
+  for (const seq of session.surface.nodes) {
+    const event = session.events[seq]
+    if (
+      event?.type === 'assistant/message' &&
+      event.data.message.content.some(
+        (block) => block.type === 'tool-call' && block.id === compressCallId,
+      )
+    ) {
+      return seq
+    }
+  }
+  return undefined
 }
 
 export function executeCompressRange(
@@ -30,33 +58,66 @@ export function executeCompressRange(
 ): CompressRangeResult {
   const errors = validateCompressArgs(args, config.compress.maxRangesPerCall)
   if (errors.length > 0) throw new Error(errors.join('\n'))
-  if (args.content.length !== 1) {
-    throw new Error('multiple ranges land in M2; send one range at a time')
-  }
 
   const state = reduceDcpState(session.events)
-  const blockNumber = state.maxBlockNumber + 1
-  const blockRef = `b${blockNumber}`
-  const preparedResult = prepareRange(
-    session,
-    tokenMeter,
-    config,
-    state,
-    args.content[0]!,
-    blockRef,
-    args.topic,
-  )
-  if (!preparedResult.ok) throw new Error(preparedResult.errors.join('\n'))
-  const prepared = preparedResult.prepared
+  const batch = prepareBatch(session, tokenMeter, config, state, args, state.maxBlockNumber + 1)
+  if (!batch.ok) throw new Error(batch.errors.join('\n'))
 
-  const committed = commitRange(session, tokenMeter, prepared, blockRef, meta)
-  const cleanup = cleanupInlineSummary(session, tokenMeter, meta.compressCallId, blockRef)
+  const blocks: CompressBlockResult[] = []
+  const failed: FailedRange[] = []
+  const authorSeq = findAuthorSeq(session, meta.compressCallId)
+  for (const [index, entry] of args.content.entries()) {
+    try {
+      // Re-prepare against the CURRENT surface: earlier commits shift
+      // positions, so each range is re-resolved at commit time.
+      const currentState = reduceDcpState(session.events)
+      const blockRef = `b${currentState.maxBlockNumber + 1}`
+      const preparedResult = prepareRange(
+        session,
+        tokenMeter,
+        config,
+        currentState,
+        entry,
+        blockRef,
+        args.topic,
+      )
+      if (!preparedResult.ok) throw new Error(preparedResult.errors.join('\n'))
+      const prepared = preparedResult.prepared
+      if (authorSeq !== undefined && prepared.shadowedSeqs.includes(authorSeq)) {
+        throw new Error('range includes the current compress call; choose an earlier endRef')
+      }
+      const committed = commitRange(session, tokenMeter, prepared, prepared.blockRef, {
+        ...meta,
+        compactionId: CompactionId(`${String(meta.compactionId)}-${index}`),
+      })
+      blocks.push({
+        blockRef: prepared.blockRef,
+        checkpointSeq: committed.checkpointSeq,
+        compressedMessages: prepared.shadowedSeqs.length,
+        compressedTokens: prepared.tokensIn - prepared.tokensOut,
+      })
+    } catch (error) {
+      failed.push({
+        startRef: entry.startRef,
+        endRef: entry.endRef,
+        error: error instanceof Error ? error.message : String(error),
+      })
+    }
+  }
+
+  const cleanup =
+    blocks.length > 0
+      ? cleanupInlineSummary(
+          session,
+          tokenMeter,
+          meta.compressCallId,
+          blocks.map((block) => block.blockRef),
+        )
+      : { cleaned: false, warning: 'no blocks committed; cleanup skipped' }
 
   return {
-    blockRef,
-    checkpointSeq: committed.checkpointSeq,
-    compressedMessages: prepared.shadowedSeqs.length,
-    compressedTokens: prepared.tokensIn - prepared.tokensOut,
+    blocks,
+    failed,
     ...(cleanup.cleaned ? {} : { cleanupWarning: cleanup.warning }),
   }
 }

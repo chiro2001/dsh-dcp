@@ -88,7 +88,15 @@ export function createCompressTool(ctx: Context, config: DcpConfig) {
       const warning = result.cleanupWarning
         ? ` (cleanup warning: ${result.cleanupWarning})`
         : ''
-      return `Compressed ${result.compressedMessages} message(s) into ${result.blockRef}.${warning}`
+      const blockSummary = result.blocks.map((block) => block.blockRef).join(', ')
+      const messages = result.blocks.reduce((sum, block) => sum + block.compressedMessages, 0)
+      const failedSummary =
+        result.failed.length > 0
+          ? ` ${result.failed.length} range(s) failed: ${result.failed
+              .map((entry) => `${entry.startRef}..${entry.endRef}: ${entry.error}`)
+              .join('; ')}`
+          : ''
+      return `Compressed ${messages} message(s) into ${blockSummary}.${failedSummary}${warning}`
     },
   })
 }
