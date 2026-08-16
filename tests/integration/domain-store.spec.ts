@@ -66,29 +66,22 @@ describe('M7.0: real dsh-storage-json domain wiring', () => {
 
   it('persists per-session snapshots and survives reopen', async () => {
     if (!ctx) throw new Error('ctx missing')
-    const idA = await buildSessionWithBlock()
-    const idB = await buildSessionWithBlock()
+    const ids = []
+    for (let index = 0; index < 5; index++) ids.push(await buildSessionWithBlock())
 
     const handle = await openDcpStatsStore(ctx)
     expect(handle).toBeDefined()
     if (!handle) return
 
     const estimate = (message: Message) => ctx!.tokenMeter.estimateMessage(message)
-    const recordA = await syncDomainStats(
-      handle.store,
-      idA,
-      ctx.sessions.get(idA)!.events,
-      estimate,
-    )
-    const recordB = await syncDomainStats(
-      handle.store,
-      idB,
-      ctx.sessions.get(idB)!.events,
-      estimate,
-    )
-    expect(recordA.ledger.blockCount).toBe(1)
-    expect(recordB.ledger.blockCount).toBe(1)
-    expect(aggregateDomainStats(handle.store).sessionCount).toBe(2)
+    const records = []
+    for (const id of ids) {
+      records.push(
+        await syncDomainStats(handle.store, id, ctx.sessions.get(id)!.events, estimate),
+      )
+    }
+    for (const record of records) expect(record.ledger.blockCount).toBe(1)
+    expect(aggregateDomainStats(handle.store).sessionCount).toBe(5)
     await handle.close()
     await ctx.fiber.dispose()
     ctx = undefined
@@ -101,10 +94,10 @@ describe('M7.0: real dsh-storage-json domain wiring', () => {
     const reopened = await openDcpStatsStore(fresh.ctx)
     expect(reopened).toBeDefined()
     if (reopened) {
-      const loadedA = reopened.store.read(idA)
-      expect(loadedA?.eventCount).toBe(recordA.eventCount)
-      expect(loadedA?.ledger.blockCount).toBe(1)
-      expect(aggregateDomainStats(reopened.store).sessionCount).toBe(2)
+      const loaded = reopened.store.read(ids[0]!)
+      expect(loaded?.eventCount).toBe(records[0]!.eventCount)
+      expect(loaded?.ledger.blockCount).toBe(1)
+      expect(aggregateDomainStats(reopened.store).sessionCount).toBe(5)
       await reopened.close()
     }
     await fresh.dispose()

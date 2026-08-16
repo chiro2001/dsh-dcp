@@ -92,3 +92,5 @@ pnpm run e2e:real         # 真实 Agent + 真实 LLM（opencode go / deepseek-v
   模块设计、里程碑、测试、风险）
 - [docs/PROTOCOL.md](docs/PROTOCOL.md) — 协议 v1（边界、持久化、命令、恢复、
   与原生 compaction 共存）
+- [docs/STATS.md](docs/STATS.md) — 统计语义（signed ledger、domain record、
+  `/dcp stats` 口径）
