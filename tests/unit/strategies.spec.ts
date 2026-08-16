@@ -157,4 +157,13 @@ describe('automatic strategies (M3)', () => {
     )
     expect(result.deduplicated).toBe(0)
   })
+
+  it('skips dedup for protected file patterns', () => {
+    const session = Session.create(SessionId('dedup-protected'))
+    toolTurn(session, 1, 'c1', 'read', '{"filePath":"a.txt"}')
+    toolTurn(session, 2, 'c2', 'read', '{"filePath":"a.txt"}')
+    session.append('turn/start', { turn: 3 })
+    const protectedConfig = config({ protectedFilePatterns: ['**/*.txt'] })
+    expect(dedupCandidates(session, protectedConfig)).toEqual([])
+  })
 })

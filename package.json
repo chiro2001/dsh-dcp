@@ -124,6 +124,7 @@
     "@deepseek-ai/dsh-token-meter": "0.1.0-rc.6",
     "@deepseek-ai/dsh-tools": "0.1.0-rc.6",
     "@types/node": "^26.0.0",
+    "@vitest/coverage-v8": "^4.1.10",
     "oxlint": "^1.78.0",
     "prettier": "^3.8.1",
     "tsdown": "^0.22.14",

@@ -1,4 +1,4 @@
-name: ci
+name: e2e
 
 on:
   push:
@@ -11,11 +11,14 @@ on:
       - 'perf-**'
       - 'test-**'
       - 'chore-**'
-  pull_request:
+  workflow_dispatch:
 
 jobs:
-  test:
+  install:
     runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      DSH_HOME: /tmp/dsh-e2e
     steps:
       - uses: actions/checkout@v4
 
@@ -28,23 +31,11 @@ jobs:
           node-version: 22
           cache: pnpm
 
+      - name: Install dsh CLI
+        run: npm install -g @deepseek-ai/dsh@0.1.0-rc.6
+
       - name: Install
         run: pnpm install --frozen-lockfile
 
-      - name: Build
-        run: pnpm build
-
-      - name: Typecheck
-        run: pnpm typecheck
-
-      - name: Lint
-        run: pnpm lint
-
-      - name: Tests
-        run: pnpm test
-
-      - name: Coverage
-        run: pnpm vitest run --coverage
-
-      - name: Package check
-        run: pnpm check:package
+      - name: e2e install
+        run: bash scripts/e2e-install.sh

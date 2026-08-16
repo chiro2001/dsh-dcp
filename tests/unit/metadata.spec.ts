@@ -49,6 +49,8 @@ describe('dcp checkpoint metadata', () => {
 
   it('rejects non-compaction sources and malformed metadata', () => {
     expect(decodeDcpMeta({ kind: 'plugin', plugin: 'dsh-dcp' }).ok).toBe(false)
+    expect(decodeDcpMeta(null).ok).toBe(false)
+    expect(decodeDcpMeta([1, 2]).ok).toBe(false)
     expect(
       decodeDcpMeta({
         ...compactCheckpointSource(CompactionId('x')),
@@ -65,6 +67,48 @@ describe('dcp checkpoint metadata', () => {
       decodeDcpMeta({
         ...compactCheckpointSource(CompactionId('x')),
         dcp: { ...meta(), consumedBlockRefs: ['z'] },
+      }).ok,
+    ).toBe(false)
+    expect(
+      decodeDcpMeta({
+        ...compactCheckpointSource(CompactionId('x')),
+        dcp: { ...meta(), endRef: '' },
+      }).ok,
+    ).toBe(false)
+    expect(
+      decodeDcpMeta({
+        ...compactCheckpointSource(CompactionId('x')),
+        dcp: { ...meta(), recompressedFrom: 'z' },
+      }).ok,
+    ).toBe(false)
+    expect(
+      decodeDcpMeta({
+        ...compactCheckpointSource(CompactionId('x')),
+        dcp: { ...meta(), protectedKinds: 42 },
+      }).ok,
+    ).toBe(false)
+    expect(
+      decodeDcpMeta({
+        ...compactCheckpointSource(CompactionId('x')),
+        dcp: { ...meta(), authorMessageId: '' },
+      }).ok,
+    ).toBe(false)
+    expect(
+      decodeDcpMeta({
+        ...compactCheckpointSource(CompactionId('x')),
+        dcp: { ...meta(), compressCallId: '' },
+      }).ok,
+    ).toBe(false)
+    expect(
+      decodeDcpMeta({
+        ...compactCheckpointSource(CompactionId('x')),
+        dcp: { ...meta(), startRef: '' },
+      }).ok,
+    ).toBe(false)
+    expect(
+      decodeDcpMeta({
+        ...compactCheckpointSource(CompactionId('x')),
+        dcp: { ...meta(), kind: 'nope' },
       }).ok,
     ).toBe(false)
   })

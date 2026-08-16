@@ -5,7 +5,11 @@ DeepSeek Harness（dsh）的动态上下文管理插件：对标
 （opencode-dcp）的原理与实现，在 dsh 上提供模型驱动的上下文压缩、工具结果剪枝、
 错误输入清理、压缩块嵌套、受保护内容保留、手动命令与统计。
 
-> **状态**：规划阶段。详细方案见 [docs/PLAN.md](docs/PLAN.md)。
+> **状态**：v0.1.0-rc.1 已实现并发布（private repo）。
+> 详细方案见 [docs/PLAN.md](docs/PLAN.md)，协议见
+> [docs/PROTOCOL.md](docs/PROTOCOL.md)，变更见
+> [docs/CHANGELOG.md](docs/CHANGELOG.md)，下一阶段见
+> [docs/ROADMAP.md](docs/ROADMAP.md)。
 
 ## 范围说明
 
@@ -37,10 +41,31 @@ pnpm 对 git 源插件执行 `prepare` 构建（本包已声明 `prepare: pnpm b
 安装后插件以 `dsh.bundle.patch` 声明的 `cordis.patch.yml` 挂载到 profile，
 并注册：
 
-- 模型工具 `compress`（range / message 两种模式）
+- 模型工具 `compress`（range；message 模式延后）
 - 系统提示 section（压缩规则、边界索引、nudge）
 - 人类命令 `/dcp` 与 `/dcp-compress`
-- `dcp/*` 会话日志事件与表面替换（`user/message`、`tool/result`）
+- 日志化边界 marker 与压缩检查点（标准 `user/message`/`tool/result`
+  surface replace）
+
+> 说明：v0.1 不写自定义 `dcp/*` 会话事件（宿主契约限制，见
+> `tests/contract/DECISIONS.md`）；压缩/剪枝通过标准 surface replace 落地，
+> 原始日志永不删除。
+
+## 能力
+
+- `compress` 工具：half-open range、工具配对校验、多 range 独立事务、
+  `bN` 嵌套、同一步 inline 摘要清理。
+- 保护：用户消息/`<protect>`/受保护工具/文件路径/来源 verbatim 附录；
+  instructions/snapshot 硬保护。
+- 自动策略：重复调用去重（pre-step，幂等）；错误单元清理（实验，默认关）。
+- 命令：`/dcp help|context|stats|manual|compress|sweep|show|decompress|recompress`。
+- 恢复：raw show 与 `--into-context` semantic expansion / recompress。
+- 与 dsh 原生 compaction 共存（surface membership reconciliation）。
+
+## 已知限制（v0.1）
+
+- 无精确多节点 decompress；message-mode 与 Code Mode 延后。
+- purge-errors 默认关闭；子代理 child-session 深读取默认关闭。
 
 ## 文档
 

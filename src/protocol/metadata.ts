@@ -66,7 +66,12 @@ export function isDcpCheckpointSource(source: unknown): source is DcpCheckpointS
 export function decodeDcpMeta(
   source: unknown,
 ): { ok: true; meta: DcpCheckpointMetaV1 } | { ok: false; diagnostic: DcpDiagnostic } {
-  if (!isCompactCheckpointSource(source as never)) {
+  if (
+    source === null ||
+    typeof source !== 'object' ||
+    Array.isArray(source) ||
+    !isCompactCheckpointSource(source as never)
+  ) {
     return {
       ok: false,
       diagnostic: {
