@@ -59,4 +59,28 @@ full heuristic recompute === contextBreakdown.messageTokens`；
 - C 保留为可配置 fallback / 低压会话模式。
 - A 不提供；refs 一律按 surface position 解析，不依赖 seq 数值排序。
 
-## E-03 — 待完成
+## E-03 — 通过（2026-08-16，契约层）
+
+契约测试 `tests/contract/e03.spec.ts`（4/4）+ `src/protocol/recovery.ts`。
+
+### 结论
+
+1. **[事实]** 压缩 bracket 每个崩溃点的分类可确定性重放：none /
+   live-orphan-start / stale-orphan-start / summary-without-replace /
+   recovered-unclosed / committed / failed-attempt。
+2. **[事实]** `session/end-seed` 之后的未闭合 `compaction/start` 是上一生命
+   周期的陈旧孤儿（不阻塞）；end-seed 之前的是活孤儿。
+3. **[事实]** 在稳定边界 fork 的子会话不含父会话的孤儿 bracket；
+   fork 边界必须位于 turn 外（宿主强制）。
+4. **[事实]** 冷重放（`foldSurface`）与增量 surface 一致；原生 compaction
+   吸收 DCP checkpoint 后，reconcile 标记为 `absorbed-native`，token meter
+   的 surfaceTokens 与 nodes 和一致且下降。
+
+### 决策门
+
+- 崩溃/部分提交分类：**通过**，M1 落入 `src/protocol/`。
+- 与原生 compaction 共存（surface membership reconciliation）：**通过契约层**；
+  实际双插件挂载顺序、overflow recovery、`/compact` 手动路径在 M3/M4 e2e
+  覆盖（修订版 PLAN §4 E-03 的剩余矩阵）。
+- 工具管线并发（多 compress/deny/abort/timeout、Code Mode 子调用拒绝）：
+  M3/M4 门禁，v0.1 的 `compress` 保持 exclusive + 宿主 approval。
