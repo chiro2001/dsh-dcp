@@ -1,0 +1,6 @@
+allowBuilds:
+  esbuild: true
+  koffi: true
+onlyBuiltDependencies:
+  - esbuild
+  - koffi

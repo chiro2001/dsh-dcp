@@ -4,7 +4,7 @@
 >
 > 证据快照：dsh-dcp `27743f2bc25c0cf90c11c3c6c19248f1269e8934`；
 > DeepSeek Harness `47f943859bef60e4160492346772ded9b24f765a`
->（包版本 `0.1.0-rc.5`）；参考实现 v3.1.15。
+> （包版本 `0.1.0-rc.5`）；参考实现 v3.1.15。
 >
 > 本文可直接替换 `docs/PLAN.md`。若宿主版本变化，先重跑 §4 的契约实验，
 > 不把本轮源码观察外推为永久 API 保证。
@@ -93,14 +93,14 @@
 
 ### 2.2 不能照搬的机制
 
-| 参考机制 | 当前 dsh 事实 | 修订结论 |
-|---|---|---|
-| 请求前临时删改消息 | **[事实]** agent-loop 请求由日志重建并强校验 | **[推断]** 禁止；必须先写日志/surface |
-| 每会话私有 JSON 是压缩真相 | **[事实]** dsh 已有 append-only session log 与 surface | **[推断]** 活跃状态从日志和 surface 重建 |
-| 任意隐藏/恢复原消息 | **[事实]** 当前 replace 只有“多节点 → 一节点” | **[推断]** 不声称 exact decompress |
-| 直接清理错误工具输入 | **[事实]** dsh 工具参数存在于 `assistant/message` 的 tool-call block；`tool/result` 只能 content-only 改写 | **[推断]** purge-errors 改为完整闭合单元实验 |
-| 拉取 child session 扩展结果 | **[事实]** 父会话已可能持有前台 tool result、report、settlement 或 job notice；远程 provider 未必有本地 child session | **[推断]** 默认按父 surface 的工具名与 source kind 保护 |
-| 动态 system index/nudge | **[事实]** system 改变会写完整 `request/header change`；动态 runtime context 会追加完整 snapshot | **[推断]** system 只放静态规则，动态信息走尾部日志化 marker 或按需工具 |
+| 参考机制                    | 当前 dsh 事实                                                                                                         | 修订结论                                                               |
+| --------------------------- | --------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------- |
+| 请求前临时删改消息          | **[事实]** agent-loop 请求由日志重建并强校验                                                                          | **[推断]** 禁止；必须先写日志/surface                                  |
+| 每会话私有 JSON 是压缩真相  | **[事实]** dsh 已有 append-only session log 与 surface                                                                | **[推断]** 活跃状态从日志和 surface 重建                               |
+| 任意隐藏/恢复原消息         | **[事实]** 当前 replace 只有“多节点 → 一节点”                                                                         | **[推断]** 不声称 exact decompress                                     |
+| 直接清理错误工具输入        | **[事实]** dsh 工具参数存在于 `assistant/message` 的 tool-call block；`tool/result` 只能 content-only 改写            | **[推断]** purge-errors 改为完整闭合单元实验                           |
+| 拉取 child session 扩展结果 | **[事实]** 父会话已可能持有前台 tool result、report、settlement 或 job notice；远程 provider 未必有本地 child session | **[推断]** 默认按父 surface 的工具名与 source kind 保护                |
+| 动态 system index/nudge     | **[事实]** system 改变会写完整 `request/header change`；动态 runtime context 会追加完整 snapshot                      | **[推断]** system 只放静态规则，动态信息走尾部日志化 marker 或按需工具 |
 
 ---
 
@@ -196,7 +196,7 @@ projection、compaction invariant 与一个外置测试插件，验证：
    `ignorable` 被拒；该用例锁定“不写 `dcp/*`”结论。
 2. **[需实验]** 在开放 turn 内写入
    `compaction/start → compaction/summary → DCP metadata 的 user/message replace →
-   compaction/end`，随后持久化、重启并在未加载 DCP 逻辑的 composition 中恢复。
+compaction/end`，随后持久化、重启并在未加载 DCP 逻辑的 composition 中恢复。
 3. **[需实验]** replacement `source` 采用标准 compaction checkpoint provenance 与最小 `dcp`
    扩展字段；验证 JSON round-trip、compaction invariant、client/adapter 容错。
 4. **[需实验]** 对任意 user range、单个 tool result、当前 step 的 assistant tool-call 三类 replace，
@@ -256,20 +256,20 @@ fallback，见 D6 与 §8.1.1。
 
 ## 5. 修订后的架构决策
 
-| ID | 类别 | 决策 | 状态/理由 |
-|---|---|---|---|
-| D1 | **[事实]** | agent-loop 请求只取 `deriveMessages()` 与 folded header | 宿主硬不变式 |
-| D2 | **[推断]** | 所有模型可见 DCP 内容先成为已知 surface 事件 | 保留原规划的正确方向 |
-| D3 | **[推断]** | v0.1 不写 `dcp/*` SessionEvent | 当前 append/重载契约不支持 |
-| D4 | **[需实验]** | 摘要块复用标准 compaction transaction；DCP 元数据放在 replacement message source | E-01 通过后冻结 |
-| D5 | **[推断]** | 活跃状态由 raw log + folded surface + message source 重建；storage-domain 非权威 | 避免双写真相 |
-| D6 | **[需实验]** | v0.1 优先保留模型内联摘要，并在同一步安全清理 summary 参数 | E-01 决定；辅助摘要需另立契约实验 |
-| D7 | **[推断]** | system prompt 仅含稳定规则；动态 refs/nudge 放在尾部日志化消息或按需工具 | 避免每步 header churn |
-| D8 | **[推断]** | range 使用 half-open、surface-position、工具配对平衡的闭合单元 | 防止跨越活跃工具状态 |
-| D9 | **[推断]** | `compress` 为 exclusive，走宿主 approval；自动策略是显式配置的 pre-step policy | 不复制权限系统 |
-| D10 | **[推断]** | 原生 compaction 与 DCP 共享日志锁语义并做 block reconciliation | “只复位 nudge”不足 |
-| D11 | **[推断]** | exact decompress 延期；提供 raw show 与显式 semantic expansion | 与当前 surface 能力一致 |
-| D12 | **[推断]** | 不扩展 dsh 核心、不改用请求 rewrite | M0 失败时缩减/上游提案 |
+| ID  | 类别         | 决策                                                                             | 状态/理由                         |
+| --- | ------------ | -------------------------------------------------------------------------------- | --------------------------------- |
+| D1  | **[事实]**   | agent-loop 请求只取 `deriveMessages()` 与 folded header                          | 宿主硬不变式                      |
+| D2  | **[推断]**   | 所有模型可见 DCP 内容先成为已知 surface 事件                                     | 保留原规划的正确方向              |
+| D3  | **[推断]**   | v0.1 不写 `dcp/*` SessionEvent                                                   | 当前 append/重载契约不支持        |
+| D4  | **[需实验]** | 摘要块复用标准 compaction transaction；DCP 元数据放在 replacement message source | E-01 通过后冻结                   |
+| D5  | **[推断]**   | 活跃状态由 raw log + folded surface + message source 重建；storage-domain 非权威 | 避免双写真相                      |
+| D6  | **[需实验]** | v0.1 优先保留模型内联摘要，并在同一步安全清理 summary 参数                       | E-01 决定；辅助摘要需另立契约实验 |
+| D7  | **[推断]**   | system prompt 仅含稳定规则；动态 refs/nudge 放在尾部日志化消息或按需工具         | 避免每步 header churn             |
+| D8  | **[推断]**   | range 使用 half-open、surface-position、工具配对平衡的闭合单元                   | 防止跨越活跃工具状态              |
+| D9  | **[推断]**   | `compress` 为 exclusive，走宿主 approval；自动策略是显式配置的 pre-step policy   | 不复制权限系统                    |
+| D10 | **[推断]**   | 原生 compaction 与 DCP 共享日志锁语义并做 block reconciliation                   | “只复位 nudge”不足                |
+| D11 | **[推断]**   | exact decompress 延期；提供 raw show 与显式 semantic expansion                   | 与当前 surface 能力一致           |
+| D12 | **[推断]**   | 不扩展 dsh 核心、不改用请求 rewrite                                              | M0 失败时缩减/上游提案            |
 
 ### 5.1 总体数据流
 
@@ -312,7 +312,7 @@ interface DcpCheckpointMetaV1 {
   mode: 'range' | 'message'
   topic: string
   startRef: string
-  endRef?: string                 // range 为 half-open end；message 可省略
+  endRef?: string // range 为 half-open end；message 可省略
   authorMessageId: string
   compressCallId: string
   consumedBlockRefs: string[]
@@ -404,14 +404,14 @@ interface DcpReplayState {
 
 ### 6.5 崩溃/部分提交分类
 
-| 已持久化前缀 | surface 结果 | 重启处理 |
-|---|---|---|
-| 无 `start` | 无变化 | **[推断]** 无操作 |
-| `start` | 无变化 | **[推断]** orphan attempt；新 lifecycle 后不当作活锁 |
-| `start + summary` | 无变化 | **[推断]** 未提交摘要，忽略为 active block |
-| `start + summary + replace` | 摘要已可见 | **[需实验]** 标为 `recovered-unclosed`，以 surface 为准，不伪造 rollback |
-| 完整到 `end` | 摘要已可见 | **[推断]** committed |
-| `end { error }` 且无 replace | 无变化 | **[推断]** failed attempt |
+| 已持久化前缀                 | surface 结果 | 重启处理                                                                 |
+| ---------------------------- | ------------ | ------------------------------------------------------------------------ |
+| 无 `start`                   | 无变化       | **[推断]** 无操作                                                        |
+| `start`                      | 无变化       | **[推断]** orphan attempt；新 lifecycle 后不当作活锁                     |
+| `start + summary`            | 无变化       | **[推断]** 未提交摘要，忽略为 active block                               |
+| `start + summary + replace`  | 摘要已可见   | **[需实验]** 标为 `recovered-unclosed`，以 surface 为准，不伪造 rollback |
+| 完整到 `end`                 | 摘要已可见   | **[推断]** committed                                                     |
+| `end { error }` 且无 replace | 无变化       | **[推断]** failed attempt                                                |
 
 - **[事实]** restart seed boundary可使上一生命周期未闭合的 compaction start 失去活锁
   效力；确切组合仍由 E-03 覆盖。
@@ -498,7 +498,7 @@ interface DcpReplayState {
   topic: string
   content: Array<{
     startRef: string
-    endRef: string       // exclusive
+    endRef: string // exclusive
     summary: string
   }>
 }
@@ -550,12 +550,12 @@ interface DcpReplayState {
 
 ### 8.4 保护分类
 
-| 类别 | 默认处理 | 例子 |
-|---|---|---|
-| 硬保护 | **[推断]** 拒绝包含该节点的范围 | 当前 step/tail、未配对工具、当前 instruction/snapshot、DCP control |
-| 原文附录 | **[推断]** 摘要后按确定格式附加 | `<protect>`、受保护工具输出、受保护路径、配置要求保留的用户消息 |
-| 原子摘要 | **[推断]** 可被整体再次概括或原文带入 | DCP block、native checkpoint、subagent report |
-| 普通内容 | **[推断]** 依赖模型 summary | 已闭环对话、旧工具输出、解释文本 |
+| 类别     | 默认处理                              | 例子                                                               |
+| -------- | ------------------------------------- | ------------------------------------------------------------------ |
+| 硬保护   | **[推断]** 拒绝包含该节点的范围       | 当前 step/tail、未配对工具、当前 instruction/snapshot、DCP control |
+| 原文附录 | **[推断]** 摘要后按确定格式附加       | `<protect>`、受保护工具输出、受保护路径、配置要求保留的用户消息    |
+| 原子摘要 | **[推断]** 可被整体再次概括或原文带入 | DCP block、native checkpoint、subagent report                      |
+| 普通内容 | **[推断]** 依赖模型 summary           | 已闭环对话、旧工具输出、解释文本                                   |
 
 - **[推断]** 保护提取以 raw logged content/tool arguments 为输入，不从渲染 UI 抓文本。
 - **[推断]** `<protect>` 解析支持多段、未闭合标签与恶意 delimiter；附录使用可逆转义
@@ -652,18 +652,18 @@ interface DcpReplayState {
 
 ### 10.2 v0.1 命令表
 
-| 命令 | 类别 | 行为 |
-|---|---|---|
-| `/dcp help` | **[推断]** | 静态帮助与协议版本 |
-| `/dcp context` | **[推断]** | 当前 header/surface/blocks/marker/压力估算，不变更会话 |
-| `/dcp stats` | **[推断]** | 会话重算统计 + storage-domain 聚合/陈旧提示 |
-| `/dcp manual [on\|off\|status]` | **[推断]** | 由成功 command pair 重放状态；下一 marker 告知模型 |
-| `/dcp sweep [all\|last=N]` | **[推断]** | control turn 中运行 dedup/可用策略 |
-| `/dcp compress [focus]` | **[推断]** | followup 提示模型在下一 turn 选择闭合范围 |
-| `/dcp show <bN> [--raw]` | **[推断]** | 只读展示摘要、metadata、直接 shadowed 节点或递归叶节点 |
-| `/dcp decompress <bN>` | **[推断]** | 默认等同只读 raw show，并明确“未改变模型上下文” |
-| `/dcp decompress <bN> --into-context` | **[推断]** | 显式单节点语义展开，见下文 |
-| `/dcp recompress <bN>` | **[推断]** | 只对 active semantic expansion 恢复摘要，分配新 block ref 并关联旧 block |
+| 命令                                  | 类别       | 行为                                                                     |
+| ------------------------------------- | ---------- | ------------------------------------------------------------------------ |
+| `/dcp help`                           | **[推断]** | 静态帮助与协议版本                                                       |
+| `/dcp context`                        | **[推断]** | 当前 header/surface/blocks/marker/压力估算，不变更会话                   |
+| `/dcp stats`                          | **[推断]** | 会话重算统计 + storage-domain 聚合/陈旧提示                              |
+| `/dcp manual [on\|off\|status]`       | **[推断]** | 由成功 command pair 重放状态；下一 marker 告知模型                       |
+| `/dcp sweep [all\|last=N]`            | **[推断]** | control turn 中运行 dedup/可用策略                                       |
+| `/dcp compress [focus]`               | **[推断]** | followup 提示模型在下一 turn 选择闭合范围                                |
+| `/dcp show <bN> [--raw]`              | **[推断]** | 只读展示摘要、metadata、直接 shadowed 节点或递归叶节点                   |
+| `/dcp decompress <bN>`                | **[推断]** | 默认等同只读 raw show，并明确“未改变模型上下文”                          |
+| `/dcp decompress <bN> --into-context` | **[推断]** | 显式单节点语义展开，见下文                                               |
+| `/dcp recompress <bN>`                | **[推断]** | 只对 active semantic expansion 恢复摘要，分配新 block ref 并关联旧 block |
 
 ### 10.3 Decompress 的准确边界
 
@@ -703,23 +703,23 @@ interface DcpReplayState {
 
 ## 12. 功能映射与版本分层
 
-| 参考功能 | dsh-dcp 映射 | 版本/状态 |
-|---|---|---|
-| range compress | compaction transaction + user replace | **[需实验]** M0/M1 主路径 |
-| message compress | 仅无 tool-call 的安全单节点或闭合单元 | **[推断]** M2 experimental |
-| nested blocks | replacement DAG + `consumedBlockRefs` | **[推断]** M2 |
-| message refs | step cut marker 或 `dcp_context` | **[需实验]** E-02 决定 |
-| block refs | source metadata +摘要 footer `bN` | **[推断]** M1/M2 |
-| dedup | `compaction/prune` + tool-result content replace | **[推断]** M3 |
-| purge-errors | 完整平衡单元 deterministic prune | **[需实验]** M3，默认关闭 |
-| protected tags/tools/files/users | prepare 阶段的 hard protect/verbatim appendix | **[推断]** M2 |
-| subagent result | 父 surface 工具/source 保护 | **[推断]** M2；child enrichment 延期 |
-| nudge | boundary marker 或按需工具结果 | **[需实验]** E-02/M3 |
-| manual mode | 成功 command lifecycle 重放 | **[推断]** M3/M4 |
-| decompress | raw show + opt-in semantic expansion | **[推断]** M4；exact 延期 |
-| all-time stats | 日志重算 + storage-domain 可重建缓存 | **[推断]** M4 |
-| request transform | 不实现 | **[事实]** 与 agent-loop invariant 冲突 |
-| self-update/UI notification | 不实现 | **[推断]** 非目标 |
+| 参考功能                         | dsh-dcp 映射                                     | 版本/状态                               |
+| -------------------------------- | ------------------------------------------------ | --------------------------------------- |
+| range compress                   | compaction transaction + user replace            | **[需实验]** M0/M1 主路径               |
+| message compress                 | 仅无 tool-call 的安全单节点或闭合单元            | **[推断]** M2 experimental              |
+| nested blocks                    | replacement DAG + `consumedBlockRefs`            | **[推断]** M2                           |
+| message refs                     | step cut marker 或 `dcp_context`                 | **[需实验]** E-02 决定                  |
+| block refs                       | source metadata +摘要 footer `bN`                | **[推断]** M1/M2                        |
+| dedup                            | `compaction/prune` + tool-result content replace | **[推断]** M3                           |
+| purge-errors                     | 完整平衡单元 deterministic prune                 | **[需实验]** M3，默认关闭               |
+| protected tags/tools/files/users | prepare 阶段的 hard protect/verbatim appendix    | **[推断]** M2                           |
+| subagent result                  | 父 surface 工具/source 保护                      | **[推断]** M2；child enrichment 延期    |
+| nudge                            | boundary marker 或按需工具结果                   | **[需实验]** E-02/M3                    |
+| manual mode                      | 成功 command lifecycle 重放                      | **[推断]** M3/M4                        |
+| decompress                       | raw show + opt-in semantic expansion             | **[推断]** M4；exact 延期               |
+| all-time stats                   | 日志重算 + storage-domain 可重建缓存             | **[推断]** M4                           |
+| request transform                | 不实现                                           | **[事实]** 与 agent-loop invariant 冲突 |
+| self-update/UI notification      | 不实现                                           | **[推断]** 非目标                       |
 
 ---
 
@@ -829,45 +829,45 @@ dsh-dynamic-context-pruning/
     "protectUserMessages": false,
     "protectTags": true,
     "protectedTools": ["subagent", "skill", "todo_write"],
-    "protectedSources": ["subagent-report", "subagent-settled"]
+    "protectedSources": ["subagent-report", "subagent-settled"],
   },
 
   "references": {
     "transport": "auto",
     "maxAliasEntries": 32,
-    "excerptChars": 80
+    "excerptChars": 80,
   },
 
   "nudge": {
     "enabled": true,
-    "maxRatio": 0.80,
-    "minRatio": 0.60,
+    "maxRatio": 0.8,
+    "minRatio": 0.6,
     "frequencySteps": 8,
-    "iterationThreshold": 12
+    "iterationThreshold": 12,
   },
 
   "manualMode": {
     "default": false,
-    "automaticStrategies": true
+    "automaticStrategies": true,
   },
 
   "strategies": {
     "deduplication": {
       "enabled": true,
-      "protectedTools": []
+      "protectedTools": [],
     },
     "purgeErrors": {
       "enabled": false,
       "turns": 4,
-      "protectedTools": []
-    }
+      "protectedTools": [],
+    },
   },
 
   "protectedFilePatterns": [],
   "subagents": {
     "enableCompressionInChild": false,
-    "readChildSession": false
-  }
+    "readChildSession": false,
+  },
 }
 ```
 
@@ -1090,23 +1090,23 @@ bash scripts/check-all.sh --e2e
 
 ## 18. 风险登记与停止条件
 
-| 风险 | 类别 | 影响 | 缓解/停止条件 |
-|---|---|---|---|
-| 外置 writer 不被 compaction 协议支持 | **[需实验]** | 主路径不可提交 | E-01 失败即阻塞 range，提上游能力需求 |
-| source 扩展字段被某 adapter/client 丢弃或拒绝 | **[需实验]** | 状态无法稳健关联 | round-trip/client 测试；失败则重新设计 metadata 载体 |
-| inline summary 重复 | **[事实]** | 短期收益下降 | 同一步 cleanup；失败时量化后决定辅助摘要 |
-| dynamic index 破坏 prefix/cache | **[事实]** | 成本、日志增长 | 静态 system + E-02 marker/tool |
-| 任意 refs 切断工具配对 | **[事实]** | provider 请求非法 | half-open cuts + 宿主 pairing helper |
-| exact decompress 不可实现 | **[事实]** | 功能不对等 | 明确 show/semantic expansion；不虚假验收 |
-| purge-errors 不能晚改 assistant | **[事实]** | 原映射无效 | 完整单元实验，默认关闭 |
-| native compaction 吸收 DCP artifacts | **[事实]** | refs/state/nudge 陈旧 | surface membership reconciliation |
-| partial bracket | **[事实]** | busy 或可见未闭合摘要 | 无 await commit、fault tests、recovered 状态 |
-| pre-step listener 顺序 | **[推断]** | stale selection/重复 mutation | downstream decision、每次重校验、两种顺序测试 |
-| child session 不存在 | **[事实]** | 保护内容缺失 | 父 surface 为主，深读取 opt-in |
-| Code Mode 无法清理内联参数 | **[推断]** | 重复/错误关联 | v0.1 拒绝子调用 |
-| marker 自身增长 | **[推断]** | 抵消节省 | delta、同范围被压缩、长会话预算 |
-| rc API 漂移 | **[事实]** | 编译/运行破坏 | 锁版本、M0 contract 先行 |
-| 参考实现为 AGPL-3.0 | **[事实]** | 许可选择与发布义务 | §19 决策门，不作法律结论 |
+| 风险                                          | 类别         | 影响                          | 缓解/停止条件                                        |
+| --------------------------------------------- | ------------ | ----------------------------- | ---------------------------------------------------- |
+| 外置 writer 不被 compaction 协议支持          | **[需实验]** | 主路径不可提交                | E-01 失败即阻塞 range，提上游能力需求                |
+| source 扩展字段被某 adapter/client 丢弃或拒绝 | **[需实验]** | 状态无法稳健关联              | round-trip/client 测试；失败则重新设计 metadata 载体 |
+| inline summary 重复                           | **[事实]**   | 短期收益下降                  | 同一步 cleanup；失败时量化后决定辅助摘要             |
+| dynamic index 破坏 prefix/cache               | **[事实]**   | 成本、日志增长                | 静态 system + E-02 marker/tool                       |
+| 任意 refs 切断工具配对                        | **[事实]**   | provider 请求非法             | half-open cuts + 宿主 pairing helper                 |
+| exact decompress 不可实现                     | **[事实]**   | 功能不对等                    | 明确 show/semantic expansion；不虚假验收             |
+| purge-errors 不能晚改 assistant               | **[事实]**   | 原映射无效                    | 完整单元实验，默认关闭                               |
+| native compaction 吸收 DCP artifacts          | **[事实]**   | refs/state/nudge 陈旧         | surface membership reconciliation                    |
+| partial bracket                               | **[事实]**   | busy 或可见未闭合摘要         | 无 await commit、fault tests、recovered 状态         |
+| pre-step listener 顺序                        | **[推断]**   | stale selection/重复 mutation | downstream decision、每次重校验、两种顺序测试        |
+| child session 不存在                          | **[事实]**   | 保护内容缺失                  | 父 surface 为主，深读取 opt-in                       |
+| Code Mode 无法清理内联参数                    | **[推断]**   | 重复/错误关联                 | v0.1 拒绝子调用                                      |
+| marker 自身增长                               | **[推断]**   | 抵消节省                      | delta、同范围被压缩、长会话预算                      |
+| rc API 漂移                                   | **[事实]**   | 编译/运行破坏                 | 锁版本、M0 contract 先行                             |
+| 参考实现为 AGPL-3.0                           | **[事实]**   | 许可选择与发布义务            | §19 决策门，不作法律结论                             |
 
 停止条件：出现 request reconstruction desync、工具配对破坏、无 shadow price replace、
 不可重放状态或跨重启静默丢失时，立即停止功能扩张，先修协议与回归测试。

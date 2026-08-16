@@ -20,4 +20,3 @@ decision.md    执行 Agent 对每条建议的 accept/reject/defer 处置
   写 `decision.md`，接受的建议必须落到 `docs/PLAN.md` 或后续实现中。
 - 不可用/失败时只记录 `blocked.md` 与错误，不伪造回复，不阻塞主流程。
 - 不在本目录提交认证信息、环境变量值或未脱敏数据。
-
