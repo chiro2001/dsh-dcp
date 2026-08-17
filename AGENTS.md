@@ -63,9 +63,11 @@ dsh plugin --profile web add 'github:chiro2001/dsh-dcp#v0.1.0-rc.4'
 
 - npm 包名 `@chiro2001/dsh-dcp`，安装/更新一律走 GitHub 仓库
   `chiro2001/dsh-dcp`；重复执行 add 即更新到该源最新。
-- git 源安装会执行 `prepare`（`pnpm build`）；pnpm 11 需在 profile 的
-  `pnpm-workspace.yaml` 放行 `esbuild`/`koffi` 构建脚本（与 dsh 其他
-  git 源插件相同）。
+- git 源安装会执行 `prepare`（`pnpm build`）；pnpm 11 默认禁止 git 源包
+  执行构建脚本，报 `ERR_PNPM_GIT_DEP_PREPARE_NOT_ALLOWED` 时，把报错打印的
+  精确 `allowBuilds` 键（`@chiro2001/dsh-dcp@https://codeload.github.com/…`）
+  加入 profile 的 `pnpm-workspace.yaml` 后重跑；`esbuild`/`koffi` 等依赖
+  同理按提示追加。
 - `lib/` 构建产物随提交推送，作为直装兜底。
 
 ## 测试驱动开发规则

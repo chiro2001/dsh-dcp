@@ -35,8 +35,19 @@ dsh plugin --profile web add 'github:chiro2001/dsh-dcp#develop'
 ```
 
 pnpm 对 git 源插件执行 `prepare` 构建（本包已声明 `prepare: pnpm build`），
-必要时按 pnpm 提示在 profile 的 `pnpm-workspace.yaml` 放行
-`esbuild`/`koffi` 构建脚本；`lib/` 构建产物也随仓库提交，保证直装可用。
+`lib/` 构建产物也随仓库提交，保证直装可用。pnpm 11 默认禁止 git 源包执行
+构建脚本，若安装报 `ERR_PNPM_GIT_DEP_PREPARE_NOT_ALLOWED`，按报错提示把
+**错误信息中打印的精确键**加入 profile 的 `pnpm-workspace.yaml`
+（默认 `~/.dsh/profiles/<profile>/pnpm-workspace.yaml`）：
+
+```yaml
+allowBuilds:
+  '@chiro2001/dsh-dcp@https://codeload.github.com/chiro2001/dsh-dcp/tar.gz/<commit>': true
+```
+
+其中 `<commit>` 以报错里的 URL 为准、原样复制，保存后重新执行同一条
+`dsh plugin ... add` 命令即可。若 pnpm 还拦截 `esbuild`/`koffi` 等依赖的
+构建脚本，同样按提示追加对应条目。
 
 安装后插件以 `dsh.bundle.patch` 声明的 `cordis.patch.yml` 挂载到 profile，
 并注册：
