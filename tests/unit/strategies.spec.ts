@@ -23,6 +23,7 @@ function toolTurn(
   tool: string,
   args: string,
   isError = false,
+  extraResultData: Record<string, unknown> = {},
 ): void {
   session.append('turn/start', { turn })
   session.append(
@@ -71,6 +72,7 @@ function toolTurn(
         ],
         isError,
       }),
+      ...extraResultData,
     },
     { surfaceOp: 'append', sourceEventSeqs: [call.seq] },
   )
@@ -113,6 +115,41 @@ describe('automatic strategies (M3)', () => {
       .join('\n')
     expect(text).toContain('[duplicate read output removed')
     expect(text).toContain('output 2')
+  })
+
+  it('preserves non-content tool/result fields through dedup replacement', () => {
+    // dsh's surface invariant allows a tool/result replacement to change only
+    // the message content. An errored result carries extra durable data
+    // (e.g. `error: {name, code}`) that must survive the replacement, or the
+    // prune is rejected with "tool/result surface replacement may change only
+    // content" and the turn fails (observed in a real Router-Spec session).
+    const session = Session.create(SessionId('dedup-error-field'))
+    toolTurn(session, 1, 'e1', 'bash', '{"cmd":"false"}', true, {
+      error: { name: 'FsError', code: 'FS_NOT_OBSERVED' },
+    })
+    toolTurn(session, 2, 'e2', 'bash', '{"cmd":"false"}')
+    session.append('turn/start', { turn: 3 })
+
+    const result = applyDeduplication(session, fixture.ctx.tokenMeter, config())
+    expect(result.replaced).toBe(1)
+
+    const replacements = session.events.filter(
+      (event) => event.type === 'tool/result' && event.surfaceOp !== 'append',
+    )
+    expect(replacements).toHaveLength(1)
+    expect(replacements[0]?.data).toMatchObject({
+      turn: 1,
+      error: { name: 'FsError', code: 'FS_NOT_OBSERVED' },
+    })
+
+    const text = session
+      .deriveMessages()
+      .flatMap((message) => message.content)
+      .flatMap((block) => (block.type === 'tool-result' ? block.content : []))
+      .filter((block) => block.type === 'text')
+      .map((block) => (block.type === 'text' ? block.text : ''))
+      .join('\n')
+    expect(text).toContain('[duplicate bash output removed')
   })
 
   it('purges an errored single-call unit and is disabled by default', () => {

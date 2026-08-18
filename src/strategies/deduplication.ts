@@ -137,8 +137,14 @@ export function applyDeduplication(
     session.append(
       'tool/result',
       {
-        turn: event.data.turn,
-        step: event.data.step,
+        // dsh's surface invariant permits a tool/result replacement to change
+        // only the message content: every other data field must survive
+        // verbatim. Spread the original data first so optional durable fields
+        // (e.g. an errored result's `error: {name, code}`) are preserved;
+        // rebuilding just {turn, step, message} previously dropped them and
+        // made dsh reject the prune with "tool/result surface replacement may
+        // change only content".
+        ...event.data,
         message: pruned,
       },
       {

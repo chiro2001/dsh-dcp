@@ -1,5 +1,16 @@
 # CHANGELOG
 
+## 0.1.0-rc.5 (2026-08-18)
+
+- 修复 dedup 替换丢字段导致 dsh 拒绝的回归：`applyDeduplication` 构造
+  `tool/result` 替换事件时只带 `{turn, step, message}`，丢弃了原始事件中
+  可选的非消息字段（如失败结果的 `error: {name, code}`），触发 dsh 的
+  surface 不变量 `tool/result surface replacement may change only content`，
+  会话在“继续”时直接报错并停止工作。现在替换事件保留原始 `data` 全部字段，
+  仅替换消息 content。
+- 新增回归单测：带 `error` 字段的重复工具结果可被 dedup 替换且不违反
+  surface 不变量（旧代码该用例在 `session.append` 处抛出同样的错误）。
+
 ## 0.1.0-rc.4 (2026-08-16)
 
 - round-0005 P0 关闭：
