@@ -877,8 +877,12 @@ dsh-dynamic-context-pruning/
   决定；`compress.enabled` 只决定注册/可用性。
 - **[推断]** 删除 `pruneNotification`、`showCompression`、`summaryBuffer` 等尚无稳定
   dsh 语义的键，避免配置先于行为。
-- **[推断]** `ctx.settings.register('dcp', schema)` 是唯一 v0.1 配置入口；热更新若
-  改变工具 schema/system guidance，接受并测试一次真实 header change。
+- **[事实]** v0.1 实际配置入口是组合树中 `dcp` 行的 `config`（profile
+  `cordis.patch.yml` / home `cordis.patch.yml` 可覆盖），插件 `apply(ctx, config)`
+  直接消费并 `resolveConfig`。当前 `ctx.settings.register('dcp', Config)` 只注册
+  namespace，代码没有读取 `settings.get('dcp')` 或使用 `installSettingsSection`，
+  因此 `~/.dsh/settings.yaml` 里的 `dcp:` 分节不会影响运行时。热更新若改变工具
+  schema/system guidance，仍需接受并测试一次真实 header change。
 - **[推断]** `manualMode.default` 仅用于没有成功 manual command 的会话；命令状态
   是 session-local，配置变化不覆盖已显式选择。
 
