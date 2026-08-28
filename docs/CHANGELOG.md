@@ -12,6 +12,8 @@
 - 修复模型误读 inline-cleanup 的问题：compress 工具结果现在明确说明完整摘要
   保存在 checkpoint 中、`[stored in bN]` 只是清理标记；系统提示同步加入该
   语义说明，并把结果格式化为可单测的纯函数。
+- 新增 `docs/COMPRESSION.md`，完整描述压缩处理流：边界、校验、checkpoint
+  注入、inline cleanup、模型可见语义、多 range、恢复与常见误读。
 
 ## 0.1.0-rc.6 (2026-08-28)
 
