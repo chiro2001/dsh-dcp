@@ -44,7 +44,10 @@ export function buildCheckpointText(
   summary: string,
   protectedAppendix = '',
 ): string {
-  const body = summary.trim()
+  // The model sometimes prefixes summary prose with the assigned block ref
+  // (e.g. "[b2] user asked ...").  Only <dcp-message-id> carries the block
+  // identity; strip such a leading marker so the checkpoint text stays clean.
+  const body = summary.trim().replace(/^\[b\d+\]\s*/, '')
   return `[Compressed conversation section]\n${body}${protectedAppendix}\n\n<dcp-message-id>${blockRef}</dcp-message-id>`
 }
 

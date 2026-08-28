@@ -1,5 +1,15 @@
 # CHANGELOG
 
+## Unreleased
+
+- 修复 checkpoint 摘要可能被模型写入 `[bN]` 前缀的问题：
+  `buildCheckpointText()` 现在会剥离开头的块引用标记；schema 也拒绝以
+  `[b` 开头的 summary，并提示模型重写为实际技术正文。
+- 强化模型提示/工具描述：明确一次可传多个 non-overlapping range、摘要必须
+  是注入上下文的完整正文、不得使用 `[stored in bN]` 之类的指针占位。
+- `docs/PROTOCOL.md`、`docs/STATS.md` 补充摘要正文规范与
+  “区间压缩 token / inline-cleanup token”口径说明。
+
 ## 0.1.0-rc.6 (2026-08-28)
 
 - **适配 dsh `0.1.1-rc.2`**：peer/dev 依赖从 `0.1.0-rc.6` 全部升至

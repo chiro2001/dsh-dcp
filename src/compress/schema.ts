@@ -57,6 +57,8 @@ export function validateCompressArgs(args: unknown, maxRanges: number): string[]
       errors.push(`content[${index}].summary must be a non-empty string`)
     } else if (range.summary.length > 8000) {
       errors.push(`content[${index}].summary must be at most 8000 characters`)
+    } else if (/^\[b\d+\]/.test(range.summary.trim())) {
+      errors.push(`content[${index}].summary must not start with a blockRef marker like [b1]`)
     }
   }
   return errors

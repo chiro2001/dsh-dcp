@@ -64,8 +64,9 @@ allowBuilds:
 
 ## 能力
 
-- `compress` 工具：half-open range、工具配对校验、多 range 独立事务、
-  `bN` 嵌套、同一步 inline 摘要清理。
+- `compress` 工具：half-open range、工具配对校验、一次可传多个 non-overlapping
+  range（各自独立事务）、`bN` 嵌套、同一步 inline 摘要清理；摘要正文不得以
+  `[bN]` 块引用前缀开头（构造 checkpoint 时也会自动剥离）。
 - 保护：用户消息/`<protect>`/受保护工具/文件路径/来源 verbatim 附录；
   instructions/snapshot 硬保护。
 - 自动策略：重复调用去重（pre-step，幂等）；错误单元清理（实验，默认关）。

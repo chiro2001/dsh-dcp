@@ -54,4 +54,28 @@ describe('compress schema validation (M5 coverage)', () => {
       ),
     ).toContain('summary must be at most 8000 characters')
   })
+
+  it('rejects summaries that start with a blockRef marker', () => {
+    expect(
+      messages(
+        { topic: 't', content: [{ startRef: 'm1', endRef: 'm2', summary: '[b1] summary' }] },
+        3,
+      ),
+    ).toContain('content[0].summary must not start with a blockRef marker like [b1]')
+    expect(
+      messages(
+        { topic: 't', content: [{ startRef: 'm1', endRef: 'm2', summary: '[b12]summary' }] },
+        3,
+      ),
+    ).toContain('content[0].summary must not start with a blockRef marker like [b1]')
+  })
+
+  it('accepts summaries that merely mention blockRef markers later in the text', () => {
+    expect(
+      validateCompressArgs(
+        { topic: 't', content: [{ startRef: 'm1', endRef: 'm2', summary: 'see [b1] above' }] },
+        3,
+      ),
+    ).toEqual([])
+  })
 })

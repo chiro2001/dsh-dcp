@@ -74,9 +74,14 @@ recovered-unclosed / committed / failed-attempt`（M0 E-03 锁定）。
 
 - exclusive 调度，走宿主 approval；config `compress.enabled=false` 时不注册。
 - 参数：`topic` + `content[]`（`startRef`、`endRef`、`summary`）。
+- 一次可传多个 non-overlapping、已闭合的 range；每个 range 各自独立提交，
+  工具按当前 surface 逐笔重解析，失败项返回 partial result。
 - 校验：refs 可解析、范围按 surface 顺序且不重叠、两侧 cuts 工具配对平衡、
   不进入最近 `retainRecentTurns` 个 turn、不含当前 compress 调用、
-  不含硬保护（instructions/snapshot）、净节省 ≥ `minNetSavingsTokens`。
+  不含硬保护（instructions/snapshot）、净节省 ≥ `minNetSavingsTokens`；
+  summary 必须包含实际技术正文、不得以 `[bN]` 块引用前缀开头（schema 拒绝，
+  checkpoint 构造时也会剥离，blockRef 只能由 `<dcp-message-id>` 表达），
+  也不允许写 `[stored in bN]` 这类指针式占位作为摘要正文。
 - 多 range 各自独立事务；批内后续 range 在提交时按当前 surface 重解析；
   失败项返回 partial result，不伪造跨 range 原子性。
 - 嵌套：范围内 active `bN` 被消费，旧摘要 verbatim 保留在

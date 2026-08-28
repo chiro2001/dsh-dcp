@@ -30,9 +30,11 @@ export function createCompressTool(ctx: Context, config: DcpConfig) {
   return defineTool({
     name: 'compress',
     description:
-      'Compress one closed conversation range into a summary checkpoint. ' +
+      'Compress one or more closed conversation ranges into summary checkpoints. ' +
       'Ranges are half-open [startRef, endRef): startRef is included, endRef is excluded. ' +
-      'Use boundary refs visible in context (mNNNN). Only closed, tool-pairing-balanced ranges are accepted.',
+      'Use boundary refs visible in context (mNNNN). Only closed, tool-pairing-balanced ranges are accepted. ' +
+      'Multiple non-overlapping ranges may be supplied in one call; each is committed independently. ' +
+      'Summaries must be plain prose without blockRef markers like [b1].',
     parameters: {
       topic: {
         type: 'string',
@@ -59,7 +61,8 @@ export function createCompressTool(ctx: Context, config: DcpConfig) {
             summary: {
               type: 'string',
               required: true,
-              description: 'Complete technical summary replacing the range',
+              description:
+                'Complete technical summary injected into the conversation as the checkpoint; must be actual content, not a pointer or placeholder',
             },
           },
         },

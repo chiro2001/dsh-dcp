@@ -24,6 +24,17 @@
 
 不再使用 clamp 后的 `netSavedTokens`；负数如实呈现为 `history overhead`。
 
+### token 口径区分
+
+- `compaction/summary.shadowedTokenCount` 是被压缩**区间**的 heuristic token
+  总量，对应 `shadowedTokens`（区间压缩）。
+- `compaction/prune.shadowedTokenCount` 是 **inline cleanup** 所替换的单条
+  作者 assistant 消息 estimate，对应 `pruneTokens`/`checkpointTokens` 中的
+  prune 部分（去重/错误清理）。
+- 两者口径不同，不要直接比较：前者是整段被遮蔽历史区间，后者只是同一步
+  清理占位时被替换的模型消息。统计聚合时分别进入 `shadowedTokens` 与
+  `pruneTokens`，不会混入同一个字段。
+
 ## Domain record v1
 
 ```ts
