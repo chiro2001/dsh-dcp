@@ -9,6 +9,9 @@
   是注入上下文的完整正文、不得使用 `[stored in bN]` 之类的指针占位。
 - `docs/PROTOCOL.md`、`docs/STATS.md` 补充摘要正文规范与
   “区间压缩 token / inline-cleanup token”口径说明。
+- 修复模型误读 inline-cleanup 的问题：compress 工具结果现在明确说明完整摘要
+  保存在 checkpoint 中、`[stored in bN]` 只是清理标记；系统提示同步加入该
+  语义说明，并把结果格式化为可单测的纯函数。
 
 ## 0.1.0-rc.6 (2026-08-28)
 

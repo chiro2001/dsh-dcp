@@ -9,6 +9,7 @@ describe('dcp system guidance', () => {
     expect(text).toContain('half-open')
     expect(text).toContain('compress')
     expect(text).toContain('<dcp-message-id>bN</dcp-message-id>')
+    expect(text).toContain('is only the inline cleanup marker')
     expect(text).not.toContain('Manual mode is active')
 
     const manual = renderDcpGuidance(config, true)

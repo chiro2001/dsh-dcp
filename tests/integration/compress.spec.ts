@@ -232,6 +232,27 @@ describe('compress range pipeline (M1)', () => {
     }
     expect(parsed.content[0]!.summary).toBe('[stored in b1]')
 
+    // Regression: the checkpoint is the authoritative copy of the full summary,
+    // while [stored in b1] is only the cleaned inline tool-call marker. This is
+    // the distinction the model can confuse after seeing its rewritten message.
+    const checkpointMessages = derived.filter((message) =>
+      message.content.some(
+        (block) =>
+          block.type === 'text' && block.text.includes('<dcp-message-id>b1</dcp-message-id>'),
+      ),
+    )
+    const checkpointText = checkpointMessages
+      .map((message) =>
+        message.content
+          .filter((block) => block.type === 'text')
+          .map((block) => (block.type === 'text' ? block.text : ''))
+          .join('\n'),
+      )
+      .join('\n')
+    expect(checkpointText).toContain('consolidated summary')
+    expect(checkpointText).not.toContain('[stored in b1]')
+    expect(parsed.content[0]!.summary).not.toContain('consolidated summary')
+
     // Replay state and token accounting.
     const state = reduceDcpState([...session.events])
     expect(state.blocks[0]?.membership).toBe('active')

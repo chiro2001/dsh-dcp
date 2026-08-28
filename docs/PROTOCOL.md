@@ -88,6 +88,9 @@ recovered-unclosed / committed / failed-attempt`（M0 E-03 锁定）。
   `Included prior blocks` 附录。
 - inline 摘要参数在同一步清理为 `[stored in bN]`（保留 block/callId 与
   message id）。
+- 模型可见语义：清理后的 `[stored in bN]` 只是 assistant tool-call 参数中的
+  inline-cleanup 标记；完整摘要以新 checkpoint `user/message` 为权威内容。
+  模型不应把该标记理解为“摘要丢失”或“原始 summary 就是占位符”。
 
 ## 5. 自动策略（pre-step）
 

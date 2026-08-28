@@ -9,7 +9,8 @@ import { defineTool } from '@deepseek-ai/dsh-tools'
 import { CompactionId } from '@deepseek-ai/dsh-compaction'
 import type { Session } from '@deepseek-ai/dsh-session'
 import type { DcpConfig } from '../config.js'
-import { executeCompressRange, type CompressRangeResult } from './pipeline.js'
+import { executeCompressRange } from './pipeline.js'
+import { formatCompressResult } from './result.js'
 
 export function findAuthorMessageId(session: Session, callId: string): string | undefined {
   for (const seq of session.surface.nodes) {
@@ -82,29 +83,12 @@ export function createCompressTool(ctx: Context, config: DcpConfig) {
       const session = exec.agent.session
       const callId = String(exec.callId)
       const authorMessageId = findAuthorMessageId(session, callId) ?? 'unknown'
-      const result: CompressRangeResult = executeCompressRange(
-        session,
-        ctx.tokenMeter,
-        config,
-        args as never,
-        {
-          compactionId: CompactionId(`dcp-${callId}`),
-          compressCallId: callId,
-          authorMessageId,
-        },
-      )
-      const warning = result.cleanupWarning
-        ? ` (cleanup warning: ${result.cleanupWarning})`
-        : ''
-      const blockSummary = result.blocks.map((block) => block.blockRef).join(', ')
-      const messages = result.blocks.reduce((sum, block) => sum + block.compressedMessages, 0)
-      const failedSummary =
-        result.failed.length > 0
-          ? ` ${result.failed.length} range(s) failed: ${result.failed
-              .map((entry) => `${entry.startRef}..${entry.endRef}: ${entry.error}`)
-              .join('; ')}`
-          : ''
-      return `Compressed ${messages} message(s) into ${blockSummary}.${failedSummary}${warning}`
+      const result = executeCompressRange(session, ctx.tokenMeter, config, args as never, {
+        compactionId: CompactionId(`dcp-${callId}`),
+        compressCallId: callId,
+        authorMessageId,
+      })
+      return formatCompressResult(result)
     },
   })
 }
