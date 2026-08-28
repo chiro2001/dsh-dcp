@@ -200,12 +200,14 @@ describe.skipIf(!enabled)('real agent + real model (opencode go, isolated env)',
     const contextResult = await ctx.commands.execute(
       agent,
       '/dcp context',
+      [],
       new AbortController().signal,
     )
     expect(contextResult?.result.kind).toBe('success')
     const manualResult = await ctx.commands.execute(
       agent,
       '/dcp manual on',
+      [],
       new AbortController().signal,
     )
     expect(manualResult?.result.kind).toBe('success')

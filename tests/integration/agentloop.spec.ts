@@ -162,6 +162,7 @@ describe('deterministic AgentLoop matrix (M6.0)', () => {
     const command = await ctx.commands.execute(
       agent,
       '/dcp context',
+      [],
       new AbortController().signal,
     )
     expect(command?.result.kind).toBe('success')
@@ -204,24 +205,28 @@ describe('deterministic AgentLoop matrix (M6.0)', () => {
     const unknown = await ctx.commands.execute(
       agent,
       '/dcp unknown',
+      [],
       new AbortController().signal,
     )
     expect(unknown?.result.kind).toBe('error')
     const missingShow = await ctx.commands.execute(
       agent,
       '/dcp show',
+      [],
       new AbortController().signal,
     )
     expect(missingShow?.result.kind).toBe('error')
     const badShow = await ctx.commands.execute(
       agent,
       '/dcp show x',
+      [],
       new AbortController().signal,
     )
     expect(badShow?.result.kind).toBe('error')
     const manual = await ctx.commands.execute(
       agent,
       '/dcp manual status',
+      [],
       new AbortController().signal,
     )
     expect(manual?.result.kind).toBe('success')

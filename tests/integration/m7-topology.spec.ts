@@ -79,7 +79,12 @@ describe('M7.0: production topology for /dcp stats', () => {
     )
     await waitForIdle(agent)
 
-    const before = await ctx.commands.execute(agent, '/dcp stats', new AbortController().signal)
+    const before = await ctx.commands.execute(
+      agent,
+      '/dcp stats',
+      [],
+      new AbortController().signal,
+    )
     expect(before?.result.kind).toBe('success')
     expect(before?.result.text).toContain('persistent domain: unavailable')
 
@@ -90,7 +95,7 @@ describe('M7.0: production topology for /dcp stats', () => {
 
     let after: Awaited<ReturnType<typeof ctx.commands.execute>> | undefined
     for (let attempt = 0; attempt < 20; attempt++) {
-      after = await ctx.commands.execute(agent, '/dcp stats', new AbortController().signal)
+      after = await ctx.commands.execute(agent, '/dcp stats', [], new AbortController().signal)
       if (after?.result.text?.includes('persistent domain: current')) break
       await new Promise((resolve) => setTimeout(resolve, 50))
     }
