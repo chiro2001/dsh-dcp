@@ -5,7 +5,7 @@
 - 仓库：`chiro2001/dsh-dcp`（public）。
 - 分支：`main`（稳定）、`develop`（集成交付）。
 - 版本：`v0.1.0-rc.1`、`v0.1.0-rc.2`、`v0.1.0-rc.3`、`v0.1.0-rc.4`、
-  `v0.1.0-rc.5`、`v0.1.0-rc.6`
+  `v0.1.0-rc.5`、`v0.1.0-rc.6`、`v0.1.0-rc.6-1`
   （git tag + GitHub Release）。
 - 安装：`dsh plugin --profile <p> add 'github:chiro2001/dsh-dcp#<tag>'`。
 - 打包验证：`pnpm pack --dry-run` 通过，tarball 含 `lib/`、`LICENSE`、

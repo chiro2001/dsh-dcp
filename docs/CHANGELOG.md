@@ -1,6 +1,6 @@
 # CHANGELOG
 
-## Unreleased
+## 0.1.0-rc.6-1 (2026-08-28)
 
 - 修复 checkpoint 摘要可能被模型写入 `[bN]` 前缀的问题：
   `buildCheckpointText()` 现在会剥离开头的块引用标记；schema 也拒绝以
