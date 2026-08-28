@@ -58,7 +58,7 @@ pnpm run e2e:real                   # 真实 Agent + 真实 LLM（opencode go / 
 ```bash
 dsh plugin --profile web add chiro2001/dsh-dcp                  # 默认分支
 dsh plugin --profile web add 'github:chiro2001/dsh-dcp#develop' # 指定分支
-dsh plugin --profile web add 'github:chiro2001/dsh-dcp#v0.1.0-rc.5'
+dsh plugin --profile web add 'github:chiro2001/dsh-dcp#v0.1.0-rc.6'
 ```
 
 - npm 包名 `@chiro2001/dsh-dcp`，安装/更新一律走 GitHub 仓库

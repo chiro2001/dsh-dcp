@@ -5,7 +5,7 @@ DeepSeek Harness（dsh）的动态上下文管理插件：对标
 （opencode-dcp）的原理与实现，在 dsh 上提供模型驱动的上下文压缩、工具结果剪枝、
 错误输入清理、压缩块嵌套、受保护内容保留、手动命令与统计。
 
-> **状态**：v0.1.0-rc.5 已实现并发布（public repo）。
+> **状态**：v0.1.0-rc.6 已实现并发布（public repo）。
 > 详细方案见 [docs/PLAN.md](docs/PLAN.md)，协议见
 > [docs/PROTOCOL.md](docs/PROTOCOL.md)，变更见
 > [docs/CHANGELOG.md](docs/CHANGELOG.md)，下一阶段见
@@ -30,7 +30,7 @@ dsh plugin --profile web add chiro2001/dsh-dcp
 `@chiro2001/dsh-dcp`，未发布 registry）。固定版本/分支：
 
 ```bash
-dsh plugin --profile web add 'github:chiro2001/dsh-dcp#v0.1.0-rc.5'
+dsh plugin --profile web add 'github:chiro2001/dsh-dcp#v0.1.0-rc.6'
 dsh plugin --profile web add 'github:chiro2001/dsh-dcp#develop'
 ```
 
@@ -80,10 +80,10 @@ allowBuilds:
 
 ## 兼容矩阵
 
-- 实测支持：dsh `0.1.0-rc.6`（M0 contract、deterministic AgentLoop、重启、
+- 实测支持：dsh `0.1.1-rc.2`（M0 contract、deterministic AgentLoop、重启、
   e2e 安装、真实模型 smoke 全部通过）。
 - 其他 dsh 版本：未实测前不进入 peer 范围（当前 peer 精确锁定
-  `0.1.0-rc.6`）；新版本需先跑相同矩阵再扩范围。
+  `0.1.1-rc.2`）；新版本需先跑相同矩阵再扩范围。
 
 ## 自测
 

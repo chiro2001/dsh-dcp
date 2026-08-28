@@ -1,5 +1,17 @@
 # CHANGELOG
 
+## 0.1.0-rc.6 (2026-08-28)
+
+- **适配 dsh `0.1.1-rc.2`**：peer/dev 依赖从 `0.1.0-rc.6` 全部升至
+  `0.1.1-rc.2`，并补齐新增的传递 peer（`dsh-attachment`、`dsh-brand`、
+  `dsh-timeout`、`dsh-typert-protocol`、`dsh-atomic-write`、
+  `dsh-home-paths`、`dsh-user-approval`、`dsh-code-runtime`），
+  `pnpm peers check` 无告警。
+- 适配 `commands.execute` 新签名（新增 `images` 参数）：更新
+  agentloop/m7-topology/e2e-real 测试调用点。
+- 兼容矩阵更新：实测支持 dsh `0.1.1-rc.2`（typecheck、lint、单测/集成
+  79 项、build、check:package、真实模型 e2e 4 项全部通过）。
+
 ## 0.1.0-rc.5 (2026-08-18)
 
 - 修复 dedup 替换丢字段导致 dsh 拒绝的回归：`applyDeduplication` 构造

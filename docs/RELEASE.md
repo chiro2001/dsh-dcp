@@ -5,7 +5,7 @@
 - 仓库：`chiro2001/dsh-dcp`（public）。
 - 分支：`main`（稳定）、`develop`（集成交付）。
 - 版本：`v0.1.0-rc.1`、`v0.1.0-rc.2`、`v0.1.0-rc.3`、`v0.1.0-rc.4`、
-  `v0.1.0-rc.5`
+  `v0.1.0-rc.5`、`v0.1.0-rc.6`
   （git tag + GitHub Release）。
 - 安装：`dsh plugin --profile <p> add 'github:chiro2001/dsh-dcp#<tag>'`。
 - 打包验证：`pnpm pack --dry-run` 通过，tarball 含 `lib/`、`LICENSE`、
@@ -25,6 +25,6 @@
 
 ## 支持矩阵
 
-- 实测支持 dsh `0.1.0-rc.6`（M0 contract、deterministic AgentLoop、重启、
+- 实测支持 dsh `0.1.1-rc.2`（M0 contract、deterministic AgentLoop、重启、
   e2e 安装、真实模型 smoke/probes 全部通过）。
-- 其他版本未实测前不进入 peer 范围（当前 peer 精确锁定 `0.1.0-rc.6`）。
+- 其他版本未实测前不进入 peer 范围（当前 peer 精确锁定 `0.1.1-rc.2`）。
