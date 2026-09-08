@@ -27,6 +27,8 @@ import type { CompressRangeEntry } from './schema.js'
 
 export interface PreparedRange {
   entry: CompressRangeEntry
+  /** Position in the model's original `content[]`; survives normalization. */
+  originalIndex: number
   topic: string
   startSeq: SessionSeq
   endSeq: SessionSeq
@@ -49,11 +51,98 @@ export function buildCheckpointText(
   summary: string,
   protectedAppendix = '',
 ): string {
-  // The model sometimes prefixes summary prose with the assigned block ref
-  // (e.g. "[b2] user asked ...").  Only <dcp-message-id> carries the block
-  // identity; strip such a leading marker so the checkpoint text stays clean.
-  const body = summary.trim().replace(/^\[b\d+\]\s*/, '')
+  // The model sometimes prefixes summary prose with a block ref. Reserved
+  // cleanup/pointer markers are stripped defensively only when they are a
+  // leading token: mentioning one in the technical body is valid information
+  // and must remain intact. Schema validation rejects a reserved leading
+  // marker on the normal tool path, but this builder is also used by lower
+  // level recovery code. Only <dcp-message-id> carries checkpoint identity.
+  let body = summary.trim().replace(/^\[b\d+\]\s*/, '')
+  for (;;) {
+    const stripped = body
+      .replace(/^\[stored\s+in\s+b(?:\d+|n)\]\s*/i, '')
+      .replace(/^<\/?dcp-inline-cleanup\b[^>]*>\s*/i, '')
+    if (stripped === body) break
+    body = stripped.trim()
+  }
   return `[Compressed conversation section]\n${body}${protectedAppendix}\n\n<dcp-message-id>${blockRef}</dcp-message-id>`
+}
+
+interface ActiveBoundary {
+  ref: string
+  position: number
+}
+
+function activeBoundaryCandidates(
+  state: DcpReplayState,
+  surface: readonly SessionSeq[],
+): ActiveBoundary[] {
+  const candidates: ActiveBoundary[] = []
+  const seen = new Set<string>()
+  for (const boundary of state.boundaryRefs) {
+    if (!boundary.active || seen.has(`${boundary.ref}:${String(boundary.seq)}`)) continue
+    const position = surface.indexOf(boundary.seq)
+    if (position === -1 || !/^m\d+$|^b\d+$/.test(boundary.ref)) continue
+    seen.add(`${boundary.ref}:${String(boundary.seq)}`)
+    candidates.push({ ref: boundary.ref, position })
+  }
+  // A native compaction can leave an old m ref addressable through an alias
+  // even though its original marker is no longer active.
+  for (const alias of state.aliases) {
+    const position = surface.indexOf(alias.seq)
+    if (position === -1 || !/^m\d+$|^b\d+$/.test(alias.ref)) continue
+    if (candidates.some((candidate) => candidate.ref === alias.ref)) continue
+    candidates.push({ ref: alias.ref, position })
+  }
+  return candidates.toSorted(
+    (left, right) => left.position - right.position || left.ref.localeCompare(right.ref),
+  )
+}
+
+/** Find the furthest boundary that can end before retained recent turns. */
+function latestEligibleEndRef(
+  state: DcpReplayState,
+  surface: readonly SessionSeq[],
+  events: readonly SessionEvent[],
+  startPosition: number,
+  latestTurn: number,
+  retainRecentTurns: number,
+): string | undefined {
+  const cutoffTurn = latestTurn - retainRecentTurns
+  const candidatesByPosition = new Map<number, ActiveBoundary[]>()
+  for (const candidate of activeBoundaryCandidates(state, surface)) {
+    const atPosition = candidatesByPosition.get(candidate.position) ?? []
+    atPosition.push(candidate)
+    candidatesByPosition.set(candidate.position, atPosition)
+  }
+
+  let maxTurnBefore = 0
+  const eligible: ActiveBoundary[] = []
+  for (let position = 0; position <= surface.length; position++) {
+    if (position > startPosition && maxTurnBefore <= cutoffTurn) {
+      eligible.push(...(candidatesByPosition.get(position) ?? []))
+    }
+    const seq = surface[position]
+    if (seq !== undefined) {
+      const turn = turnOfSeq(events, seq)
+      if (turn !== undefined) maxTurnBefore = Math.max(maxTurnBefore, turn)
+    }
+  }
+  return (
+    eligible.findLast((candidate) => /^m\d+$/.test(candidate.ref))?.ref ?? eligible.at(-1)?.ref
+  )
+}
+
+/** Find the next active boundary that can become a safe range start. */
+function nextActiveBoundaryRef(
+  state: DcpReplayState,
+  surface: readonly SessionSeq[],
+  protectedPosition: number,
+  endPosition: number,
+): string | undefined {
+  return activeBoundaryCandidates(state, surface).find(
+    (candidate) => candidate.position > protectedPosition && candidate.position < endPosition,
+  )?.ref
 }
 
 export function prepareRange(
@@ -65,6 +154,7 @@ export function prepareRange(
   blockRef: string,
   topic: string,
   events: readonly SessionEvent[] = session.snapshotEvents(),
+  originalIndex = 0,
 ): PrepareResult {
   const surface = [...session.surface.nodes]
   const resolved = resolveRange(
@@ -101,25 +191,40 @@ export function prepareRange(
   const latestTurn = Math.max(0, ...surface.map((seq) => turnOfSeq(events, seq) ?? 0))
   const maxShadowedTurn = Math.max(0, ...turns)
   if (maxShadowedTurn > latestTurn - config.compress.retainRecentTurns) {
+    const eligibleEndRef = latestEligibleEndRef(
+      state,
+      surface,
+      events,
+      resolved.startPosition,
+      latestTurn,
+      config.compress.retainRecentTurns,
+    )
     return {
       ok: false,
       errors: [
-        `range ${entry.startRef}..${entry.endRef} enters the last ${config.compress.retainRecentTurns} turn(s); choose older content`,
+        `range ${entry.startRef}..${entry.endRef} enters the last ${config.compress.retainRecentTurns} turn(s); ${eligibleEndRef === undefined ? 'no eligible endRef remains; skip this range' : `use an endRef at or before ${eligibleEndRef}`} [latestEligibleEndRef=${eligibleEndRef ?? 'none'}]`,
       ],
     }
   }
 
   // Hard-protected instruction/snapshot forms may never be shadowed.
-  for (const seq of shadowedSeqs) {
+  for (const [offset, seq] of shadowedSeqs.entries()) {
     const event = session.eventAt(seq)
     if (
       event?.type === 'user/message' &&
       hardProtectedForm((event.data.source as { form?: unknown }).form)
     ) {
+      const protectedPosition = resolved.startPosition + offset
+      const nextBoundary = nextActiveBoundaryRef(
+        state,
+        surface,
+        protectedPosition,
+        resolved.endPosition,
+      )
       return {
         ok: false,
         errors: [
-          `range ${entry.startRef}..${entry.endRef} contains a hard-protected instruction/snapshot node`,
+          `range ${entry.startRef}..${entry.endRef} contains a hard-protected instruction/snapshot node; ${nextBoundary === undefined ? 'skip this range; no active boundary remains after the protected node' : `retry with startRef at or after ${nextBoundary}`} [nextActiveBoundary=${nextBoundary ?? 'none'}]`,
         ],
       }
     }
@@ -156,10 +261,14 @@ export function prepareRange(
   })
   const tokensOut = tokenMeter.estimateMessage(checkpointMessage)
   if (tokensIn - tokensOut < config.compress.minNetSavingsTokens) {
+    const savingsGapTokens = Math.max(
+      0,
+      Math.ceil(config.compress.minNetSavingsTokens - (tokensIn - tokensOut)),
+    )
     return {
       ok: false,
       errors: [
-        `range ${entry.startRef}..${entry.endRef} saves ~${tokensIn - tokensOut} tokens, below minNetSavingsTokens=${config.compress.minNetSavingsTokens}`,
+        `range ${entry.startRef}..${entry.endRef} saves ~${tokensIn - tokensOut} tokens, below minNetSavingsTokens=${config.compress.minNetSavingsTokens}; need ${savingsGapTokens} more token(s) [savingsGapTokens=${savingsGapTokens}]`,
       ],
     }
   }
@@ -168,6 +277,7 @@ export function prepareRange(
     ok: true,
     prepared: {
       entry,
+      originalIndex,
       topic,
       startSeq: resolved.startSeq,
       endSeq: resolved.endSeq,
@@ -187,7 +297,12 @@ export function prepareRange(
 export type PrepareBatchResult =
   { ok: true; prepared: PreparedRange[] } | { ok: false; errors: string[] }
 
-/** Prepare all ranges in surface order, reject overlaps, allocate block refs. */
+/**
+ * Resolve and prepare all ranges in surface order, regardless of the order in
+ * which the model supplied them. Overlaps are still rejected after sorting.
+ * The original content index travels with each prepared range so callers can
+ * commit safely in surface order and rewrite per-entry results correctly.
+ */
 export function prepareBatch(
   session: Session,
   tokenMeter: TokenMeter,
@@ -207,10 +322,11 @@ export function prepareBatch(
 
   const resolved: Array<{
     entry: CompressRangeEntry
+    originalIndex: number
     startPosition: number
     endPosition: number
   }> = []
-  for (const entry of args.content) {
+  for (const [originalIndex, entry] of args.content.entries()) {
     const result = resolveRange(
       [...session.surface.nodes],
       state.boundaryRefs,
@@ -221,25 +337,38 @@ export function prepareBatch(
     if (!result.ok) return { ok: false, errors: [result.reason] }
     resolved.push({
       entry,
+      originalIndex,
       startPosition: result.startPosition,
       endPosition: result.endPosition,
     })
   }
-  for (let index = 1; index < resolved.length; index++) {
-    const previous = resolved[index - 1]!
-    const current = resolved[index]!
+
+  // Surface order is the safe commit order: replacing an older range keeps
+  // later boundaries on the surface, while replacing a newer range first can
+  // consume the start boundary of an older range. Make this an internal
+  // implementation detail rather than a constraint on model output.
+  const normalized = resolved.toSorted(
+    (left, right) =>
+      left.startPosition - right.startPosition ||
+      left.endPosition - right.endPosition ||
+      left.originalIndex - right.originalIndex,
+  )
+
+  for (let index = 1; index < normalized.length; index++) {
+    const previous = normalized[index - 1]!
+    const current = normalized[index]!
     if (current.startPosition < previous.endPosition) {
       return {
         ok: false,
         errors: [
-          `ranges must be in surface order and non-overlapping: ${previous.entry.startRef}..${previous.entry.endRef} overlaps ${current.entry.startRef}..${current.entry.endRef}`,
+          `ranges must be non-overlapping: ${previous.entry.startRef}..${previous.entry.endRef} overlaps ${current.entry.startRef}..${current.entry.endRef}`,
         ],
       }
     }
   }
 
   const prepared: PreparedRange[] = []
-  for (const [index, resolvedEntry] of resolved.entries()) {
+  for (const [index, resolvedEntry] of normalized.entries()) {
     const blockRef = `b${firstBlockNumber + index}`
     const result = prepareRange(
       session,
@@ -250,6 +379,7 @@ export function prepareBatch(
       blockRef,
       args.topic,
       events,
+      resolvedEntry.originalIndex,
     )
     if (!result.ok) return { ok: false, errors: result.errors }
     prepared.push(result.prepared)

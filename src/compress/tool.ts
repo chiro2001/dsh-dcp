@@ -5,12 +5,21 @@
  */
 
 import type { Context } from '@deepseek-ai/cordis'
-import { defineTool } from '@deepseek-ai/dsh-tools'
+import { defineTool, type ToolExecutionToken } from '@deepseek-ai/dsh-tools'
+import type { ToolExecution } from '@deepseek-ai/dsh-tools'
 import { CompactionId } from '@deepseek-ai/dsh-compaction'
 import type { Session } from '@deepseek-ai/dsh-session'
 import type { DcpConfig } from '../config.js'
 import { executeCompressRange } from './pipeline.js'
-import { formatCompressResult } from './result.js'
+import { formatCompressFailure, formatCompressResult } from './result.js'
+import { classifyCompressToolFailure } from './schema.js'
+import { renderCompressToolDescription } from '../prompts/compression-rules.js'
+
+interface ExecutionOutcome {
+  callId: string
+  token: ToolExecutionToken
+  result: ReturnType<typeof executeCompressRange>
+}
 
 export function findAuthorMessageId(session: Session, callId: string): string | undefined {
   for (const seq of session.surface.nodes) {
@@ -28,14 +37,14 @@ export function findAuthorMessageId(session: Session, callId: string): string | 
 }
 
 export function createCompressTool(ctx: Context, config: DcpConfig) {
+  // The same tool definition serves many calls.  Keep each successful
+  // pipeline outcome tied to the registry-owned execution identity so a
+  // later policy failure cannot accidentally report another call's blocks.
+  const outcomesByExecution = new WeakMap<object, ExecutionOutcome>()
+
   return defineTool({
     name: 'compress',
-    description:
-      'Compress one or more closed conversation ranges into summary checkpoints. ' +
-      'Ranges are half-open [startRef, endRef): startRef is included, endRef is excluded. ' +
-      'Use boundary refs visible in context (mNNNN). Only closed, tool-pairing-balanced ranges are accepted. ' +
-      'Multiple non-overlapping ranges may be supplied in one call; each is committed independently. ' +
-      'Summaries must be plain prose without blockRef markers like [b1].',
+    description: renderCompressToolDescription(config),
     parameters: {
       topic: {
         type: 'string',
@@ -52,18 +61,20 @@ export function createCompressTool(ctx: Context, config: DcpConfig) {
             startRef: {
               type: 'string',
               required: true,
-              description: 'Inclusive start boundary ref, e.g. m0001',
+              description:
+                'Current closed start boundary ref from context; do not copy a literal example',
             },
             endRef: {
               type: 'string',
               required: true,
-              description: 'Exclusive end boundary ref, e.g. m0007',
+              description:
+                'Current closed exclusive end boundary ref from context; do not copy a literal example',
             },
             summary: {
               type: 'string',
               required: true,
               description:
-                'Complete technical summary injected into the conversation as the checkpoint; must be actual content, not a pointer or placeholder',
+                'Technical summary injected as the checkpoint. For substantial ranges use applicable Goal, Constraints, Decisions, Artifacts, Failures, Verification, and Open work fields; for a small, single-purpose range use compact high-fidelity prose. Omit empty fields and never mechanically fill "none", use a pointer, or omit facts.',
             },
           },
         },
@@ -72,6 +83,36 @@ export function createCompressTool(ctx: Context, config: DcpConfig) {
     output: {
       schema: { type: 'string' },
       render: (_args, value) => [{ type: 'text', text: value }],
+    },
+    finalizeContent(exec, result) {
+      const stored = outcomesByExecution.get(exec)
+      try {
+        if (!result.isError) return undefined
+        if (
+          stored !== undefined &&
+          stored.callId === String(exec.callId) &&
+          stored.token === exec.token
+        ) {
+          // The compaction already happened.  A downstream policy error must
+          // remain an error, but its text must describe the real committed
+          // blocks so the model never retries an already-authoritative range.
+          return [{ type: 'text', text: formatCompressResult(stored.result) }]
+        }
+        return [
+          {
+            type: 'text',
+            text: formatCompressFailure(
+              exec.arguments,
+              result.error,
+              classifyCompressToolFailure(result.error),
+            ),
+          },
+        ]
+      } finally {
+        // Finalization is the last point at which the execution-local outcome
+        // is needed.  Do not retain a completed call in the shared definition.
+        outcomesByExecution.delete(exec)
+      }
     },
     async execute(args, exec) {
       if (exec.parent !== undefined) {
@@ -87,6 +128,11 @@ export function createCompressTool(ctx: Context, config: DcpConfig) {
         compactionId: CompactionId(`dcp-${callId}`),
         compressCallId: callId,
         authorMessageId,
+      })
+      outcomesByExecution.set(exec as ToolExecution, {
+        callId,
+        token: exec.token,
+        result,
       })
       return formatCompressResult(result)
     },

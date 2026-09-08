@@ -22,6 +22,8 @@ import { applyExpansion, applyRecompress } from './commands/recovery.js'
 import { buildStepMarkerMessage } from './refs/marker.js'
 import { computeNudge } from './prompts/nudge.js'
 import { collectNativeAliases } from './refs/alias.js'
+import { cleanupRejectedCompressCall } from './compress/pipeline.js'
+import { classifyCompressToolFailure } from './compress/schema.js'
 import {
   openDcpStatsStore,
   registerDcpStatsStore,
@@ -54,6 +56,32 @@ export function apply(ctx: Context, config: DcpConfig): void {
 
   if (resolved.compress.enabled) {
     ctx.tools.register(createCompressTool(ctx, resolved))
+
+    // `tools/result` is the last public observer before AgentLoop appends the
+    // durable `tool/result`.  The tool-owned finalizer handles ordinary
+    // failures; this idempotent observer covers calls that never reach that
+    // finalizer (for example a collapsed/denied/timeout pipeline result).
+    // It mutates only the logged surface through the same append-only cleanup
+    // path, never the result/request in flight.
+    ctx.on('tools/result', (exec, result) => {
+      if (exec.name !== 'compress' || exec.parent !== undefined || !exec.agent) return
+      if (!result.isError) return
+      try {
+        cleanupRejectedCompressCall(
+          exec.agent.session,
+          ctx.tokenMeter,
+          String(exec.callId),
+          exec.arguments,
+          classifyCompressToolFailure(result.error),
+        )
+      } catch (error) {
+        logger.warn(
+          'failed to clean rejected compress call %s: %s',
+          String(exec.callId),
+          error instanceof Error ? error.message : String(error),
+        )
+      }
+    })
   }
 
   registerDcpCommands(ctx, resolved)

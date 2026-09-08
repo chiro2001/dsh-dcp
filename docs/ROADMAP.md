@@ -2,6 +2,9 @@
 
 ## v0.2（规划）
 
+- **M9（rc.8，进行中）**：集中维护压缩关键规则与调用模板；失败或部分失败后清理
+  模型可见的长 inline summary，以稳定状态码和当前边界提示引导一次修正；插件内部
+  规范化 multi-range 顺序，并用 AgentLoop/重放/token accounting 回归锁定行为。
 - **M8（rc.7，已完成，尚未发布）**：适配 dsh `0.1.2-rc.1` 的私有 session log、品牌化
   seq、`ToolCallId`、AgentLoop projection 依赖和更严格的 compaction invariant；
   增加真实激活安装冒烟。

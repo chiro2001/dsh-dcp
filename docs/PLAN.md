@@ -1,13 +1,14 @@
-# dsh-dcp 实现规划（Round 0001 修订版）
+# dsh-dcp 实施规划与当前快照
 
-> 状态：规划修订稿；M0 宿主契约实验通过前，不进入功能性大规模编码。
+> 状态：当前实施快照；M8（rc.7）兼容迁移已完成，M9（rc.8）压缩提示与失败恢复优化
+> 正在收尾；rc.8 尚未创建 tag 或发布。
 >
-> 证据快照：dsh-dcp `27743f2bc25c0cf90c11c3c6c19248f1269e8934`；
+> 历史规划证据快照：dsh-dcp `27743f2bc25c0cf90c11c3c6c19248f1269e8934`；
 > DeepSeek Harness `47f943859bef60e4160492346772ded9b24f765a`
 > （包版本 `0.1.0-rc.6`）；参考实现 v3.1.15。
 >
-> 本文可直接替换 `docs/PLAN.md`。若宿主版本变化，先重跑 §4 的契约实验，
-> 不把本轮源码观察外推为永久 API 保证。
+> 上述 hash 与包版本属于原始规划基线，不是当前 rc.8 兼容声明。若宿主版本变化，
+> 先重跑 §4 的契约实验，不把本轮源码观察外推为永久 API 保证。
 
 ## 0. 标注规则与规划原则
 
@@ -362,14 +363,22 @@ compaction/end        { compactionId, turn }
 
 - **[事实]** summary 作为 tool-call argument 留在 assistant surface 消息中；若又写入
   历史位置的 checkpoint，下一请求会暂时携带两份摘要。
-- **[需实验]** 主事务成功后、原 step 仍开放时，定位当前 surface 上包含
-  `compressCallId` 的 assistant 节点，生成保留所有 block/callId 的副本，只把已提交
-  entry 的 summary 改成 `[stored in bN]`；先写 `compaction/prune` shadow price，
-  再做单节点 assistant replace。
+- **[事实]** 工具处理结束后，定位当前 surface 上包含 `compressCallId` 的 assistant
+  节点，生成保留所有 block/callId 的副本，并把每个 summary entry 改写为带 provenance
+  的 cleanup marker；提交项使用
+  `<dcp-inline-cleanup provenance="dsh-dcp" status="committed" block-ref="bN" />`，
+  拒绝项使用
+  `<dcp-inline-cleanup provenance="dsh-dcp" status="rejected" code="ERROR_CODE" />`。
+  原始 summary 仍留在 append-only raw log，marker 只是插件事后改写，不是摘要正文。
+- **[事实]** rejected/partial 结果的失败长摘要也会从模型可见 surface 清理；先写
+  `compaction/prune` shadow price，再做单节点 assistant replace，避免下一请求同时携带
+  被拒绝的长摘要和后续重试摘要。
 - **[推断]** 清理失败不回滚已成功的历史压缩；工具返回 `cleanupWarning`，统计按实际
   surface delta 计算。清理成功前不报告最终净节省。
 - **[推断]** 同一 assistant 含多个 `compress` 时，每次从当前 surface 节点继续改写；
   其他工具调用与文本逐字保持。Code Mode 子调用不走此路径。
+- **[兼容说明]** `[stored in bN]` 仅是 rc.6-1 历史会话和兼容夹具可能保留的旧 marker；
+  新 writer 使用上述 committed/rejected cleanup marker，不能在新提示词或协议描述中当作现行格式。
 
 ### 6.4 重放得到的状态
 
@@ -468,7 +477,9 @@ interface DcpReplayState {
 ### 7.3 静态 system guidance
 
 - **[推断]** `ctx.systemPrompt.section('dcp:guidance')` 只包含稳定内容：何时压缩、
-  half-open 语义、保护规则、只选闭合区间、`bN` 格式、失败重试方式。
+  half-open 语义、保护规则、只选闭合区间、`bN` 格式、结果状态机、失败 correction、
+  摘要保真和小范围短摘要规则；权威规则集中维护在 `docs/COMPRESSION-RULES.md` 与
+  `src/prompts/compression-rules.ts`。
 - **[推断]** 动态 refs、压力百分比、最近主题和 manual 状态不进入 system section。
 - **[事实]** section/tools 的真实变化仍会由 agent-loop 写完整 `request/header`；
   配置热更新导致一次合法 change 是可接受的。
@@ -505,11 +516,16 @@ interface DcpReplayState {
 ```
 
 - **[推断]** `topic`、refs、summary 必须非空并有长度上限；数组数有上限。
-- **[推断]** ranges 必须在当前 surface 中存在、按 surface position 有序、互不重叠。
+- **[推断]** ranges 必须在当前 surface 中存在、互不重叠；模型无需按 surface position
+  有序提交，插件在内部规范化处理顺序。
 - **[推断]** start/end cut 都必须工具配对平衡；默认至少保留最近 N 个 turn。
 - **[推断]** range 不能包含当前 assistant、当前 `compress` call、未完成 approval/tool workflow、
   当前 boundary 或硬保护节点。
-- **[推断]** 组装最终摘要后必须达到 `minNetSavingsTokens`；否则返回 no-op，不写事务。
+- **[推断]** 组装最终摘要后必须达到 `minNetSavingsTokens`；否则返回 rejected result，不写
+  压缩事务（失败调用的 surface cleanup 仍可作为独立 prune replacement 落盘）。
+- **[推断]** 实质性范围的摘要按需使用 `Goal/Constraints/Decisions/Artifacts/Failures/Verification/Open work`
+  字段；小而单一的范围允许紧凑高保真短段落。省略空字段/标题，不机械填 `none`，不得为
+  达到节省阈值删除事实。
 
 #### 8.1.1 摘要生成策略
 
@@ -1094,23 +1110,23 @@ bash scripts/check-all.sh --e2e
 
 ## 18. 风险登记与停止条件
 
-| 风险                                          | 类别         | 影响                          | 缓解/停止条件                                        |
-| --------------------------------------------- | ------------ | ----------------------------- | ---------------------------------------------------- |
-| 外置 writer 不被 compaction 协议支持          | **[需实验]** | 主路径不可提交                | E-01 失败即阻塞 range，提上游能力需求                |
-| source 扩展字段被某 adapter/client 丢弃或拒绝 | **[需实验]** | 状态无法稳健关联              | round-trip/client 测试；失败则重新设计 metadata 载体 |
-| inline summary 重复                           | **[事实]**   | 短期收益下降                  | 同一步 cleanup；失败时量化后决定辅助摘要             |
-| dynamic index 破坏 prefix/cache               | **[事实]**   | 成本、日志增长                | 静态 system + E-02 marker/tool                       |
-| 任意 refs 切断工具配对                        | **[事实]**   | provider 请求非法             | half-open cuts + 宿主 pairing helper                 |
-| exact decompress 不可实现                     | **[事实]**   | 功能不对等                    | 明确 show/semantic expansion；不虚假验收             |
-| purge-errors 不能晚改 assistant               | **[事实]**   | 原映射无效                    | 完整单元实验，默认关闭                               |
-| native compaction 吸收 DCP artifacts          | **[事实]**   | refs/state/nudge 陈旧         | surface membership reconciliation                    |
-| partial bracket                               | **[事实]**   | busy 或可见未闭合摘要         | 无 await commit、fault tests、recovered 状态         |
-| pre-step listener 顺序                        | **[推断]**   | stale selection/重复 mutation | downstream decision、每次重校验、两种顺序测试        |
-| child session 不存在                          | **[事实]**   | 保护内容缺失                  | 父 surface 为主，深读取 opt-in                       |
-| Code Mode 无法清理内联参数                    | **[推断]**   | 重复/错误关联                 | v0.1 拒绝子调用                                      |
-| marker 自身增长                               | **[推断]**   | 抵消节省                      | delta、同范围被压缩、长会话预算                      |
-| rc API 漂移                                   | **[事实]**   | 编译/运行破坏                 | 锁版本、M0 contract 先行                             |
-| 参考实现为 AGPL-3.0                           | **[事实]**   | 许可选择与发布义务            | §19 决策门，不作法律结论                             |
+| 风险                                          | 类别         | 影响                          | 缓解/停止条件                                            |
+| --------------------------------------------- | ------------ | ----------------------------- | -------------------------------------------------------- |
+| 外置 writer 不被 compaction 协议支持          | **[需实验]** | 主路径不可提交                | E-01 失败即阻塞 range，提上游能力需求                    |
+| source 扩展字段被某 adapter/client 丢弃或拒绝 | **[需实验]** | 状态无法稳健关联              | round-trip/client 测试；失败则重新设计 metadata 载体     |
+| inline summary 重复                           | **[事实]**   | 短期收益下降                  | 提交/拒绝后 provenance cleanup；失败长摘要不进入下一请求 |
+| dynamic index 破坏 prefix/cache               | **[事实]**   | 成本、日志增长                | 静态 system + E-02 marker/tool                           |
+| 任意 refs 切断工具配对                        | **[事实]**   | provider 请求非法             | half-open cuts + 宿主 pairing helper                     |
+| exact decompress 不可实现                     | **[事实]**   | 功能不对等                    | 明确 show/semantic expansion；不虚假验收                 |
+| purge-errors 不能晚改 assistant               | **[事实]**   | 原映射无效                    | 完整单元实验，默认关闭                                   |
+| native compaction 吸收 DCP artifacts          | **[事实]**   | refs/state/nudge 陈旧         | surface membership reconciliation                        |
+| partial bracket                               | **[事实]**   | busy 或可见未闭合摘要         | 无 await commit、fault tests、recovered 状态             |
+| pre-step listener 顺序                        | **[推断]**   | stale selection/重复 mutation | downstream decision、每次重校验、两种顺序测试            |
+| child session 不存在                          | **[事实]**   | 保护内容缺失                  | 父 surface 为主，深读取 opt-in                           |
+| Code Mode 无法清理内联参数                    | **[推断]**   | 重复/错误关联                 | v0.1 拒绝子调用                                          |
+| marker 自身增长                               | **[推断]**   | 抵消节省                      | delta、同范围被压缩、长会话预算                          |
+| rc API 漂移                                   | **[事实]**   | 编译/运行破坏                 | 锁版本、M0 contract 先行                                 |
+| 参考实现为 AGPL-3.0                           | **[事实]**   | 许可选择与发布义务            | §19 决策门，不作法律结论                                 |
 
 停止条件：出现 request reconstruction desync、工具配对破坏、无 shadow price replace、
 不可重放状态或跨重启静默丢失时，立即停止功能扩张，先修协议与回归测试。
@@ -1204,3 +1220,45 @@ bash scripts/check-all.sh --e2e
 出现 request reconstruction/header desync、非当前 surface replacement、shadow-price
 漂移、工具配对破坏或旧日志静默误读时停止发布；先修复协议或明确记录宿主级迁移限制，
 不得用 `any`、宽泛断言或请求时消息改写绕过。
+
+---
+
+## 23. M9：压缩提示与失败调用上下文收敛（rc.8）
+
+### 23.1 目标与边界
+
+本里程碑针对真实会话中“长摘要调用被拒绝后仍留在模型上下文”、模型误读 cleanup
+marker，以及小范围摘要因机械填充字段而不满足净节省的问题。目标是让第一次调用
+更容易成功；若仍失败，失败调用对后续上下文的影响必须是最小且可解释的。
+
+- **[事实]** 模型可见的压缩规则集中维护在 `src/prompts/compression-rules.ts`，人类
+  维护入口为 `docs/COMPRESSION-RULES.md`；system guidance 只放稳定安全规则、结果
+  状态机和摘要保真原则。
+- **[事实]** resolved `retainRecentTurns`、`minNetSavingsTokens`、`maxRangesPerCall`
+  只在 `compress` 工具注册时注入；动态 refs、nudge 和每步状态不得造成 system/header churn。
+- **[事实]** cleanup marker 是工具执行后的插件历史改写：committed marker 指向权威
+  checkpoint，rejected marker 表示没有提交；原始长摘要保留在 raw log 供审计，不进入后续
+  模型可见 surface。rc.6-1 的 `[stored in bN]` 仅作为历史会话/兼容夹具格式保留。
+- **[推断]** 摘要模板展示七类字段但按需使用；实质性范围保留适用字段，小而单一范围
+  使用紧凑高保真段落，省略空字段/标题，不机械填写 `none`。
+- **[推断]** range 不要求采用旧到新顺序；插件负责内部规范化，提示词只要求范围安全且不重叠。
+
+### 23.2 验收清单
+
+- [x] 单元快照锁定集中规则、工具模板、cleanup provenance 和配置注入边界。
+- [x] rejected/partial/success 的工具结果与 inline cleanup 状态一致；失败长摘要不在
+      下一次 `deriveMessages()` 中重复出现。
+- [ ] 小范围（包括约 353-token 的历史片段）不会因空字段标题或 `none` 占位而无谓增加
+      摘要；保真与节省冲突时返回可执行 correction 或保持未压缩。
+- [x] 默认模型可见提示预算保持：system ≤ 2200 字符、tool description ≤ 1300 字符、
+      二者合计 ≤ 3500 字符（heuristic token 预算按实际字符测量记录）。
+- [x] `messages === session.deriveMessages()`、重启重放、原生 compaction 共存和多 range
+      乱序输入回归测试全绿。
+- [ ] 真实模型 probe 至少覆盖：正常首次提交、范围拒绝后 correction、partial retry、
+      cleanup marker 解释，以及小范围短摘要。
+
+### 23.3 停止条件
+
+若提示词压缩导致关键事实召回下降、rejected marker 被模型误判为已提交、失败长摘要
+再次进入下一请求，或出现 system/header churn，则停止扩大模型驱动能力，先修规则契约、
+快照和 session surface 回归测试。

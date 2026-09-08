@@ -50,8 +50,8 @@ pnpm run e2e:real                   # 真实 Agent + 真实 LLM（opencode go / 
 perf smoke →（可选）coverage →（可选）e2e。任一失败即停。
 
 - 已发布兼容基线：`v0.1.0-rc.6-1` 精确支持 dsh `0.1.1-rc.2`。
-- 当前兼容迁移：`v0.1.0-rc.7` 已通过完整门禁并精确支持 dsh `0.1.2-rc.1`，但
-  尚未创建 tag 或发布；发布前不得宣称 rc.7 已发布。
+- 下一发布目标：`v0.1.0-rc.8`，在 rc.7 的 dsh `0.1.2-rc.1` 兼容迁移上增加
+  压缩提示词与失败恢复优化；尚未创建 tag 或发布，发布前不得宣称 rc.8 已发布。
 - `pnpm peers check` 必须验证 dsh peer/dev 图、Cordis `4.0.2` 与 Schemastery
   `3.18.2`；跨 breaking rc 不添加运行时兼容 shim。
 
