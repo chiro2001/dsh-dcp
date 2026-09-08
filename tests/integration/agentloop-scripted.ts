@@ -4,7 +4,7 @@ import {
   type StreamChunk,
   type TokenUsage,
 } from '@deepseek-ai/dsh-llm'
-import { CallId } from '@deepseek-ai/dsh-llm/brand'
+import { ToolCallId } from '@deepseek-ai/dsh-llm/brand'
 
 export interface ScriptedStep {
   text?: string
@@ -59,7 +59,7 @@ export class ScriptedAdapter extends LlmAdapter {
       yield {
         type: 'tool-call-delta',
         index,
-        id: CallId(toolCall.id),
+        id: ToolCallId(toolCall.id),
         name: toolCall.name,
         argumentsDelta: toolCall.arguments,
       }
@@ -68,7 +68,7 @@ export class ScriptedAdapter extends LlmAdapter {
         index,
         block: {
           type: 'tool-call',
-          id: CallId(toolCall.id),
+          id: ToolCallId(toolCall.id),
           name: toolCall.name,
           arguments: toolCall.arguments,
         },

@@ -61,7 +61,7 @@ describe('M4: recovery commands and aggregate stats', () => {
     expect(text).toContain('[Expanded block b1]')
     expect(text).toContain('first user message')
 
-    let state = reduceDcpState([...session.events])
+    let state = reduceDcpState([...session.snapshotEvents()])
     expect(state.blocks.find((block) => block.ref === 'b1')?.membership).toBe('expanded')
     expect(state.blocks.find((block) => block.ref === 'b2')?.meta.kind).toBe('expansion')
 
@@ -76,7 +76,7 @@ describe('M4: recovery commands and aggregate stats', () => {
       .join('\n')
     expect(text).toContain('first checkpoint summary')
 
-    state = reduceDcpState([...session.events])
+    state = reduceDcpState([...session.snapshotEvents()])
     const b3 = state.blocks.find((block) => block.ref === 'b3')
     expect(b3?.meta.kind).toBe('summary')
     expect(b3?.meta.recompressedFrom).toBe('b1')
@@ -118,12 +118,12 @@ describe('M4: recovery commands and aggregate stats', () => {
       },
     )
 
-    const first = await syncDomainStats(store, 'session-1', [...session.events])
+    const first = await syncDomainStats(store, 'session-1', [...session.snapshotEvents()])
     expect(first.ledger.blockCount).toBe(1)
     expect(writes).toHaveLength(1)
 
     // A fresh store with the same events writes again; an up-to-date store is a no-op.
-    const second = await syncDomainStats(store, 'session-1', [...session.events])
+    const second = await syncDomainStats(store, 'session-1', [...session.snapshotEvents()])
     expect(second.eventCount).toBe(first.eventCount)
     expect(writes).toHaveLength(1)
   })

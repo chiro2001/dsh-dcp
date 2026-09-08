@@ -47,6 +47,87 @@ function textOf(message: Message): string {
     .join('\n')
 }
 
+const INLINE_CLEANUP_MARKER =
+  /^<dcp-inline-cleanup provenance="dsh-dcp" status="(?:committed" block-ref="b\d+"|rejected" code="[A-Z0-9_]{1,48}") \/>$/
+const LEGACY_INLINE_CLEANUP_MARKER = /^\[stored\s+in\s+b(?:\d+|n)\]$/i
+
+function isInlineCleanupMarker(text: string): boolean {
+  return (
+    INLINE_CLEANUP_MARKER.test(text.trim()) || LEGACY_INLINE_CLEANUP_MARKER.test(text.trim())
+  )
+}
+
+function isRecord(value: unknown): value is Record<string, unknown> {
+  return value !== null && typeof value === 'object' && !Array.isArray(value)
+}
+
+/** Identify a cleanup marker in the parsed arguments of a compress call. */
+function hasInlineCleanupMarker(argumentsText: string): boolean {
+  try {
+    const parsed: unknown = JSON.parse(argumentsText)
+    if (!isRecord(parsed)) return false
+    if (
+      Object.keys(parsed).length === 1 &&
+      typeof parsed.dcpCleanup === 'string' &&
+      isInlineCleanupMarker(parsed.dcpCleanup)
+    ) {
+      return true
+    }
+    if (!Array.isArray(parsed.content)) return false
+    return parsed.content.some(
+      (entry) =>
+        isRecord(entry) &&
+        typeof entry.summary === 'string' &&
+        isInlineCleanupMarker(entry.summary),
+    )
+  } catch {
+    return false
+  }
+}
+
+/**
+ * Require the exact DCP cleanup shape: one assistant node replaces one prior
+ * assistant node, and the replacement carries a marker inside compress args.
+ */
+function isInlineCleanupAssistantReplacement(
+  events: readonly SessionEvent[],
+  prune: Extract<SessionEvent, { type: 'compaction/prune' }>,
+  next: SessionEvent | undefined,
+): next is Extract<SessionEvent, { type: 'assistant/message' }> {
+  if (next?.type !== 'assistant/message') return false
+  if (
+    next.surfaceOp === undefined ||
+    next.surfaceOp === 'append' ||
+    next.surfaceOp.op !== 'replace'
+  ) {
+    return false
+  }
+  const sources = next.sourceEventSeqs ?? []
+  if (
+    sources.length !== 1 ||
+    prune.data.shadowedSeqs.length !== 1 ||
+    sources[0] !== prune.data.shadowedSeqs[0]
+  ) {
+    return false
+  }
+  if (next.surfaceOp.start !== sources[0] || next.surfaceOp.end !== sources[0]) return false
+  const previous = events.find((event) => event.seq === sources[0])
+  if (previous?.type !== 'assistant/message') return false
+  if (next.data.message.id !== previous.data.message.id) return false
+  const previousCompressCalls = previous.data.message.content.filter(
+    (block) => block.type === 'tool-call' && block.name === 'compress',
+  )
+  if (previousCompressCalls.length === 0) return false
+  return next.data.message.content.some(
+    (block) =>
+      block.type === 'tool-call' &&
+      previousCompressCalls.some(
+        (previousBlock) => previousBlock.type === 'tool-call' && previousBlock.id === block.id,
+      ) &&
+      hasInlineCleanupMarker(block.arguments),
+  )
+}
+
 export function computeSessionStats(
   events: readonly SessionEvent[],
   estimateMessage?: (message: Message) => number,
@@ -86,8 +167,11 @@ export function computeSessionStats(
             : next?.type === 'user/message'
               ? textOf(next.data)
               : ''
-        const isDcp =
-          nextText.includes('[duplicate ') || nextText.includes('[errored tool unit removed]')
+        const isDcpStrategy =
+          (next?.type === 'tool/result' && nextText.includes('[duplicate ')) ||
+          (next?.type === 'user/message' && nextText.startsWith('[errored tool unit removed]'))
+        const isDcpInlineCleanup = isInlineCleanupAssistantReplacement(events, event, next)
+        const isDcp = isDcpStrategy || isDcpInlineCleanup
         if (isDcp) {
           pruneTokens += event.data.shadowedTokenCount
           if (next?.type === 'tool/result' || next?.type === 'assistant/message') {
@@ -106,7 +190,10 @@ export function computeSessionStats(
           if (decoded.meta.kind === 'expansion') {
             blockCount++
             const oldSeq = event.sourceEventSeqs?.[0]
-            const old = oldSeq === undefined ? undefined : events[oldSeq]
+            const old =
+              oldSeq === undefined
+                ? undefined
+                : events.find((candidate) => candidate.seq === oldSeq)
             const oldEstimate = old?.type === 'user/message' ? estimate(old.data) : 0
             expansionTokens += oldEstimate - estimate(event.data)
           } else {

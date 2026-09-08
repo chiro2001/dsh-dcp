@@ -1,6 +1,6 @@
 import type { Context } from '@deepseek-ai/cordis'
 import { SessionId, type Session } from '@deepseek-ai/dsh-session'
-import { CallId } from '@deepseek-ai/dsh-llm/brand'
+import { ToolCallId } from '@deepseek-ai/dsh-llm/brand'
 import {
   createAssistantMessage,
   createToolResultMessage,
@@ -32,7 +32,7 @@ export function buildMarkedSession(ctx: Context): Session {
     )
     session.append('step/start', { turn: number, step: 1 })
     if (withTool) {
-      const callId = CallId(`c${number}`)
+      const callId = ToolCallId(`c${number}`)
       session.append(
         'assistant/message',
         {
@@ -121,7 +121,7 @@ export function buildMarkedSession(ctx: Context): Session {
           { type: 'text', text: 'compressing now' },
           {
             type: 'tool-call',
-            id: CallId('dcp-call'),
+            id: ToolCallId('dcp-call'),
             name: 'compress',
             arguments: inlineArgs,
           },
@@ -134,7 +134,7 @@ export function buildMarkedSession(ctx: Context): Session {
   session.append('tool/call', {
     turn: 4,
     step: 1,
-    callId: CallId('dcp-call'),
+    callId: ToolCallId('dcp-call'),
     name: 'compress',
     arguments: inlineArgs,
   })
@@ -142,18 +142,22 @@ export function buildMarkedSession(ctx: Context): Session {
 }
 
 export function closeOpenTurn(session: Session, turn: number, callId: string): void {
+  const call = session
+    .snapshotEvents()
+    .findLast((event) => event.type === 'tool/call' && event.data.callId === ToolCallId(callId))
+  if (call?.type !== 'tool/call') throw new Error(`tool call ${callId} missing`)
   session.append(
     'tool/result',
     {
       turn,
       step: 1,
       message: createToolResultMessage({
-        callId: CallId(callId),
+        callId: ToolCallId(callId),
         content: [{ type: 'text', text: 'compress done' }],
         isError: false,
       }),
     },
-    { surfaceOp: 'append', sourceEventSeqs: [session.seq - 1] },
+    { surfaceOp: 'append', sourceEventSeqs: [call.seq] },
   )
   session.append('step/end', { turn, step: 1 })
   session.append('turn/end', { turn, reason: { kind: 'completed' } })

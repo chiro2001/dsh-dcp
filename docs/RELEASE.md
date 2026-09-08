@@ -1,5 +1,16 @@
 # Release & npm 决策（M6.2）
 
+## 下一版本（尚未发布）
+
+- 目标：`v0.1.0-rc.8`，精确支持 dsh `0.1.2-rc.1`。
+- 范围：包含 rc.7 的宿主 API 兼容迁移，并优化压缩首次调用模板、结果状态机、
+  失败后的 inline cleanup、精确 correction 与任意输入顺序的 multi-range 处理；
+  DCP protocol 保持 v1。
+- 兼容策略：不在一个构建中同时适配 dsh `0.1.1-rc.2` 和 `0.1.2-rc.1`；旧宿主
+  固定使用 `v0.1.0-rc.6-1`。
+- 发布前必须通过 `pnpm peers check`、`check-all.sh --coverage --e2e` 和可用时的
+  `e2e:real`；tag 与 GitHub Release 不在功能修复提交中提前创建。
+
 ## 当前发布路径（已执行）
 
 - 仓库：`chiro2001/dsh-dcp`（public）。
@@ -25,6 +36,8 @@
 
 ## 支持矩阵
 
-- 实测支持 dsh `0.1.1-rc.2`（M0 contract、deterministic AgentLoop、重启、
-  e2e 安装、真实模型 smoke/probes 全部通过）。
-- 其他版本未实测前不进入 peer 范围（当前 peer 精确锁定 `0.1.1-rc.2`）。
+- `v0.1.0-rc.8`：dsh `0.1.2-rc.1`（下一发布目标，尚未创建 tag 或发布）。
+- `v0.1.0-rc.7`：dsh `0.1.2-rc.1`（完整本地门禁与真实模型 E2E 已通过，尚未发布）。
+- `v0.1.0-rc.6-1`：dsh `0.1.1-rc.2`（已通过 M0 contract、deterministic
+  AgentLoop、重启、e2e 安装和真实模型 smoke/probes）。
+- 其他版本未实测前不进入 peer 范围。

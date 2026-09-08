@@ -4,7 +4,7 @@
  * @module dsh-dcp/compress/commit
  */
 
-import type { Session } from '@deepseek-ai/dsh-session'
+import type { Session, SessionEvent, SessionSeq } from '@deepseek-ai/dsh-session'
 import type { TokenMeter } from '@deepseek-ai/dsh-token-meter'
 import { createUserMessage } from '@deepseek-ai/dsh-llm/message'
 import { classifyCompactionPrefix } from '../protocol/recovery.js'
@@ -19,7 +19,7 @@ export interface CommitMeta {
 }
 
 export interface CommitResult {
-  checkpointSeq: number
+  checkpointSeq: SessionSeq
   blockRef: string
 }
 
@@ -40,16 +40,28 @@ export function commitRange(
   if (startPosition !== prepared.startPosition || endPosition !== prepared.endPosition) {
     throw new Error('compress range moved before commit; retry with current refs')
   }
+  const currentShadowed = surface.slice(startPosition, endPosition)
+  if (
+    currentShadowed.length !== prepared.shadowedSeqs.length ||
+    currentShadowed.some((seq, index) => seq !== prepared.shadowedSeqs[index])
+  ) {
+    throw new Error('compress range changed before commit; retry with current refs')
+  }
 
-  const classification = classifyCompactionPrefix(session.events)
-  if (classification === 'live-orphan-start' || classification === 'recovered-unclosed') {
+  const events = session.snapshotEvents()
+  const classification = classifyCompactionPrefix(events)
+  if (
+    classification === 'live-orphan-start' ||
+    classification === 'summary-without-replace' ||
+    classification === 'recovered-unclosed'
+  ) {
     throw new Error('compaction is busy: an unclosed bracket holds the session lock')
   }
 
   const header = session.requestHeader()
   const provider = header?.config.provider ?? 'unknown'
   const model = header?.config.model ?? 'unknown'
-  const turn = session.surface.nodes.length > 0 ? latestOpenTurn(session) : null
+  const turn = session.surface.nodes.length > 0 ? latestOpenTurn(events) : null
 
   session.append('compaction/start', { compactionId: meta.compactionId, turn })
   const summarySeq = session.append('compaction/summary', {
@@ -97,9 +109,9 @@ export function commitRange(
   return { checkpointSeq: checkpoint.seq, blockRef }
 }
 
-function latestOpenTurn(session: Session): number | null {
+function latestOpenTurn(events: readonly SessionEvent[]): number | null {
   let turn: number | null = null
-  for (const event of session.events) {
+  for (const event of events) {
     if (event.type === 'turn/start') turn = event.data.turn
     if (event.type === 'turn/end') turn = null
   }

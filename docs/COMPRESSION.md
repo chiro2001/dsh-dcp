@@ -5,6 +5,9 @@
 > 协议细则见 [docs/PROTOCOL.md](./PROTOCOL.md)，统计口径见
 > [docs/STATS.md](./STATS.md)。
 
+压缩行为的关键规则、结果状态机、首次调用模板和配置注入边界集中维护在
+[COMPRESSION-RULES.md](./COMPRESSION-RULES.md)；修改模型提示词前请先查看该维护专区。
+
 ## 1. 目标
 
 dsh-dcp 的目标是：在 dsh 的模型可见上下文演化过程中，把**已经闭合、
@@ -19,16 +22,16 @@ llm/stream 的 options.messages === session.deriveMessages()
 
 ## 2. 核心概念
 
-| 概念             | 说明                                                            |
-| ---------------- | --------------------------------------------------------------- |
-| `mNNNN`          | 日志化 boundary marker，模型可见的边界引用                      |
-| `bN`             | 一个 DCP checkpoint，也是可引用的活跃边界                       |
-| `range`          | half-open 区间 `[startRef, endRef)`                             |
-| `topic`          | 压缩区间短标题，用于人类阅读和统计                              |
-| `summary`        | 模型提供的完整技术正文                                          |
-| `checkpoint`     | 替换原区间后的标准 `user/message`                               |
-| `inline cleanup` | 同一步把 assistant 消息中的 summary 参数清理为 `[stored in bN]` |
-| `shadowed`       | 被压缩区间遮蔽的原始 surface 节点                               |
+| 概念             | 说明                                                                    |
+| ---------------- | ----------------------------------------------------------------------- |
+| `mNNNN`          | 日志化 boundary marker，模型可见的边界引用                              |
+| `bN`             | 一个 DCP checkpoint，也是可引用的活跃边界                               |
+| `range`          | half-open 区间 `[startRef, endRef)`                                     |
+| `topic`          | 压缩区间短标题，用于人类阅读和统计                                      |
+| `summary`        | 模型提供的完整技术正文                                                  |
+| `checkpoint`     | 替换原区间后的标准 `user/message`                                       |
+| `inline cleanup` | 提交后把 assistant 消息中的 summary 参数清理为带 provenance 的 XML 标记 |
+| `shadowed`       | 被压缩区间遮蔽的原始 surface 节点                                       |
 
 ### 2.1 边界标记
 
@@ -67,7 +70,7 @@ llm/stream 的 options.messages === session.deriveMessages()
 - `topic` 非空且 ≤ 200 字符。
 - `content` 非空数组，数量 ≤ `maxRangesPerCall`。
 - 每个 range 的 `startRef` / `endRef` 必须存在且合法。
-- ranges 必须按 surface 顺序且互不重叠。
+- ranges 必须互不重叠；无需按 surface 顺序提交，插件会在内部规范化处理顺序。
 - range 两侧 cuts 必须工具配对平衡。
 - range 不得进入最近 `retainRecentTurns` 个 turn。
 - range 不得包含当前 compress 调用。
@@ -77,7 +80,7 @@ llm/stream 的 options.messages === session.deriveMessages()
   - 非空；
   - ≤ 8000 字符；
   - 不以内嵌 `[bN]` 块引用前缀开头；
-  - 是实际技术正文，不是 `[stored in bN]` 这类指针占位。
+  - 是实际技术正文，不是 `<dcp-inline-cleanup ... />`、`[stored in bN]` 这类指针占位。
 
 ## 4. 压缩事务与 checkpoint 注入
 
@@ -120,7 +123,7 @@ compaction/start
 压缩提交后，插件在同一步把该 assistant 消息里的 tool-call `summary` 字段改为：
 
 ```text
-[stored in bN]
+<dcp-inline-cleanup provenance="dsh-dcp" status="committed" block-ref="bN" />
 ```
 
 ### 5.1 为什么需要
@@ -134,14 +137,14 @@ compaction/start
 压缩成功后，模型后续看到的上下文包含：
 
 1. **checkpoint `user/message`**：完整技术正文，权威内容；
-2. **assistant 消息中的工具调用参数**：`[stored in bN]`，这只是清理标记；
+2. **assistant 消息中的工具调用参数**：`<dcp-inline-cleanup ... />`，这只是清理标记；
 3. **tool result**：报告压缩消息数和生成 blockRef，并明确说明完整摘要保存在 checkpoint 中。
 
 因此：
 
 ```text
-[stored in bN]  ≠ 原始 summary
-[stored in bN]  ≠ 数据丢失
+`<dcp-inline-cleanup ... />`  ≠ 原始 summary
+`<dcp-inline-cleanup ... />`  ≠ 数据丢失
 checkpoint       = 完整摘要唯一权威位置
 ```
 
@@ -167,7 +170,7 @@ checkpoint       = 完整摘要唯一权威位置
 
 | 误读                                                 | 实际情况                                | 防护                                 |
 | ---------------------------------------------------- | --------------------------------------- | ------------------------------------ |
-| 认为 `[stored in bN]` 是提交的 summary               | 只是 inline cleanup 标记                | 工具结果 + 系统提示 + 本文档明确说明 |
+| 认为 `<dcp-inline-cleanup ... />` 是提交的 summary   | 只是 inline cleanup 标记                | 工具结果 + 系统提示 + 本文档明确说明 |
 | 认为 checkpoint 没有注入上下文                       | checkpoint 是 surface `user/message`    | 日志顺序 + deriveMessages 不变式     |
 | 认为摘要开头必须写 `[bN]`                            | blockRef 只能由 `<dcp-message-id>` 表达 | schema 拒绝 + checkpoint 构造剥离    |
 | 认为多个 range 必须分多次调用                        | 一次调用可携带多个 range                | 工具描述 + 系统提示 + 示例           |
@@ -176,5 +179,5 @@ checkpoint       = 完整摘要唯一权威位置
 ## 9. 一句话总结
 
 > dsh-dcp 的压缩 = 把一段闭合历史替换成包含完整技术摘要的标准 checkpoint，
-> 同时把模型原始 inline summary 参数清理为 `[stored in bN]` 审计标记。
+> 同时把模型原始 inline summary 参数清理为带 provenance 的 XML 审计标记。
 > 完整摘要的权威位置是 checkpoint `user/message`。

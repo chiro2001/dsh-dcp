@@ -5,7 +5,7 @@
  * @module dsh-dcp/commands/recovery
  */
 
-import type { Session, SessionEvent } from '@deepseek-ai/dsh-session'
+import type { Session, SessionEvent, SessionSeq } from '@deepseek-ai/dsh-session'
 import type { TokenMeter } from '@deepseek-ai/dsh-token-meter'
 import { deriveEventMessage } from '@deepseek-ai/dsh-session'
 import { CompactionId } from '@deepseek-ai/dsh-compaction'
@@ -21,8 +21,8 @@ export interface RecoveryResult {
   text?: string
 }
 
-function checkpointTextOf(session: Session, seq: number): string {
-  const event = session.events[seq]
+function checkpointTextOf(session: Session, seq: SessionSeq): string {
+  const event = session.eventAt(seq)
   if (event?.type !== 'user/message') return ''
   return event.data.content
     .filter((block) => block.type === 'text')
@@ -30,15 +30,19 @@ function checkpointTextOf(session: Session, seq: number): string {
     .join('\n')
 }
 
-function collectLeafSeqs(events: readonly SessionEvent[], seq: number): number[] {
-  const event = events[seq]
+function eventAt(events: readonly SessionEvent[], seq: SessionSeq): SessionEvent | undefined {
+  return events.find((event) => event.seq === seq)
+}
+
+function collectLeafSeqs(events: readonly SessionEvent[], seq: SessionSeq): SessionSeq[] {
+  const event = eventAt(events, seq)
   if (!event || event.type !== 'user/message' || event.surfaceOp === 'append') return [seq]
   const shadowed = (event.sourceEventSeqs ?? []).filter(
-    (candidate) => events[candidate]?.type !== 'compaction/summary',
+    (candidate) => eventAt(events, candidate)?.type !== 'compaction/summary',
   )
-  const leaves: number[] = []
+  const leaves: SessionSeq[] = []
   for (const candidate of shadowed) {
-    const child = events[candidate]
+    const child = eventAt(events, candidate)
     if (child?.type === 'user/message' && child.surfaceOp !== 'append') {
       leaves.push(...collectLeafSeqs(events, candidate))
     } else {
@@ -48,10 +52,11 @@ function collectLeafSeqs(events: readonly SessionEvent[], seq: number): number[]
   return leaves
 }
 
-function transcriptOf(session: Session, seqs: readonly number[]): string {
+function transcriptOf(session: Session, seqs: readonly SessionSeq[]): string {
   return seqs
     .map((seq) => {
-      const message = deriveEventMessage(session.events[seq]!)
+      const event = session.eventAt(seq)
+      const message = event === undefined ? null : deriveEventMessage(event)
       if (!message) return ''
       const text = message.content
         .filter((block) => block.type === 'text')
@@ -80,7 +85,7 @@ export function renderBlockShow(
     checkpointTextOf(session, block.seq),
   ]
   if (raw) {
-    const leaves = collectLeafSeqs([...session.events], block.seq)
+    const leaves = collectLeafSeqs(session.snapshotEvents(), block.seq)
     lines.push('', `Original leaf nodes (${leaves.length}):`, transcriptOf(session, leaves))
   }
   return lines.join('\n')
@@ -89,7 +94,7 @@ export function renderBlockShow(
 function appendRecoveryBracket(
   session: Session,
   tokenMeter: TokenMeter,
-  targetSeq: number,
+  targetSeq: SessionSeq,
   newRef: string,
   text: string,
   meta: {
@@ -101,9 +106,10 @@ function appendRecoveryBracket(
     startRef: string
   },
 ): void {
-  const turn = openTurnOf(session.events)
+  const events = session.snapshotEvents()
+  const turn = openTurnOf(events)
   if (turn === null) throw new Error('recovery mutation requires an open turn (control turn)')
-  const target = session.events[targetSeq]
+  const target = session.eventAt(targetSeq)
   const header = session.requestHeader()
   const provider = header?.config.provider ?? 'unknown'
   const model = header?.config.model ?? 'unknown'
@@ -154,7 +160,8 @@ export function applyExpansion(
   tokenMeter: TokenMeter,
   blockRef: string,
 ): RecoveryResult {
-  const state = reduceDcpState(session.events)
+  const events = session.snapshotEvents()
+  const state = reduceDcpState(events)
   const block = state.blocks.find(
     (candidate) =>
       candidate.ref === blockRef &&
@@ -162,7 +169,7 @@ export function applyExpansion(
       candidate.meta.kind === 'summary',
   )
   if (!block) return { ok: false, error: `${blockRef} is not an active summary block` }
-  const leaves = collectLeafSeqs([...session.events], block.seq)
+  const leaves = collectLeafSeqs(events, block.seq)
   const transcript = transcriptOf(session, leaves)
   const newRef = `b${state.maxBlockNumber + 1}`
   const text = `[Expanded block ${blockRef}]\n\n${transcript}`
@@ -181,7 +188,7 @@ export function applyRecompress(
   tokenMeter: TokenMeter,
   blockRef: string,
 ): RecoveryResult {
-  const state = reduceDcpState(session.events)
+  const state = reduceDcpState(session.snapshotEvents())
   const oldBlock = state.blocks.find((candidate) => candidate.ref === blockRef)
   const expansion = state.blocks.find(
     (candidate) =>

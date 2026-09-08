@@ -120,4 +120,20 @@ describe('dcp checkpoint metadata', () => {
     expect(decoded.ok).toBe(true)
     expect(DCP_PROTOCOL_VERSION).toBe(1)
   })
+
+  it('rejects unsafe block reference integers without changing protocol v1', () => {
+    const decoded = decodeDcpMeta(
+      encodeDcpCheckpointSource(
+        CompactionId('unsafe-block'),
+        meta({ blockRef: 'b9007199254740992' as `b${number}` }),
+      ),
+    )
+    expect(decoded).toEqual({
+      ok: false,
+      diagnostic: {
+        code: 'INVALID_BLOCK_REF',
+        message: 'dcp blockRef must be b<positive integer>',
+      },
+    })
+  })
 })

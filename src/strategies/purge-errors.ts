@@ -5,7 +5,7 @@
  * @module dsh-dcp/strategies/purge-errors
  */
 
-import type { Session } from '@deepseek-ai/dsh-session'
+import type { Session, SessionSeq } from '@deepseek-ai/dsh-session'
 import type { TokenMeter } from '@deepseek-ai/dsh-token-meter'
 import {
   toolPairingBalancedAfter,
@@ -16,8 +16,8 @@ import type { DcpConfig } from '../config.js'
 import { maxTurn, turnOfSeq } from '../protocol/turns.js'
 
 export interface PurgeTarget {
-  assistantSeq: number
-  resultSeq: number
+  assistantSeq: SessionSeq
+  resultSeq: SessionSeq
   tool: string
   errorText: string
   tokensIn: number
@@ -28,7 +28,7 @@ export function purgeTargets(
   tokenMeter: TokenMeter,
   config: DcpConfig,
 ): PurgeTarget[] {
-  const events = session.events
+  const events = session.snapshotEvents()
   const calls = new Map<string, string>()
   for (const event of events) {
     if (event.type === 'tool/call') calls.set(String(event.data.callId), event.data.name)
@@ -37,7 +37,7 @@ export function purgeTargets(
   const targets: PurgeTarget[] = []
 
   for (const seq of session.surface.nodes) {
-    const event = events[seq]
+    const event = session.eventAt(seq)
     if (event?.type !== 'tool/result' || !event.data.message.content[0]?.isError) continue
     if (event.surfaceOp !== 'append') continue
     const callId = String(event.data.message.source.callId)
@@ -48,7 +48,7 @@ export function purgeTargets(
 
     // Locate the owning assistant message.
     const assistantSeq = [...session.surface.nodes].find((candidate) => {
-      const candidateEvent = events[candidate]
+      const candidateEvent = session.eventAt(candidate)
       return (
         candidateEvent?.type === 'assistant/message' &&
         candidateEvent.data.message.content.some(
@@ -57,7 +57,7 @@ export function purgeTargets(
       )
     })
     if (assistantSeq === undefined) continue
-    const assistantEvent = events[assistantSeq]
+    const assistantEvent = session.eventAt(assistantSeq)
     if (assistantEvent?.type !== 'assistant/message') continue
     const toolCalls = assistantEvent.data.message.content.filter(
       (block) => block.type === 'tool-call',

@@ -5,7 +5,8 @@ DeepSeek Harness（dsh）的动态上下文管理插件：对标
 （opencode-dcp）的原理与实现，在 dsh 上提供模型驱动的上下文压缩、工具结果剪枝、
 错误输入清理、压缩块嵌套、受保护内容保留、手动命令与统计。
 
-> **状态**：v0.1.0-rc.6-1 已实现并发布（public repo）。
+> **状态**：v0.1.0-rc.6-1 已发布；v0.1.0-rc.8 是下一发布目标，包含 dsh
+> 0.1.2-rc.1 兼容迁移与压缩失败恢复/提示词优化，尚未创建 tag 或发布。
 > 详细方案见 [docs/PLAN.md](docs/PLAN.md)，协议见
 > [docs/PROTOCOL.md](docs/PROTOCOL.md)，变更见
 > [docs/CHANGELOG.md](docs/CHANGELOG.md)，下一阶段见
@@ -67,6 +68,8 @@ allowBuilds:
 - `compress` 工具：half-open range、工具配对校验、一次可传多个 non-overlapping
   range（各自独立事务）、`bN` 嵌套、同一步 inline 摘要清理；摘要正文不得以
   `[bN]` 块引用前缀开头（构造 checkpoint 时也会自动剥离）。
+- 压缩恢复：工具结果区分 `success`/`partial`/`rejected`，失败长摘要会以带
+  provenance 的 cleanup marker 从模型可见 surface 清理，并返回定向 correction。
 - 保护：用户消息/`<protect>`/受保护工具/文件路径/来源 verbatim 附录；
   instructions/snapshot 硬保护。
 - 自动策略：重复调用去重（pre-step，幂等）；错误单元清理（实验，默认关）。
@@ -81,10 +84,11 @@ allowBuilds:
 
 ## 兼容矩阵
 
-- 实测支持：dsh `0.1.1-rc.2`（M0 contract、deterministic AgentLoop、重启、
-  e2e 安装、真实模型 smoke 全部通过）。
-- 其他 dsh 版本：未实测前不进入 peer 范围（当前 peer 精确锁定
-  `0.1.1-rc.2`）；新版本需先跑相同矩阵再扩范围。
+- `v0.1.0-rc.8`：目标同为 dsh `0.1.2-rc.1`，包含 rc.7 兼容基线及压缩提示/失败恢复优化；尚未创建 tag 或发布。
+- `v0.1.0-rc.7`：实测并精确锁定 dsh `0.1.2-rc.1`；尚未创建 tag 或发布。
+- `v0.1.0-rc.6-1`：实测支持 dsh `0.1.1-rc.2`。旧宿主继续使用该固定 tag。
+- 不维护跨 breaking rc 的运行时兼容层；其他 dsh 版本必须先跑相同矩阵，再进入
+  对应的新插件版本。
 
 ## 自测
 
@@ -106,5 +110,7 @@ pnpm run e2e:real         # 真实 Agent + 真实 LLM（opencode go / deepseek-v
   与原生 compaction 共存）
 - [docs/COMPRESSION.md](docs/COMPRESSION.md) — 压缩处理流（模型调用、校验、
   checkpoint 注入、inline cleanup、模型可见语义、审计与恢复）
+- [docs/COMPRESSION-RULES.md](docs/COMPRESSION-RULES.md) — 压缩关键规则维护专区（安全
+  不变式、结果状态机、首次调用模板、摘要保真与配置注入边界）
 - [docs/STATS.md](docs/STATS.md) — 统计语义（signed ledger、domain record、
   `/dcp stats` 口径）

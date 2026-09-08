@@ -23,7 +23,7 @@ describe('M7.0: domain failure and catch-up semantics', () => {
 
   it('shows unavailable when no store is wired', async () => {
     const agent = {
-      session: { id: SessionId('no-store'), events: [] as never[] },
+      session: { id: SessionId('no-store'), snapshotEvents: () => [] as never[] },
     } as never
     const lines = await renderDomainStats(fixture.ctx, agent)
     expect(lines.join('\n')).toContain('unavailable (storageDomain not wired)')
@@ -39,7 +39,7 @@ describe('M7.0: domain failure and catch-up semantics', () => {
     }
     registerDcpStatsStore(fixture.ctx, failing)
     const agent = {
-      session: { id: SessionId('fail-session'), events: [] as never[] },
+      session: { id: SessionId('fail-session'), snapshotEvents: () => [] as never[] },
     } as never
     const lines = await renderDomainStats(fixture.ctx, agent)
     expect(lines.join('\n')).toContain('persistent domain: stale')
@@ -73,7 +73,10 @@ describe('M7.0: domain failure and catch-up semantics', () => {
     }
     registerDcpStatsStore(fixture.ctx, failing)
     const agent = {
-      session: { id: SessionId('stale-session'), events: [null, null, null] as never[] },
+      session: {
+        id: SessionId('stale-session'),
+        snapshotEvents: () => [null, null, null] as never[],
+      },
     } as never
     const lines = await renderDomainStats(fixture.ctx, agent)
     expect(lines.join('\n')).toContain('persistent domain: stale')
@@ -106,9 +109,9 @@ describe('M7.0: domain failure and catch-up semantics', () => {
       )
     }
 
-    const first = await syncDomainStats(store, 's1', [...session.events])
+    const first = await syncDomainStats(store, 's1', [...session.snapshotEvents()])
     expect(first.eventCount).toBe(5)
-    const unchanged = await syncDomainStats(store, 's1', [...session.events])
+    const unchanged = await syncDomainStats(store, 's1', [...session.snapshotEvents()])
     expect(unchanged.eventCount).toBe(5)
     expect(writes).toEqual(['s1'])
 
@@ -122,7 +125,7 @@ describe('M7.0: domain failure and catch-up semantics', () => {
       } as never,
       { surfaceOp: 'append' },
     )
-    const updated = await syncDomainStats(store, 's1', [...session.events])
+    const updated = await syncDomainStats(store, 's1', [...session.snapshotEvents()])
     expect(updated.eventCount).toBe(6)
     expect(writes).toEqual(['s1', 's1'])
     expect(aggregateDomainStats(store).sessionCount).toBe(1)

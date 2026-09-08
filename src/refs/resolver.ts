@@ -6,23 +6,33 @@
  */
 
 import type { DcpBoundaryRecord } from '../protocol/replay.js'
+import type { SessionSeq } from '@deepseek-ai/dsh-session'
 
 export type ResolveRangeResult =
-  | { ok: true; startSeq: number; endSeq: number; startPosition: number; endPosition: number }
+  | {
+      ok: true
+      startSeq: SessionSeq
+      endSeq: SessionSeq
+      startPosition: number
+      endPosition: number
+    }
   | { ok: false; reason: string }
 
 export function resolveBoundaryPosition(
-  surface: readonly number[],
+  surface: readonly SessionSeq[],
   boundaryRefs: readonly DcpBoundaryRecord[],
   ref: string,
-  aliases: readonly { ref: string; seq: number }[] = [],
-): { position: number; seq: number } | undefined {
+  aliases: readonly { ref: string; seq: SessionSeq }[] = [],
+): { position: number; seq: SessionSeq } | undefined {
   const record = boundaryRefs.find((entry) => entry.ref === ref)
   if (record && record.active) {
     const position = surface.indexOf(record.seq)
     if (position !== -1) return { position, seq: record.seq }
   }
-  const alias = aliases.find((entry) => entry.ref === ref)
+  let alias: { ref: string; seq: SessionSeq } | undefined
+  for (const entry of aliases) {
+    if (entry.ref === ref) alias = entry
+  }
   if (alias) {
     const position = surface.indexOf(alias.seq)
     if (position !== -1) return { position, seq: alias.seq }
@@ -35,11 +45,11 @@ export function resolveBoundaryPosition(
  * startRef, and both markers must be on the current surface.
  */
 export function resolveRange(
-  surface: readonly number[],
+  surface: readonly SessionSeq[],
   boundaryRefs: readonly DcpBoundaryRecord[],
   startRef: string,
   endRef: string,
-  aliases: readonly { ref: string; seq: number }[] = [],
+  aliases: readonly { ref: string; seq: SessionSeq }[] = [],
 ): ResolveRangeResult {
   const start = resolveBoundaryPosition(surface, boundaryRefs, startRef, aliases)
   if (!start) {

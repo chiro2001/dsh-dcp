@@ -14,7 +14,7 @@ describe('manual mode replay (M3)', () => {
     })
     session.append('command/done', { commandId: CommandId('cmd-1'), kind: 'success' })
 
-    expect(reduceDcpState([...session.events]).manualMode).toBe(true)
+    expect(reduceDcpState([...session.snapshotEvents()]).manualMode).toBe(true)
 
     session.append('command/run', {
       commandId: CommandId('cmd-2'),
@@ -23,7 +23,7 @@ describe('manual mode replay (M3)', () => {
       source: { kind: 'user' },
     })
     session.append('command/done', { commandId: CommandId('cmd-2'), kind: 'success' })
-    expect(reduceDcpState([...session.events]).manualMode).toBe(false)
+    expect(reduceDcpState([...session.snapshotEvents()]).manualMode).toBe(false)
 
     // A failed command does not change state.
     session.append('command/run', {
@@ -37,6 +37,6 @@ describe('manual mode replay (M3)', () => {
       kind: 'error',
       text: 'nope',
     })
-    expect(reduceDcpState([...session.events]).manualMode).toBe(false)
+    expect(reduceDcpState([...session.snapshotEvents()]).manualMode).toBe(false)
   })
 })

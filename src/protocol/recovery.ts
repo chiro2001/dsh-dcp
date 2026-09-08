@@ -5,7 +5,7 @@
  * @module dsh-dcp/protocol/recovery
  */
 
-import type { SessionEvent } from '@deepseek-ai/dsh-session'
+import type { SessionEvent, SessionSeq } from '@deepseek-ai/dsh-session'
 
 export type PartialCommitClass =
   | 'none'
@@ -17,10 +17,10 @@ export type PartialCommitClass =
   | 'committed'
 
 interface BracketState {
-  startSeq: number
-  summarySeq?: number
-  replaceSeq?: number
-  endSeq?: number
+  startSeq: SessionSeq
+  summarySeq?: SessionSeq
+  replaceSeq?: SessionSeq
+  endSeq?: SessionSeq
   endError?: string
 }
 

@@ -4,7 +4,7 @@
  * @module dsh-dcp/protocol/replacements
  */
 
-import { foldSurface, type SessionEvent } from '@deepseek-ai/dsh-session'
+import { foldSurface, type SessionEvent, type SessionSeq } from '@deepseek-ai/dsh-session'
 import { decodeDcpMeta } from './metadata.js'
 
 export type BlockMembership = 'active' | 'consumed' | 'absorbed-native' | 'expanded'
@@ -15,7 +15,7 @@ export function reconcileBlockMembership(
 ): Map<string, BlockMembership> {
   const result = new Map<string, BlockMembership>()
   const surface = new Set(foldSurface(events).nodes)
-  const blocks: Array<{ ref: string; seq: number }> = []
+  const blocks: Array<{ ref: string; seq: SessionSeq }> = []
 
   for (const event of events) {
     if (event.type !== 'user/message') continue
@@ -45,8 +45,10 @@ export function reconcileBlockMembership(
 }
 
 /** Single-node tool-result rewrites: original seq -> replacement seq. */
-export function foldPruneReplacements(events: readonly SessionEvent[]): Map<number, number> {
-  const result = new Map<number, number>()
+export function foldPruneReplacements(
+  events: readonly SessionEvent[],
+): Map<SessionSeq, SessionSeq> {
+  const result = new Map<SessionSeq, SessionSeq>()
   for (const event of events) {
     if (event.type !== 'tool/result' || event.surfaceOp === 'append') continue
     const sources = event.sourceEventSeqs ?? []

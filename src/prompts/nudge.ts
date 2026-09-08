@@ -5,6 +5,7 @@
  */
 
 import type { Session } from '@deepseek-ai/dsh-session'
+import type { SessionSeq } from '@deepseek-ai/dsh-session'
 import type { TokenMeasurement } from '@deepseek-ai/dsh-token-meter'
 import type { DcpConfig } from '../config.js'
 import { decodeDcpMeta } from '../protocol/metadata.js'
@@ -15,6 +16,20 @@ export interface NudgeResult {
   stepsSinceNudge: number
 }
 
+function hasCommittedRange(resultText: string): boolean {
+  const committed = /\bcommitted=([^;.]*)/.exec(resultText)?.[1]?.trim()
+  return committed !== undefined && committed.length > 0 && committed !== 'none'
+}
+
+function isRejectedCompressOutcome(isError: boolean, resultText: string): boolean {
+  const status = /\bstatus=(success|partial|rejected)\b/.exec(resultText)?.[1]
+  if ((status === 'success' || status === 'partial') && hasCommittedRange(resultText)) {
+    return false
+  }
+  if (status === 'rejected') return true
+  return isError
+}
+
 export function computeNudge(
   session: Session,
   measure: TokenMeasurement,
@@ -22,10 +37,34 @@ export function computeNudge(
 ): NudgeResult {
   let markerCount = 0
   let lastNudgeMarker = 0
-  let lastNudgeSeq = -1
-  let lastCompressionSeq = -1
+  let lastNudgeSeq: SessionSeq | -1 = -1
+  let lastCompressionSeq: SessionSeq | -1 = -1
+  let lastCompressCallId: string | undefined
+  let lastCompressOutcomeSeq: SessionSeq | -1 = -1
+  let lastCompressOutcomeRejected = false
 
-  for (const event of session.events) {
+  for (const event of session.snapshotEvents()) {
+    if (event.type === 'tool/call' && event.data.name === 'compress') {
+      lastCompressCallId = String(event.data.callId)
+      continue
+    }
+    if (
+      event.type === 'tool/result' &&
+      lastCompressCallId !== undefined &&
+      String(event.data.message.source.callId) === lastCompressCallId
+    ) {
+      lastCompressOutcomeSeq = event.seq
+      const resultText = event.data.message.content
+        .flatMap((block) => (block.type === 'tool-result' ? block.content : []))
+        .filter((block) => block.type === 'text')
+        .map((block) => (block.type === 'text' ? block.text : ''))
+        .join('\n')
+      lastCompressOutcomeRejected = isRejectedCompressOutcome(
+        event.data.message.content[0]?.isError === true,
+        resultText,
+      )
+      continue
+    }
     if (event.type !== 'user/message') continue
     const text = event.data.content
       .filter((block) => block.type === 'text')
@@ -40,7 +79,11 @@ export function computeNudge(
   }
 
   let stepsSinceNudge = markerCount - lastNudgeMarker
-  const armed = lastNudgeMarker === 0 ? markerCount > 0 : lastCompressionSeq > lastNudgeSeq
+  const armedByCompression =
+    lastNudgeMarker === 0 ? markerCount > 0 : lastCompressionSeq > lastNudgeSeq
+  const rejectedAfterNudge =
+    lastNudgeSeq !== -1 && lastCompressOutcomeRejected && lastCompressOutcomeSeq > lastNudgeSeq
+  const armed = armedByCompression && !rejectedAfterNudge
   const contextWindow = session.requestContext()?.contextWindow
   if (!config.nudge.enabled) {
     return { armed, stepsSinceNudge }

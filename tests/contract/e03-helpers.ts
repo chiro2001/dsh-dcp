@@ -1,4 +1,4 @@
-import { foldSurface, type SessionEvent } from '@deepseek-ai/dsh-session'
+import { foldSurface, type SessionEvent, type SessionSeq } from '@deepseek-ai/dsh-session'
 
 export type BlockMembership = 'active' | 'consumed' | 'absorbed-native' | 'expanded'
 
@@ -13,7 +13,7 @@ export function reconcileBlockMembership(
 ): Map<string, BlockMembership> {
   const result = new Map<string, BlockMembership>()
   const surface = new Set(foldSurface(events).nodes)
-  const dcpBlocks: Array<{ ref: string; seq: number }> = []
+  const dcpBlocks: Array<{ ref: string; seq: SessionSeq }> = []
 
   for (const event of events) {
     if (event.type !== 'user/message') continue

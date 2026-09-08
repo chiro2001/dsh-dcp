@@ -1,5 +1,45 @@
 # CHANGELOG
 
+## 0.1.0-rc.8 (Unreleased)
+
+- 新增压缩关键规则维护专区与单一提示词来源，集中锁定安全不变式、
+  `rejected | partial | success` 状态机、摘要保真规则、首次调用 JSON 模板和动态配置
+  注入边界。
+- `compress` 工具描述显示实际 `retainRecentTurns`、`minNetSavingsTokens` 与
+  `maxRangesPerCall`；小范围允许紧凑高保真段落，较大范围按需保留目标、约束、
+  决策、产物、失败、验证和未完成工作，避免机械模板反而降低净节省。
+- system guidance 增加调用触发门：只响应明确请求、DCP nudge 或有节省价值的
+  上下文压力，不因工具可见而主动调用；rejected outcome 会阻止旧 nudge 在后续
+  step 中重新施压，直到出现新的成功提交。
+- multi-range 接受任意输入顺序，由插件按当前 surface 安全排序并保留原始下标；
+  仍拒绝重叠范围以及 `startRef` 不在 `endRef` 之前的单个范围。
+- 成功、部分成功、校验失败、guard/timeout 等工具管线失败都会把历史调用中的长
+  inline summary 改写为带 provenance 的短 `committed`/`rejected` 标记；原始日志
+  继续保留模型提交内容供审计，但后续 `deriveMessages()` 不再同时携带失败的长短摘要。
+- 工具结果改为短小稳定的错误码与定向 correction；recent/protected/savings 错误
+  分别给出当前可用边界或精确 token 缺口，`skip` 不再与固定 retry 文案冲突；模型
+  只处理失败范围，不重试已提交范围。
+- inline cleanup 改为 best-effort：清理失败不推翻已提交 checkpoint；即使下游
+  post-execute policy 把工具结果改成错误，也报告真实 committed blocks，避免重复压缩。
+- session signed ledger 现在识别 committed/rejected/malformed inline cleanup 及历史
+  marker，把被替换 assistant 与短 replacement 纳入 prune/checkpoint token 口径。
+- 新增真实 AgentLoop、重启重放、token accounting、长失败摘要清理、任意顺序范围、
+  partial/下游错误恢复回归，并继续断言请求消息逐字节等于 `session.deriveMessages()`。
+
+## 0.1.0-rc.7 (Unreleased)
+
+- 适配 dsh `0.1.2-rc.1`：改用公开 session log 读取 API、品牌化日志位置和
+  `ToolCallId`，并补齐 AgentLoop 的 session-projection 测试拓扑。
+- 重新验证 compaction 当前 surface 区间、崩溃前缀、token projection、重启重放
+  和 agent-loop request reconstruction；DCP protocol 保持 v1。
+- 安装 E2E 在 dump-config 之外真实触发一次 pre-step，并以 peer graph 检查拦截
+  构建可安装但运行时 API 已失配的回归。
+- 真实模型测试适配器传递新版网关要求的 `x-opencode-session`，并以脱敏诊断断言
+  工具 schema、HTTP 状态、finish reason 与实际 `compress` 调用。
+- 修复链式原生 compaction 后 alias 指向陈旧节点的问题，并拒绝不安全整数 ref；
+  未闭合 summary bracket 在 DCP 写入前明确返回 busy。
+- 本节仍为 Unreleased：兼容门禁已通过，但未创建 tag 或 GitHub Release。
+
 ## 0.1.0-rc.6-1 (2026-08-28)
 
 - 修复 checkpoint 摘要可能被模型写入 `[bN]` 前缀的问题：

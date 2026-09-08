@@ -4,7 +4,7 @@
  * @module dsh-dcp/protection/classify
  */
 
-import type { Session } from '@deepseek-ai/dsh-session'
+import type { Session, SessionEvent, SessionSeq } from '@deepseek-ai/dsh-session'
 import type { DcpConfig } from '../config.js'
 import { matchesGlob } from './patterns.js'
 
@@ -20,8 +20,8 @@ export interface PriorBlock {
   text: string
 }
 
-function toolNameOf(session: Session, callId: string): string | undefined {
-  for (const event of session.events) {
+function toolNameOf(events: readonly SessionEvent[], callId: string): string | undefined {
+  for (const event of events) {
     if (event.type === 'tool/call' && String(event.data.callId) === callId) {
       return event.data.name
     }
@@ -47,15 +47,16 @@ function filePathsOf(tool: string, args: string): string[] {
 /** Collect verbatim user messages, <protect> tags, protected tool outputs, and prior blocks. */
 export function collectProtectedAppendix(
   session: Session,
-  shadowedSeqs: readonly number[],
+  shadowedSeqs: readonly SessionSeq[],
   config: DcpConfig,
   priorBlocks: readonly PriorBlock[] = [],
+  events: readonly SessionEvent[] = session.snapshotEvents(),
 ): ProtectedAppendix {
   const sections: string[] = []
   const kinds: string[] = []
 
   for (const seq of shadowedSeqs) {
-    const event = session.events[seq]
+    const event = session.eventAt(seq)
     if (event?.type !== 'user/message') continue
     const texts = event.data.content
       .filter((block) => block.type === 'text')
@@ -85,12 +86,12 @@ export function collectProtectedAppendix(
   }
 
   for (const seq of shadowedSeqs) {
-    const event = session.events[seq]
+    const event = session.eventAt(seq)
     if (event?.type !== 'tool/result') continue
     const callId = String(event.data.message.source.callId)
-    const tool = toolNameOf(session, callId)
+    const tool = toolNameOf(events, callId)
     if (!tool) continue
-    const toolCall = session.events.find(
+    const toolCall = events.find(
       (candidate) => candidate.type === 'tool/call' && String(candidate.data.callId) === callId,
     )
     const args = toolCall?.type === 'tool/call' ? toolCall.data.arguments : ''

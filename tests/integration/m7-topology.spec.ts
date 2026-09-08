@@ -5,6 +5,7 @@ import { join } from 'node:path'
 import { Context, type Plugin } from '@deepseek-ai/cordis'
 import AgentLoop from '@deepseek-ai/dsh-agent-loop'
 import { mountAgentLoopTestDependencies } from '@deepseek-ai/dsh-agent-loop-testkit'
+import SessionProjectionRegistry from '@deepseek-ai/dsh-session-projection'
 import TokenMeter from '@deepseek-ai/dsh-token-meter'
 import CommandRuntime from '@deepseek-ai/dsh-commands'
 import Storage from '@deepseek-ai/dsh-storage'
@@ -24,6 +25,7 @@ async function mount(): Promise<Context> {
   await mountAgentLoopTestDependencies(next, {
     systemPrompt: { persona: 'You are a DCP stats topology test agent.' },
   })
+  await next.plugin(SessionProjectionRegistry)
   await next.plugin(TokenMeter)
   await next.plugin(CommandRuntime)
   await next.plugin(AgentLoop, { agents: [] })

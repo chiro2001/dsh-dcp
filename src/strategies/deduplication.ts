@@ -4,7 +4,7 @@
  * @module dsh-dcp/strategies/deduplication
  */
 
-import type { Session } from '@deepseek-ai/dsh-session'
+import type { Session, SessionSeq } from '@deepseek-ai/dsh-session'
 import type { TokenMeter } from '@deepseek-ai/dsh-token-meter'
 import { freezeMessage } from '@deepseek-ai/dsh-llm/message'
 import type { DcpConfig } from '../config.js'
@@ -12,7 +12,7 @@ import { matchesGlob } from '../protection/patterns.js'
 import { maxTurn, turnOfSeq } from '../protocol/turns.js'
 
 export interface DedupTarget {
-  seq: number
+  seq: SessionSeq
   callId: string
   tool: string
 }
@@ -49,7 +49,7 @@ function filePathsOf(tool: string, args: string): string[] {
 }
 
 export function dedupCandidates(session: Session, config: DcpConfig): DedupTarget[] {
-  const events = session.events
+  const events = session.snapshotEvents()
   const calls = new Map<string, { tool: string; args: string }>()
   for (const event of events) {
     if (event.type === 'tool/call') {
@@ -61,9 +61,9 @@ export function dedupCandidates(session: Session, config: DcpConfig): DedupTarge
   }
 
   const latestTurn = maxTurn(events)
-  const results: Array<{ seq: number; callId: string; tool: string }> = []
+  const results: Array<{ seq: SessionSeq; callId: string; tool: string }> = []
   for (const seq of session.surface.nodes) {
-    const event = events[seq]
+    const event = session.eventAt(seq)
     if (event?.type !== 'tool/result') continue
     if (event.surfaceOp !== 'append') continue
     const callId = String(event.data.message.source.callId)
@@ -112,7 +112,7 @@ export function applyDeduplication(
   let replaced = 0
   let tokensSaved = 0
   for (const target of dedupCandidates(session, config)) {
-    const event = session.events[target.seq]
+    const event = session.eventAt(target.seq)
     if (event?.type !== 'tool/result') continue
     const tokens = tokenMeter.estimateMessage(event.data.message)
     const pruned = freezeMessage({

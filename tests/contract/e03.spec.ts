@@ -40,12 +40,12 @@ describe('E-03: concurrency, crash, and native compaction state machine', () => 
     const { session, seqs } = buildHistorySession(fixture.ctx)
     const compactionId = CompactionId('crash-1')
 
-    expect(classifyCompactionPrefix([...session.events])).toBe('none')
+    expect(classifyCompactionPrefix([...session.snapshotEvents()])).toBe('none')
 
     session.append('turn/start', { turn: 3 })
     session.append('step/start', { turn: 3, step: 1 })
     session.append('compaction/start', { compactionId, turn: 3 })
-    expect(classifyCompactionPrefix([...session.events])).toBe('live-orphan-start')
+    expect(classifyCompactionPrefix([...session.snapshotEvents()])).toBe('live-orphan-start')
 
     session.append('compaction/summary', {
       compactionId,
@@ -56,7 +56,9 @@ describe('E-03: concurrency, crash, and native compaction state machine', () => 
       provider: 'mock',
       model: 'mock',
     })
-    expect(classifyCompactionPrefix([...session.events])).toBe('summary-without-replace')
+    expect(classifyCompactionPrefix([...session.snapshotEvents()])).toBe(
+      'summary-without-replace',
+    )
 
     session.append(
       'user/message',
@@ -69,15 +71,18 @@ describe('E-03: concurrency, crash, and native compaction state machine', () => 
         sourceEventSeqs: [seqs.u1, seqs.a1],
       },
     )
-    expect(classifyCompactionPrefix([...session.events])).toBe('recovered-unclosed')
+    expect(classifyCompactionPrefix([...session.snapshotEvents()])).toBe('recovered-unclosed')
 
     session.append('compaction/end', { compactionId, turn: 3 })
-    expect(classifyCompactionPrefix([...session.events])).toBe('committed')
+    expect(classifyCompactionPrefix([...session.snapshotEvents()])).toBe('committed')
 
     session.append('step/end', { turn: 3, step: 1 })
     session.append('turn/end', { turn: 3, reason: { kind: 'completed' } })
 
     // failed-attempt: error end without replace
+    // The first bracket has already replaced u1..a1. Start this crash prefix
+    // against the post-replacement surface instead of citing stale nodes.
+    const failedTarget = session.surface.nodes[0]!
     session.append('turn/start', { turn: 4 })
     session.append('step/start', { turn: 4, step: 1 })
     const failedId = CompactionId('crash-2')
@@ -85,14 +90,14 @@ describe('E-03: concurrency, crash, and native compaction state machine', () => 
     session.append('compaction/summary', {
       compactionId: failedId,
       summary: [{ type: 'text', text: 's' }],
-      shadowedRange: { start: seqs.u1, end: seqs.a1 },
-      shadowedSeqs: [seqs.u1, seqs.a1],
+      shadowedRange: { start: failedTarget, end: failedTarget },
+      shadowedSeqs: [failedTarget],
       shadowedTokenCount: 1,
       provider: 'mock',
       model: 'mock',
     })
     session.append('compaction/end', { compactionId: failedId, turn: 4, error: 'boom' })
-    expect(classifyCompactionPrefix([...session.events])).toBe('failed-attempt')
+    expect(classifyCompactionPrefix([...session.snapshotEvents()])).toBe('failed-attempt')
   })
 
   it('an orphan start before session/end-seed is stale, after it is live', () => {
@@ -101,23 +106,23 @@ describe('E-03: concurrency, crash, and native compaction state machine', () => 
     session.append('turn/start', { turn: 3 })
     session.append('step/start', { turn: 3, step: 1 })
     session.append('compaction/start', { compactionId: CompactionId('orphan-1'), turn: 3 })
-    expect(classifyCompactionPrefix([...session.events])).toBe('live-orphan-start')
+    expect(classifyCompactionPrefix([...session.snapshotEvents()])).toBe('live-orphan-start')
 
     // A new lifecycle seed marks the previous orphan stale.
     session.append('session/end-seed', {})
-    expect(classifyCompactionPrefix([...session.events])).toBe('stale-orphan-start')
+    expect(classifyCompactionPrefix([...session.snapshotEvents()])).toBe('stale-orphan-start')
 
     // A live orphan after the end-seed is live again.
     session.append('compaction/start', { compactionId: CompactionId('orphan-2'), turn: 3 })
-    expect(classifyCompactionPrefix([...session.events])).toBe('live-orphan-start')
+    expect(classifyCompactionPrefix([...session.snapshotEvents()])).toBe('live-orphan-start')
 
     // Forking at a boundary before the orphan yields a child with no bracket.
-    const turnOneEnd = session.events.find(
-      (event) => event.type === 'turn/end' && event.data.turn === 1,
-    )
+    const turnOneEnd = session
+      .snapshotEvents()
+      .find((event) => event.type === 'turn/end' && event.data.turn === 1)
     if (!turnOneEnd) throw new Error('turn one end missing')
     const child = fixture.ctx.sessions.fork(session, turnOneEnd.seq)
-    expect(classifyCompactionPrefix([...child.events])).toBe('none')
+    expect(classifyCompactionPrefix([...child.snapshotEvents()])).toBe('none')
   })
 
   it('cold replay and incremental surface agree after nested replacements', () => {
@@ -179,7 +184,7 @@ describe('E-03: concurrency, crash, and native compaction state machine', () => 
 
     expect(session.surface.nodes).toHaveLength(1)
 
-    const membership = reconcileBlockMembership([...session.events])
+    const membership = reconcileBlockMembership([...session.snapshotEvents()])
     expect(membership.get('b1')).toBe('absorbed-native')
   })
 
@@ -215,11 +220,11 @@ describe('E-03: concurrency, crash, and native compaction state machine', () => 
     session.append('turn/end', { turn: 3, reason: { kind: 'completed' } })
 
     const measureBefore = fixture.ctx.tokenMeter.measure(session)
-    const membershipBefore = reconcileBlockMembership([...session.events])
+    const membershipBefore = reconcileBlockMembership([...session.snapshotEvents()])
     expect(membershipBefore.get('b1')).toBe('active')
 
     // Native compaction in a new open turn absorbs the DCP checkpoint.
-    const b1Event = session.events.find((event) => event.seq === b1.seq)
+    const b1Event = session.eventAt(b1.seq)
     if (b1Event?.type !== 'user/message') throw new Error('b1 missing')
     session.append('turn/start', { turn: 4 })
     session.append('step/start', { turn: 4, step: 1 })
@@ -249,7 +254,7 @@ describe('E-03: concurrency, crash, and native compaction state machine', () => 
     session.append('step/end', { turn: 4, step: 1 })
     session.append('turn/end', { turn: 4, reason: { kind: 'completed' } })
 
-    const membershipAfter = reconcileBlockMembership([...session.events])
+    const membershipAfter = reconcileBlockMembership([...session.snapshotEvents()])
     expect(membershipAfter.get('b1')).toBe('absorbed-native')
     const measureAfter = fixture.ctx.tokenMeter.measure(session)
     expect(measureAfter.surfaceTokens).toBeLessThan(measureBefore.surfaceTokens)

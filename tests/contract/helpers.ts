@@ -1,6 +1,6 @@
 import type { Context } from '@deepseek-ai/cordis'
-import { SessionId, type Session } from '@deepseek-ai/dsh-session'
-import { CallId } from '@deepseek-ai/dsh-llm/brand'
+import { SessionId, type Session, type SessionSeq } from '@deepseek-ai/dsh-session'
+import { ToolCallId } from '@deepseek-ai/dsh-llm/brand'
 import {
   createAssistantMessage,
   createToolResultMessage,
@@ -8,12 +8,12 @@ import {
 } from '@deepseek-ai/dsh-llm/message'
 
 export interface HistorySeqs {
-  u1: number
-  a1: number
-  u2: number
-  a2: number
-  call: number
-  result: number
+  u1: SessionSeq
+  a1: SessionSeq
+  u2: SessionSeq
+  a2: SessionSeq
+  call: SessionSeq
+  result: SessionSeq
 }
 
 export interface BuiltHistory {
@@ -82,7 +82,7 @@ export function buildHistorySession(ctx: Context): BuiltHistory {
   const call = session.append('tool/call', {
     turn: 2,
     step: 1,
-    callId: CallId('c1'),
+    callId: ToolCallId('c1'),
     name: 'read',
     arguments: JSON.stringify({ path: 'a.txt' }),
   })
@@ -92,7 +92,7 @@ export function buildHistorySession(ctx: Context): BuiltHistory {
       turn: 2,
       step: 1,
       message: createToolResultMessage({
-        callId: CallId('c1'),
+        callId: ToolCallId('c1'),
         content: [{ type: 'text', text: 'file contents with enough text to price' }],
         isError: false,
       }),

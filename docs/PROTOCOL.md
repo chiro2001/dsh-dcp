@@ -1,6 +1,8 @@
 # dsh-dcp 协议（v1）
 
-> 状态：M4 固化。宿主基线：`@deepseek-ai/*@0.1.1-rc.2`。
+> 状态：M4 固化，M8 已完成，M9（rc.8）提示与失败恢复优化待发布；不改变 protocol v1。
+> 当前宿主基线：
+> `@deepseek-ai/*@0.1.2-rc.1`。
 > 本文定义模型可见内容如何由日志重建、压缩块如何落地、边界如何解析、
 > 命令与恢复语义，以及原生 compaction 的共存规则。
 
@@ -76,21 +78,29 @@ recovered-unclosed / committed / failed-attempt`（M0 E-03 锁定）。
 - 参数：`topic` + `content[]`（`startRef`、`endRef`、`summary`）。
 - 一次可传多个 non-overlapping、已闭合的 range；每个 range 各自独立提交，
   工具按当前 surface 逐笔重解析，失败项返回 partial result。
-- 校验：refs 可解析、范围按 surface 顺序且不重叠、两侧 cuts 工具配对平衡、
+- 校验：refs 可解析、范围互不重叠（不要求按旧到新顺序提交，插件内部规范化）、两侧 cuts 工具配对平衡、
   不进入最近 `retainRecentTurns` 个 turn、不含当前 compress 调用、
   不含硬保护（instructions/snapshot）、净节省 ≥ `minNetSavingsTokens`；
   summary 必须包含实际技术正文、不得以 `[bN]` 块引用前缀开头（schema 拒绝，
   checkpoint 构造时也会剥离，blockRef 只能由 `<dcp-message-id>` 表达），
-  也不允许写 `[stored in bN]` 这类指针式占位作为摘要正文。
+  也不允许写 `<dcp-inline-cleanup ... />` 或历史 `[stored in bN]` 这类指针式占位作为摘要正文；
+  实质性范围按需使用摘要字段，小而单一的范围可用紧凑高保真段落，空字段/标题不机械填 `none`。
 - 多 range 各自独立事务；批内后续 range 在提交时按当前 surface 重解析；
-  失败项返回 partial result，不伪造跨 range 原子性。
+  失败项返回 partial result，不伪造跨 range 原子性；全失败返回 rejected result，明确没有任何 range 提交。
 - 嵌套：范围内 active `bN` 被消费，旧摘要 verbatim 保留在
   `Included prior blocks` 附录。
-- inline 摘要参数在同一步清理为 `[stored in bN]`（保留 block/callId 与
-  message id）。
-- 模型可见语义：清理后的 `[stored in bN]` 只是 assistant tool-call 参数中的
-  inline-cleanup 标记；完整摘要以新 checkpoint `user/message` 为权威内容。
-  模型不应把该标记理解为“摘要丢失”或“原始 summary 就是占位符”。
+- inline 摘要参数在提交/拒绝处理后可清理为带 provenance 的 marker（保留
+  block/callId 与 message id）：
+
+  ```text
+  <dcp-inline-cleanup provenance="dsh-dcp" status="committed" block-ref="bN" />
+  <dcp-inline-cleanup provenance="dsh-dcp" status="rejected" code="ERROR_CODE" />
+  ```
+
+- 模型可见语义：cleanup marker 是插件在工具调用之后对历史 assistant 参数的改写，
+  不是模型提交的摘要。committed marker 对应的新 checkpoint `user/message` 保存权威完整摘要；
+  rejected marker 表示没有对应提交，不能被当作摘要正文或“摘要丢失”。
+- `[stored in bN]` 仅保留为 rc.6-1 历史会话/兼容夹具可能出现的旧 marker；新代码不再生成该格式。
 
 ## 5. 自动策略（pre-step）
 

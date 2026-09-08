@@ -1,4 +1,5 @@
 import { describe, expect, it } from 'vitest'
+import { SessionSeq } from '@deepseek-ai/dsh-session'
 import {
   buildAlias,
   buildBoundaryMarker,
@@ -36,19 +37,19 @@ describe('boundary markers', () => {
 })
 
 describe('boundary resolver', () => {
-  const surface = [10, 20, 30, 40]
+  const surface = [SessionSeq(10), SessionSeq(20), SessionSeq(30), SessionSeq(40)]
   const refs: DcpBoundaryRecord[] = [
-    { ref: 'm0001', seq: 10, active: true },
-    { ref: 'm0002', seq: 30, active: true },
-    { ref: 'm0003', seq: 40, active: false },
+    { ref: 'm0001', seq: SessionSeq(10), active: true },
+    { ref: 'm0002', seq: SessionSeq(30), active: true },
+    { ref: 'm0003', seq: SessionSeq(40), active: false },
   ]
 
   it('resolves half-open positional ranges', () => {
     const resolved = resolveRange(surface, refs, 'm0001', 'm0002', [])
     expect(resolved).toEqual({
       ok: true,
-      startSeq: 10,
-      endSeq: 30,
+      startSeq: SessionSeq(10),
+      endSeq: SessionSeq(30),
       startPosition: 0,
       endPosition: 2,
     })
@@ -61,11 +62,11 @@ describe('boundary resolver', () => {
   })
 
   it('resolves stale markers through aliases and fails without one', () => {
-    const aliases = [{ ref: 'm0003', seq: 40 }]
+    const aliases = [{ ref: 'm0003', seq: SessionSeq(40) }]
     expect(resolveRange(surface, refs, 'm0003', 'm0001', aliases).ok).toBe(false)
     expect(resolveBoundaryPosition(surface, refs, 'm0003', aliases)).toEqual({
       position: 3,
-      seq: 40,
+      seq: SessionSeq(40),
     })
     expect(resolveBoundaryPosition(surface, refs, 'm0009', [])).toBeUndefined()
   })

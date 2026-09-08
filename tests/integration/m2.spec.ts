@@ -1,6 +1,6 @@
 import { afterEach, beforeEach, describe, expect, it } from 'vitest'
 import { CompactionId } from '@deepseek-ai/dsh-compaction'
-import { CallId } from '@deepseek-ai/dsh-llm/brand'
+import { ToolCallId } from '@deepseek-ai/dsh-llm/brand'
 import { createAssistantMessage, createUserMessage } from '@deepseek-ai/dsh-llm/message'
 import { mountContractFixture, type ContractFixture } from '../contract/fixture.js'
 import { resolveConfig, type DcpConfig } from '../../src/config.js'
@@ -93,7 +93,7 @@ describe('M2: multi-range, nesting, protection, stats', () => {
             { type: 'text', text: 'compressing again' },
             {
               type: 'tool-call',
-              id: CallId('dcp-call-2'),
+              id: ToolCallId('dcp-call-2'),
               name: 'compress',
               arguments:
                 '{"topic":"second","content":[{"startRef":"b1","endRef":"m0006","summary":"second checkpoint summary"}]}',
@@ -107,7 +107,7 @@ describe('M2: multi-range, nesting, protection, stats', () => {
     session.append('tool/call', {
       turn: 6,
       step: 1,
-      callId: CallId('dcp-call-2'),
+      callId: ToolCallId('dcp-call-2'),
       name: 'compress',
       arguments:
         '{"topic":"second","content":[{"startRef":"b1","endRef":"m0006","summary":"second checkpoint summary"}]}',
@@ -140,7 +140,7 @@ describe('M2: multi-range, nesting, protection, stats', () => {
     expect(text).toContain('Included prior blocks')
     expect(text).toContain('first checkpoint summary')
 
-    const state = reduceDcpState([...session.events])
+    const state = reduceDcpState([...session.snapshotEvents()])
     expect(state.blocks.find((block) => block.ref === 'b1')?.membership).toBe('consumed')
     expect(state.blocks.find((block) => block.ref === 'b2')?.membership).toBe('active')
     expect(state.maxBlockNumber).toBe(2)
@@ -179,7 +179,7 @@ describe('M2: multi-range, nesting, protection, stats', () => {
     expect(text).toContain('Protected tool read output verbatim')
     expect(text).toContain('result 2')
 
-    const stats = computeSessionStats([...session.events])
+    const stats = computeSessionStats([...session.snapshotEvents()])
     expect(stats.blockCount).toBe(1)
     expect(stats.shadowedTokens).toBeGreaterThan(0)
     expect(stats.historyReduction).toBeGreaterThan(0)

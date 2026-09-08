@@ -82,7 +82,7 @@ function buildCorpus(turnCount: number): Session {
   if (refs.size !== turnCount) {
     throw new Error(`perf-hotpath: marker ref collision at ${turnCount} turns`)
   }
-  const state = reduceDcpState(session.events)
+  const state = reduceDcpState(session.snapshotEvents())
   if (state.maxMarkerNumber !== turnCount) {
     throw new Error(
       `perf-hotpath: maxMarkerNumber=${state.maxMarkerNumber}, expected ${turnCount}`,
@@ -95,7 +95,7 @@ function hotPath(session: Session): number {
   const config = resolveConfig({})
   const measure = { totalTokens: 0 } as TokenMeasurement
   const start = performance.now()
-  const state = reduceDcpState(session.events)
+  const state = reduceDcpState(session.snapshotEvents())
   computeNudge(session, measure, config)
   collectNativeAliases(session, state, config.references.maxAliasEntries)
   return performance.now() - start
