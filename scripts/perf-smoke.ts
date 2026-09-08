@@ -50,7 +50,7 @@ function buildSession(nodeCount: number): Session {
 function smoke(nodeCount: number): number {
   const session = buildSession(nodeCount)
   const start = performance.now()
-  const state = reduceDcpState(session.events)
+  const state = reduceDcpState(session.snapshotEvents())
   const elapsed = performance.now() - start
   if (state.boundaryRefs.length !== nodeCount) {
     throw new Error(

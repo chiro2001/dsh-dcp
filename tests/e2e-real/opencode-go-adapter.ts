@@ -10,7 +10,7 @@ import {
   type StreamChunk,
   type TokenUsage,
 } from '@deepseek-ai/dsh-llm'
-import { CallId } from '@deepseek-ai/dsh-llm/brand'
+import { ToolCallId } from '@deepseek-ai/dsh-llm/brand'
 
 export interface OpenCodeGoAdapterConfig {
   baseUrl: string
@@ -35,6 +35,53 @@ interface ParsedToolInvocation {
   id: string
   name: string
   arguments: string
+}
+
+export interface OpenCodeGoRequestDiagnostic {
+  model: string
+  messageCount: number
+  messageRoles: string[]
+  toolNames: string[]
+  hasCompressTool: boolean
+  hasCompressSchema: boolean
+}
+
+export interface OpenCodeGoResponseDiagnostic {
+  httpStatus: number
+  finishReason: string | undefined
+  contentLength: number
+  xmlToolNames: string[]
+  channelToolNames: string[]
+  errorMessage?: string
+}
+
+function diagnosticErrorMessage(detail: string): string | undefined {
+  let message: unknown
+  try {
+    const parsed: unknown = JSON.parse(detail)
+    if (typeof parsed === 'object' && parsed !== null && 'error' in parsed) {
+      const error = parsed.error
+      if (typeof error === 'object' && error !== null && 'message' in error) {
+        message = error.message
+      }
+    }
+    if (
+      message === undefined &&
+      typeof parsed === 'object' &&
+      parsed !== null &&
+      'message' in parsed
+    ) {
+      message = parsed.message
+    }
+  } catch {
+    // Keep a bounded, redacted prefix for non-JSON gateway errors.
+    message = detail.slice(0, 200)
+  }
+  if (typeof message !== 'string') return undefined
+  return message
+    .replace(/Bearer\s+\S+/gi, 'Bearer <redacted>')
+    .replace(/(?:api[_-]?key|token|secret)["'=: ]+\S+/gi, '<credential-redacted>')
+    .slice(0, 200)
 }
 
 function extractItems(value: string): Array<Record<string, string>> {
@@ -157,6 +204,8 @@ function toOpenAiMessages(options: GenerateOptions): OpenAiMessage[] {
 
 export class OpenCodeGoAdapter extends LlmAdapter {
   private callCounter = 0
+  readonly requestDiagnostics: OpenCodeGoRequestDiagnostic[] = []
+  readonly responseDiagnostics: OpenCodeGoResponseDiagnostic[] = []
 
   constructor(private readonly config: OpenCodeGoAdapterConfig) {
     super()
@@ -167,6 +216,39 @@ export class OpenCodeGoAdapter extends LlmAdapter {
   }
 
   async *stream(options: GenerateOptions): AsyncIterable<StreamChunk> {
+    const messages = toOpenAiMessages(options)
+    const toolNames = (options.tools ?? []).map((tool) => tool.name)
+    const compressSchema = options.tools?.find((tool) => tool.name === 'compress')
+    this.requestDiagnostics.push({
+      model: options.model,
+      messageCount: messages.length,
+      messageRoles: messages.map((message) => message.role),
+      toolNames,
+      hasCompressTool: toolNames.includes('compress'),
+      hasCompressSchema:
+        compressSchema !== undefined &&
+        typeof compressSchema.parameters === 'object' &&
+        compressSchema.parameters !== null,
+    })
+
+    const requestBody = {
+      model: options.model,
+      messages,
+      ...(options.tools && options.tools.length > 0
+        ? {
+            tool_choice: 'auto',
+            tools: options.tools.map((tool) => ({
+              type: 'function',
+              function: {
+                name: tool.name,
+                description: tool.description,
+                parameters: tool.parameters,
+              },
+            })),
+          }
+        : {}),
+      ...(options.maxTokens === undefined ? {} : { max_tokens: options.maxTokens }),
+    }
     let response: Response
     try {
       response = await fetch(`${this.config.baseUrl}/chat/completions`, {
@@ -174,25 +256,11 @@ export class OpenCodeGoAdapter extends LlmAdapter {
         headers: {
           'Content-Type': 'application/json',
           Authorization: `Bearer ${this.config.apiKey}`,
+          ...(options.sessionId === undefined
+            ? {}
+            : { 'x-opencode-session': String(options.sessionId) }),
         },
-        body: JSON.stringify({
-          model: options.model,
-          messages: toOpenAiMessages(options),
-          ...(options.tools && options.tools.length > 0
-            ? {
-                tool_choice: 'auto',
-                tools: options.tools.map((tool) => ({
-                  type: 'function',
-                  function: {
-                    name: tool.name,
-                    description: tool.description,
-                    parameters: tool.parameters,
-                  },
-                })),
-              }
-            : {}),
-          ...(options.maxTokens === undefined ? {} : { max_tokens: options.maxTokens }),
-        }),
+        body: JSON.stringify(requestBody),
         signal: options.signal,
       })
     } catch (error) {
@@ -209,12 +277,20 @@ export class OpenCodeGoAdapter extends LlmAdapter {
 
     if (!response.ok) {
       const detail = await response.text().catch(() => '')
+      this.responseDiagnostics.push({
+        httpStatus: response.status,
+        finishReason: undefined,
+        contentLength: 0,
+        xmlToolNames: [],
+        channelToolNames: [],
+        errorMessage: diagnosticErrorMessage(detail),
+      })
       yield {
         type: 'finish',
         reason: {
           kind: 'error',
           failure: {
-            message: `opencode go HTTP ${response.status}: ${detail.slice(0, 300)}`,
+            message: `opencode go HTTP ${response.status}`,
             code: 'HTTP_ERROR',
             status: response.status,
           },
@@ -246,6 +322,16 @@ export class OpenCodeGoAdapter extends LlmAdapter {
 
     const rawContent = choice.message?.content ?? ''
     const parsed = parseXmlToolCalls(rawContent, () => `call_${this.callCounter++}`)
+    const channelToolNames = (choice.message?.tool_calls ?? []).map((toolCall) =>
+      String(toolCall.function?.name ?? ''),
+    )
+    this.responseDiagnostics.push({
+      httpStatus: response.status,
+      finishReason: choice.finish_reason,
+      contentLength: rawContent.length,
+      xmlToolNames: parsed.calls.map((call) => call.name),
+      channelToolNames,
+    })
     const content = parsed.text
     if (content.length > 0) {
       yield { type: 'block-start', index: 0, blockType: 'text' }
@@ -267,14 +353,14 @@ export class OpenCodeGoAdapter extends LlmAdapter {
       yield {
         type: 'tool-call-delta',
         index,
-        id: CallId(id),
+        id: ToolCallId(id),
         name,
         argumentsDelta: argumentsText,
       }
       yield {
         type: 'block-end',
         index,
-        block: { type: 'tool-call', id: CallId(id), name, arguments: argumentsText },
+        block: { type: 'tool-call', id: ToolCallId(id), name, arguments: argumentsText },
       }
     }
 

@@ -1,5 +1,12 @@
-import { describe, expect, it } from 'vitest'
-import { parseXmlToolCalls } from './opencode-go-adapter.js'
+import { afterEach, describe, expect, it } from 'vitest'
+import { SessionId } from '@deepseek-ai/dsh-session'
+import { OpenCodeGoAdapter, parseXmlToolCalls } from './opencode-go-adapter.js'
+
+const originalFetch = globalThis.fetch
+
+afterEach(() => {
+  globalThis.fetch = originalFetch
+})
 
 describe('opencode-go XML tool-call parser', () => {
   it('parses nested content[] invocations', () => {
@@ -40,5 +47,33 @@ describe('opencode-go XML tool-call parser', () => {
     const parsed = parseXmlToolCalls('no invocation here', () => 'call_0')
     expect(parsed.calls).toEqual([])
     expect(parsed.text).toBe('no invocation here')
+  })
+
+  it('routes each request with the AgentLoop session header', async () => {
+    let requestHeaders: Headers | undefined
+    globalThis.fetch = async (_input, init) => {
+      requestHeaders = new Headers(init?.headers)
+      return new Response(
+        JSON.stringify({ choices: [{ message: { content: 'ok' }, finish_reason: 'stop' }] }),
+        { status: 200, headers: { 'content-type': 'application/json' } },
+      )
+    }
+
+    const adapter = new OpenCodeGoAdapter({
+      baseUrl: 'https://example.invalid/v1',
+      apiKey: 'test-only-redacted-key',
+      model: 'deepseek-v4-flash',
+    })
+    const options = {
+      provider: 'go',
+      model: 'deepseek-v4-flash',
+      messages: [],
+      sessionId: SessionId('session-header-test'),
+    }
+    let lastChunkType: string | undefined
+    for await (const chunk of adapter.stream(options)) lastChunkType = chunk.type
+
+    expect(requestHeaders?.get('x-opencode-session')).toBe('session-header-test')
+    expect(lastChunkType).toBe('finish')
   })
 })

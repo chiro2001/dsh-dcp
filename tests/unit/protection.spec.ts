@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import { Session, SessionId } from '@deepseek-ai/dsh-session'
-import { CallId } from '@deepseek-ai/dsh-llm/brand'
+import { ToolCallId } from '@deepseek-ai/dsh-llm/brand'
 import { createToolResultMessage, createUserMessage } from '@deepseek-ai/dsh-llm/message'
 import { resolveConfig } from '../../src/config.js'
 import { matchesGlob } from '../../src/protection/patterns.js'
@@ -57,7 +57,7 @@ describe('protected content (M5 coverage)', () => {
 
   it('appends protected tool outputs', () => {
     const session = Session.create(SessionId('protect-tool'))
-    const callId = CallId('p1')
+    const callId = ToolCallId('p1')
     session.append('tool/call', {
       turn: 1,
       step: 1,

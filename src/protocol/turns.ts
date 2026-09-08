@@ -5,9 +5,12 @@
  * @module dsh-dcp/protocol/turns
  */
 
-import type { SessionEvent } from '@deepseek-ai/dsh-session'
+import type { SessionEvent, SessionSeq } from '@deepseek-ai/dsh-session'
 
-export function turnOfSeq(events: readonly SessionEvent[], seq: number): number | undefined {
+export function turnOfSeq(
+  events: readonly SessionEvent[],
+  seq: SessionSeq,
+): number | undefined {
   let currentTurn: number | undefined
   for (let index = 0; index <= seq && index < events.length; index++) {
     const event = events[index]!

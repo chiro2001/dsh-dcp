@@ -1,5 +1,19 @@
 # CHANGELOG
 
+## 0.1.0-rc.7 (Unreleased)
+
+- 适配 dsh `0.1.2-rc.1`：改用公开 session log 读取 API、品牌化日志位置和
+  `ToolCallId`，并补齐 AgentLoop 的 session-projection 测试拓扑。
+- 重新验证 compaction 当前 surface 区间、崩溃前缀、token projection、重启重放
+  和 agent-loop request reconstruction；DCP protocol 保持 v1。
+- 安装 E2E 在 dump-config 之外真实触发一次 pre-step，并以 peer graph 检查拦截
+  构建可安装但运行时 API 已失配的回归。
+- 真实模型测试适配器传递新版网关要求的 `x-opencode-session`，并以脱敏诊断断言
+  工具 schema、HTTP 状态、finish reason 与实际 `compress` 调用。
+- 修复链式原生 compaction 后 alias 指向陈旧节点的问题，并拒绝不安全整数 ref；
+  未闭合 summary bracket 在 DCP 写入前明确返回 busy。
+- 本节仍为 Unreleased：兼容门禁已通过，但未创建 tag 或 GitHub Release。
+
 ## 0.1.0-rc.6-1 (2026-08-28)
 
 - 修复 checkpoint 摘要可能被模型写入 `[bN]` 前缀的问题：

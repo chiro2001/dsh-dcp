@@ -1,7 +1,7 @@
 import { afterEach, beforeEach, describe, expect, it } from 'vitest'
-import { SessionId, Session } from '@deepseek-ai/dsh-session'
+import { SessionId, Session, type SessionSeq } from '@deepseek-ai/dsh-session'
 import { CompactionId, compactCheckpointSource } from '@deepseek-ai/dsh-compaction'
-import { CallId } from '@deepseek-ai/dsh-llm/brand'
+import { ToolCallId } from '@deepseek-ai/dsh-llm/brand'
 import {
   createAssistantMessage,
   createToolResultMessage,
@@ -10,6 +10,8 @@ import {
 } from '@deepseek-ai/dsh-llm/message'
 import { mountContractFixture, type ContractFixture } from './fixture.js'
 import { buildHistorySession } from './helpers.js'
+import { reduceDcpState } from '../../src/protocol/replay.js'
+import { resolveRange } from '../../src/refs/resolver.js'
 
 describe('E-01: persistent transaction, metering, inline cleanup', () => {
   let fixture: ContractFixture
@@ -83,7 +85,7 @@ describe('E-01: persistent transaction, metering, inline cleanup', () => {
     const call = session.append('tool/call', {
       turn: 3,
       step: 1,
-      callId: CallId('c2'),
+      callId: ToolCallId('c2'),
       name: 'grep',
       arguments: JSON.stringify({ pattern: 'x' }),
     })
@@ -93,7 +95,7 @@ describe('E-01: persistent transaction, metering, inline cleanup', () => {
         turn: 3,
         step: 1,
         message: createToolResultMessage({
-          callId: CallId('c2'),
+          callId: ToolCallId('c2'),
           content: [{ type: 'text', text: 'grep output' }],
           isError: false,
         }),
@@ -121,7 +123,7 @@ describe('E-01: persistent transaction, metering, inline cleanup', () => {
     ).toBe(false)
 
     // Reconstruct from the raw log (restart without DCP logic).
-    const restored = Session.create(SessionId(session.id), [...session.events])
+    const restored = Session.create(SessionId(session.id), [...session.snapshotEvents()])
     expect(restored.deriveMessages()).toEqual(derived)
     expect(restored.surface.nodes).toEqual(session.surface.nodes)
     expect(replace.seq).toBeGreaterThan(0)
@@ -174,13 +176,159 @@ describe('E-01: persistent transaction, metering, inline cleanup', () => {
     session.append('step/end', { turn: 3, step: 1 })
     session.append('turn/end', { turn: 3, reason: { kind: 'completed' } })
 
-    const cloned = structuredClone([...session.events])
+    const cloned = structuredClone([...session.snapshotEvents()])
     const restored = Session.create(SessionId(session.id), cloned)
-    const restoredEvent = restored.events.find((event) => event.seq === replace.seq)
+    const restoredEvent = restored.snapshotEvents().find((event) => event.seq === replace.seq)
     if (restoredEvent?.type !== 'user/message') throw new Error('replacement event missing')
     const restoredSource = restoredEvent.data.source as unknown as Record<string, unknown>
     expect(restoredSource.dcp).toEqual(source.dcp)
     expect(restoredSource.compactionId).toBe(compactionId)
+  })
+
+  it('replays legacy DCP v1 metadata, blocks, and refs after structuredClone', () => {
+    const session = Session.create(SessionId('legacy-dcp-v1-replay'))
+    session.append('turn/start', { turn: 1 })
+    session.append('step/start', { turn: 1, step: 1 })
+    const firstMarker = session.append(
+      'user/message',
+      createUserMessage({
+        content: [{ type: 'text', text: '<dcp-boundary ref="m0001" turn="1" step="1" />' }],
+        source: { kind: 'plugin', plugin: 'dsh-dcp' },
+      }),
+      { surfaceOp: 'append' },
+    )
+    session.append(
+      'assistant/message',
+      {
+        turn: 1,
+        step: 1,
+        message: createAssistantMessage({
+          content: [{ type: 'text', text: 'legacy conversation content' }],
+          source: { provider: 'mock', model: 'mock' },
+        }),
+      },
+      { surfaceOp: 'append', sourceEventSeqs: [] },
+    )
+    const secondMarker = session.append(
+      'user/message',
+      createUserMessage({
+        content: [{ type: 'text', text: '<dcp-boundary ref="m0002" turn="1" step="1" />' }],
+        source: { kind: 'plugin', plugin: 'dsh-dcp' },
+      }),
+      { surfaceOp: 'append' },
+    )
+
+    const dcpId = CompactionId('legacy-dcp-v1')
+    session.append('compaction/start', { compactionId: dcpId, turn: 1 })
+    const dcpSummary = session.append('compaction/summary', {
+      compactionId: dcpId,
+      summary: [{ type: 'text', text: 'legacy DCP summary' }],
+      shadowedRange: { start: firstMarker.seq, end: firstMarker.seq },
+      shadowedSeqs: [firstMarker.seq],
+      shadowedTokenCount: 12,
+      provider: 'mock',
+      model: 'mock',
+    })
+    const dcpCheckpoint = session.append(
+      'user/message',
+      createUserMessage({
+        content: [{ type: 'text', text: 'legacy DCP summary' }],
+        source: {
+          ...compactCheckpointSource(dcpId),
+          dcp: {
+            v: 1,
+            kind: 'summary',
+            blockRef: 'b7',
+            mode: 'range',
+            topic: 'legacy protocol',
+            startRef: 'm0001',
+            endRef: 'm0002',
+            authorMessageId: 'legacy-author',
+            compressCallId: 'legacy-compress',
+            consumedBlockRefs: [],
+            protectedKinds: [],
+          },
+        } as never,
+      }),
+      {
+        surfaceOp: { op: 'replace', start: firstMarker.seq, end: firstMarker.seq },
+        sourceEventSeqs: [firstMarker.seq, dcpSummary.seq],
+      },
+    )
+    session.append('compaction/end', { compactionId: dcpId, turn: 1 })
+
+    const nativeId = CompactionId('legacy-native')
+    session.append('compaction/start', { compactionId: nativeId, turn: 1 })
+    const nativeSummary = session.append('compaction/summary', {
+      compactionId: nativeId,
+      summary: [{ type: 'text', text: 'native summary' }],
+      shadowedRange: { start: secondMarker.seq, end: secondMarker.seq },
+      shadowedSeqs: [secondMarker.seq],
+      shadowedTokenCount: 4,
+      provider: 'mock',
+      model: 'mock',
+    })
+    const nativeCheckpoint = session.append(
+      'user/message',
+      createUserMessage({
+        content: [{ type: 'text', text: 'native summary' }],
+        source: compactCheckpointSource(nativeId),
+      }),
+      {
+        surfaceOp: { op: 'replace', start: secondMarker.seq, end: secondMarker.seq },
+        sourceEventSeqs: [secondMarker.seq, nativeSummary.seq],
+      },
+    )
+    session.append('compaction/end', { compactionId: nativeId, turn: 1 })
+
+    const thirdMarker = session.append(
+      'user/message',
+      createUserMessage({
+        content: [
+          {
+            type: 'text',
+            text: `<dcp-boundary ref="m0003" turn="1" step="1" />\nalias m0002=s${nativeCheckpoint.seq}`,
+          },
+        ],
+        source: { kind: 'plugin', plugin: 'dsh-dcp' },
+      }),
+      { surfaceOp: 'append' },
+    )
+    session.append('step/end', { turn: 1, step: 1 })
+    session.append('turn/end', { turn: 1, reason: { kind: 'completed' } })
+
+    const originalEvents = [...session.snapshotEvents()]
+    const cloned = structuredClone(originalEvents)
+    expect(cloned).toEqual(originalEvents)
+    const restored = Session.create(SessionId(session.id), cloned)
+    const state = reduceDcpState(restored.snapshotEvents())
+
+    expect(restored.deriveMessages()).toEqual(session.deriveMessages())
+    expect(state.blocks).toContainEqual({
+      ref: 'b7',
+      seq: dcpCheckpoint.seq,
+      meta: expect.objectContaining({ v: 1, blockRef: 'b7', kind: 'summary' }),
+      membership: 'active',
+    })
+    expect(state.activeBlockRefs).toEqual(['b7'])
+    expect(state.boundaryRefs).toEqual(
+      expect.arrayContaining([
+        { ref: 'm0001', seq: firstMarker.seq, active: false },
+        { ref: 'm0002', seq: secondMarker.seq, active: false },
+        { ref: 'm0003', seq: thirdMarker.seq, active: true },
+      ]),
+    )
+    expect(state.aliases).toContainEqual({ ref: 'm0002', seq: nativeCheckpoint.seq })
+    const restoredSurface = [...restored.surface.nodes]
+    expect(
+      resolveRange(restoredSurface, state.boundaryRefs, 'm0002', 'm0003', state.aliases),
+    ).toEqual({
+      ok: true,
+      startSeq: nativeCheckpoint.seq,
+      endSeq: thirdMarker.seq,
+      startPosition: restoredSurface.indexOf(nativeCheckpoint.seq),
+      endPosition: restoredSurface.indexOf(thirdMarker.seq),
+    })
   })
 
   it('token meter and projections stay consistent across replacements', () => {
@@ -239,7 +387,7 @@ describe('E-01: persistent transaction, metering, inline cleanup', () => {
     expect(projectedBefore).toBeDefined()
     expect(projectionBefore.values.contextPressure?.pressureTokens).toBe(500)
 
-    const resultEvent = session.events.find((event) => event.seq === seqs.result)
+    const resultEvent = session.eventAt(seqs.result)
     if (resultEvent?.type !== 'tool/result') throw new Error('tool result event missing')
     // A tool-result replacement is legal only inside an open turn/step.
     session.append('turn/start', { turn: 4 })
@@ -299,7 +447,7 @@ describe('E-01: persistent transaction, metering, inline cleanup', () => {
     const call = session.append('tool/call', {
       turn: 3,
       step: 1,
-      callId: CallId('dcp-call'),
+      callId: ToolCallId('dcp-call'),
       name: 'compress',
       arguments: JSON.stringify({
         topic: 'demo',
@@ -322,7 +470,7 @@ describe('E-01: persistent transaction, metering, inline cleanup', () => {
             { type: 'text', text: 'I will compress the earlier turn.' },
             {
               type: 'tool-call',
-              id: CallId('dcp-call'),
+              id: ToolCallId('dcp-call'),
               name: 'compress',
               arguments: JSON.stringify({
                 topic: 'demo',
@@ -349,7 +497,7 @@ describe('E-01: persistent transaction, metering, inline cleanup', () => {
         original.content[0]!,
         {
           type: 'tool-call',
-          id: CallId('dcp-call'),
+          id: ToolCallId('dcp-call'),
           name: 'compress',
           arguments: JSON.stringify({
             topic: 'demo',
@@ -399,7 +547,7 @@ describe('E-01: persistent transaction, metering, inline cleanup', () => {
         turn: 3,
         step: 1,
         message: createToolResultMessage({
-          callId: CallId('dcp-call'),
+          callId: ToolCallId('dcp-call'),
           content: [{ type: 'text', text: 'Compressed 2 messages.' }],
           isError: false,
         }),
@@ -409,7 +557,10 @@ describe('E-01: persistent transaction, metering, inline cleanup', () => {
     session.append('step/end', { turn: 3, step: 1 })
     session.append('turn/end', { turn: 3, reason: { kind: 'completed' } })
 
-    const restored = Session.create(SessionId(session.id), structuredClone([...session.events]))
+    const restored = Session.create(
+      SessionId(session.id),
+      structuredClone([...session.snapshotEvents()]),
+    )
     expect(restored.deriveMessages()).toEqual(session.deriveMessages())
   })
 
@@ -458,7 +609,7 @@ describe('E-01: persistent transaction, metering, inline cleanup', () => {
 
     const before = session.surface.nodes
     expect(before).toContain(checkpoint.seq)
-    expect(before.filter((seq: number) => seq === seqs.u1 || seq === seqs.a1)).toEqual([])
+    expect(before.filter((seq: SessionSeq) => seq === seqs.u1 || seq === seqs.a1)).toEqual([])
 
     // A second full transaction still lands exactly one node; there is no API
     // to expand one node into several role/tool messages in one operation.
@@ -503,7 +654,7 @@ describe('E-01: persistent transaction, metering, inline cleanup', () => {
     session.append('step/end', { turn: 3, step: 1 })
     session.append('turn/end', { turn: 3, reason: { kind: 'completed' } })
     const after = session.surface.nodes
-    expect(after.filter((seq: number) => seq === again.seq)).toEqual([again.seq])
+    expect(after.filter((seq: SessionSeq) => seq === again.seq)).toEqual([again.seq])
     expect(after.length).toBe(before.length)
   })
 })

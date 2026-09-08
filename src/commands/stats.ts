@@ -10,7 +10,7 @@ import { computeSessionStats } from '../stats/session.js'
 import { syncToDomain } from '../stats/domain-store.js'
 
 export function renderStats(ctx: Context, agent: Agent): string {
-  const stats = computeSessionStats(agent.session.events, (message) =>
+  const stats = computeSessionStats(agent.session.snapshotEvents(), (message) =>
     ctx.tokenMeter.estimateMessage(message),
   )
   const measure = ctx.tokenMeter.measure(agent.session)
@@ -33,7 +33,7 @@ export async function renderDomainStats(ctx: Context, agent: Agent): Promise<str
   const result = await syncToDomain(
     ctx,
     String(agent.session.id),
-    agent.session.events,
+    agent.session.snapshotEvents(),
     (message) => ctx.tokenMeter.estimateMessage(message),
   )
   if (result.status === 'unavailable') {

@@ -1,6 +1,6 @@
 import { afterEach, beforeEach, describe, expect, it } from 'vitest'
 import { Session, SessionId } from '@deepseek-ai/dsh-session'
-import { CallId } from '@deepseek-ai/dsh-llm/brand'
+import { ToolCallId } from '@deepseek-ai/dsh-llm/brand'
 import { createAssistantMessage, createUserMessage } from '@deepseek-ai/dsh-llm/message'
 import { mountContractFixture, type ContractFixture } from '../contract/fixture.js'
 import { cleanupInlineSummary } from '../../src/compress/inline-cleanup.js'
@@ -38,7 +38,9 @@ describe('inline cleanup indexed mapping (M6.0)', () => {
         turn: 1,
         step: 1,
         message: createAssistantMessage({
-          content: [{ type: 'tool-call', id: CallId('c1'), name: 'compress', arguments: args }],
+          content: [
+            { type: 'tool-call', id: ToolCallId('c1'), name: 'compress', arguments: args },
+          ],
           source: { provider: 'mock', model: 'mock' },
         }),
       },
@@ -55,7 +57,7 @@ describe('inline cleanup indexed mapping (M6.0)', () => {
     expect(result.cleaned).toBe(true)
 
     const assistantSeq = session.surface.nodes.find((seq) => {
-      const event = session.events[seq]
+      const event = session.eventAt(seq)
       return (
         event?.type === 'assistant/message' &&
         event.data.message.content.some(
@@ -63,7 +65,7 @@ describe('inline cleanup indexed mapping (M6.0)', () => {
         )
       )
     })
-    const assistant = assistantSeq === undefined ? undefined : session.events[assistantSeq]
+    const assistant = assistantSeq === undefined ? undefined : session.eventAt(assistantSeq)
     if (assistant?.type !== 'assistant/message') throw new Error('assistant missing')
     const call = assistant.data.message.content.find(
       (block) => block.type === 'tool-call' && block.id === 'c1',

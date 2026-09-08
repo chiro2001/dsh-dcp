@@ -106,7 +106,10 @@ export function computeSessionStats(
           if (decoded.meta.kind === 'expansion') {
             blockCount++
             const oldSeq = event.sourceEventSeqs?.[0]
-            const old = oldSeq === undefined ? undefined : events[oldSeq]
+            const old =
+              oldSeq === undefined
+                ? undefined
+                : events.find((candidate) => candidate.seq === oldSeq)
             const oldEstimate = old?.type === 'user/message' ? estimate(old.data) : 0
             expansionTokens += oldEstimate - estimate(event.data)
           } else {

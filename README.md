@@ -5,7 +5,8 @@ DeepSeek Harness（dsh）的动态上下文管理插件：对标
 （opencode-dcp）的原理与实现，在 dsh 上提供模型驱动的上下文压缩、工具结果剪枝、
 错误输入清理、压缩块嵌套、受保护内容保留、手动命令与统计。
 
-> **状态**：v0.1.0-rc.6-1 已实现并发布（public repo）。
+> **状态**：v0.1.0-rc.6-1 已发布；v0.1.0-rc.7 已完成 dsh 0.1.2-rc.1
+> 兼容迁移，尚未发布。
 > 详细方案见 [docs/PLAN.md](docs/PLAN.md)，协议见
 > [docs/PROTOCOL.md](docs/PROTOCOL.md)，变更见
 > [docs/CHANGELOG.md](docs/CHANGELOG.md)，下一阶段见
@@ -81,10 +82,10 @@ allowBuilds:
 
 ## 兼容矩阵
 
-- 实测支持：dsh `0.1.1-rc.2`（M0 contract、deterministic AgentLoop、重启、
-  e2e 安装、真实模型 smoke 全部通过）。
-- 其他 dsh 版本：未实测前不进入 peer 范围（当前 peer 精确锁定
-  `0.1.1-rc.2`）；新版本需先跑相同矩阵再扩范围。
+- `v0.1.0-rc.7`：实测并精确锁定 dsh `0.1.2-rc.1`；尚未创建 tag 或发布。
+- `v0.1.0-rc.6-1`：实测支持 dsh `0.1.1-rc.2`。旧宿主继续使用该固定 tag。
+- 不维护跨 breaking rc 的运行时兼容层；其他 dsh 版本必须先跑相同矩阵，再进入
+  对应的新插件版本。
 
 ## 自测
 

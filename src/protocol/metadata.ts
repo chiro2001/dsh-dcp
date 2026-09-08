@@ -9,11 +9,12 @@ import {
   type CompactionCheckpointSource,
   type CompactionId,
 } from '@deepseek-ai/dsh-compaction'
+import type { SessionSeq } from '@deepseek-ai/dsh-session'
 
 export const DCP_PROTOCOL_VERSION = 1
 
 export interface DcpDiagnostic {
-  seq?: number
+  seq?: SessionSeq
   code: string
   message: string
 }
@@ -40,7 +41,9 @@ export type DcpCheckpointSourceV1 = CompactionCheckpointSource & {
 const BLOCK_REF = /^b([1-9]\d*)$/
 
 function isBlockRef(value: unknown): value is `b${number}` {
-  return typeof value === 'string' && BLOCK_REF.test(value)
+  if (typeof value !== 'string' || !BLOCK_REF.test(value)) return false
+  const blockNumber = Number(value.slice(1))
+  return Number.isSafeInteger(blockNumber) && blockNumber > 0
 }
 
 function isStringArray(value: unknown): value is string[] {

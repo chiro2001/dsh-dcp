@@ -9,7 +9,7 @@ import type { DcpConfig } from '../config.js'
 import { reduceDcpState } from '../protocol/replay.js'
 
 export function currentManualMode(agent: Agent, config: DcpConfig): boolean {
-  return reduceDcpState(agent.session.events, config.manualMode.default).manualMode
+  return reduceDcpState(agent.session.snapshotEvents(), config.manualMode.default).manualMode
 }
 
 export function manualResult(

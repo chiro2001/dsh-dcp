@@ -1167,3 +1167,40 @@ bash scripts/check-all.sh --e2e
   - tools、commands、system-prompt、subagent、storage-domain 文档
 - **[事实]** 参考实现 v3.1.15：range/message pipeline、state、refs、strategies、protected
   content、commands、tests；只提取行为与测试意图，按 §19 执行许可决策。
+
+---
+
+## 22. M8：dsh 0.1.2-rc.1 兼容迁移（rc.7）
+
+### 22.1 证据与范围
+
+- **[事实]** 当前已发布的 `v0.1.0-rc.6-1` 插件依赖 dsh `0.1.1-rc.2`；在 dsh `0.1.2-rc.1` 的隔离
+  headless profile 中，首次 pre-step 报 `events is not iterable`。
+- **[事实]** 新宿主移除了 `Session.events`，公开 `snapshotEvents()`、`eventAt()` 与
+  `seq`；日志位置区分 `SessionSeq`、`SessionLogOffset` 和 cursor 类型；工具调用 id
+  更名为 `ToolCallId`；AgentLoop 新增 `sessionProjections` 必需服务。
+- **[事实]** 新 compaction invariant 在 summary/prune 写入时验证
+  `shadowedSeqs` 是当前 surface 上的完整连续区间。
+- **[推断]** rc.7 只支持 dsh `0.1.2-rc.1`，旧宿主固定使用 rc.6-1；不增加运行时
+  双版本 shim，不改变 DCP protocol v1 或产品行为。
+
+### 22.2 执行清单
+
+- [x] 依赖与 lockfile 精确升级，`pnpm peers check` 进入门禁。
+- [x] 生产路径按用途迁移到 `snapshotEvents()` / `eventAt()`，所有既有事件位置使用
+      `SessionSeq`，日志长度与读取边界使用对应 offset/cursor 类型。
+- [x] 测试 adapter 迁移至 `ToolCallId`，真实 AgentLoop fixture 显式挂载
+      session-projection service。
+- [x] E-03 每个崩溃前缀使用独立合法 surface；全部 compaction writer 在提交前
+      重校验 current surface、shadow price、工具配对和 token projection。
+- [x] 安装 E2E 在干净 headless profile 中真实激活插件并经过一次 pre-step。
+- [x] typecheck、lint、unit/contract/integration、build、package、peer、perf、coverage、
+      deterministic e2e 全绿；有 key 时追加真实模型 e2e。
+- [x] 更新 README、RELEASE、ROADMAP、CHANGELOG、构建产物和兼容矩阵，版本提升为
+      `0.1.0-rc.7`；不提前创建 tag 或 GitHub Release。
+
+### 22.3 停止条件
+
+出现 request reconstruction/header desync、非当前 surface replacement、shadow-price
+漂移、工具配对破坏或旧日志静默误读时停止发布；先修复协议或明确记录宿主级迁移限制，
+不得用 `any`、宽泛断言或请求时消息改写绕过。

@@ -85,7 +85,7 @@ describe('session stats (M6.0 native exclusion)', () => {
     )
     session.append('compaction/end', { compactionId: dcpId, turn: null })
 
-    const stats = computeSessionStats([...session.events])
+    const stats = computeSessionStats([...session.snapshotEvents()])
     expect(stats.shadowedTokens).toBe(50)
     expect(stats.blockCount).toBe(1)
     expect(stats.historyReduction).toBe(stats.shadowedTokens - stats.checkpointTokens)
@@ -102,7 +102,7 @@ describe('session stats (M6.0 native exclusion)', () => {
       }),
       { surfaceOp: 'append' },
     )
-    const stats = computeSessionStats([...session.events])
+    const stats = computeSessionStats([...session.snapshotEvents()])
     expect(stats.historyReduction).toBe(
       stats.shadowedTokens +
         stats.pruneTokens -

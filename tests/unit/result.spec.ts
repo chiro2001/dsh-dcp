@@ -1,10 +1,11 @@
 import { describe, expect, it } from 'vitest'
+import { SessionSeq } from '@deepseek-ai/dsh-session'
 import { formatCompressResult } from '../../src/compress/result.js'
 
 describe('formatCompressResult (inline-cleanup clarity)', () => {
   const block = (blockRef: string) => ({
     blockRef,
-    checkpointSeq: 1,
+    checkpointSeq: SessionSeq(1),
     compressedMessages: 6,
     compressedTokens: 123,
   })

@@ -5,6 +5,7 @@ import { join } from 'node:path'
 import { Context, type Plugin } from '@deepseek-ai/cordis'
 import AgentLoop from '@deepseek-ai/dsh-agent-loop'
 import { mountAgentLoopTestDependencies } from '@deepseek-ai/dsh-agent-loop-testkit'
+import SessionProjectionRegistry from '@deepseek-ai/dsh-session-projection'
 import TokenMeter from '@deepseek-ai/dsh-token-meter'
 import CommandRuntime from '@deepseek-ai/dsh-commands'
 import { SessionId } from '@deepseek-ai/dsh-session'
@@ -18,6 +19,7 @@ const enabled =
   process.env.DSH_DCP_REAL_MODEL === '1' && Boolean(process.env.OPENCODE_GO_API_KEY)
 
 let ctx: Context | undefined
+let adapter: OpenCodeGoAdapter | undefined
 let tempRoot: string | undefined
 const originalDshHome = process.env.DSH_HOME
 const originalXdgData = process.env.XDG_DATA_HOME
@@ -37,17 +39,16 @@ beforeAll(async () => {
         'You are a DCP integration test agent. Follow instructions exactly; when asked, call the compress tool with the exact refs given.',
     },
   })
+  await next.plugin(SessionProjectionRegistry)
   await next.plugin(TokenMeter)
   await next.plugin(CommandRuntime)
   await next.plugin(AgentLoop, { agents: [] })
-  next.llm.registerAdapter(
-    ['go'],
-    new OpenCodeGoAdapter({
-      baseUrl: process.env.DSH_DCP_LLM_BASE_URL ?? 'https://opencode.ai/zen/go/v1',
-      apiKey: process.env.OPENCODE_GO_API_KEY!,
-      model: process.env.DSH_DCP_LLM_MODEL ?? 'deepseek-v4-flash',
-    }),
-  )
+  adapter = new OpenCodeGoAdapter({
+    baseUrl: process.env.DSH_DCP_LLM_BASE_URL ?? 'https://opencode.ai/zen/go/v1',
+    apiKey: process.env.OPENCODE_GO_API_KEY!,
+    model: process.env.DSH_DCP_LLM_MODEL ?? 'deepseek-v4-flash',
+  })
+  next.llm.registerAdapter(['go'], adapter)
   await next.plugin(
     dcpPlugin as unknown as Plugin,
     resolveConfig({
@@ -63,6 +64,7 @@ afterAll(async () => {
     await ctx.fiber.dispose()
     ctx = undefined
   }
+  adapter = undefined
   if (originalDshHome === undefined) delete process.env.DSH_HOME
   else process.env.DSH_HOME = originalDshHome
   if (originalXdgData === undefined) delete process.env.XDG_DATA_HOME
@@ -124,12 +126,13 @@ describe.skipIf(!enabled)('real agent + real model (opencode go, isolated env)',
     )
     await waitForIdle(agent)
 
-    let events = [...agent.session.events]
+    let events = agent.session.snapshotEvents()
     let compressCalls = events.filter(
       (event) => event.type === 'tool/call' && event.data.name === 'compress',
     )
     const assistantText = () =>
-      agent.session.events
+      agent.session
+        .snapshotEvents()
         .filter((event) => event.type === 'assistant/message')
         .map((event) =>
           event.data.message.content
@@ -167,12 +170,33 @@ describe.skipIf(!enabled)('real agent + real model (opencode go, isolated env)',
         }),
       )
       await waitForIdle(agent)
-      events = [...agent.session.events]
+      events = agent.session.snapshotEvents()
       compressCalls = events.filter(
         (event) => event.type === 'tool/call' && event.data.name === 'compress',
       )
     }
-    expect(compressCalls.length, assistantText()).toBeGreaterThan(0)
+    const requestDiagnostics = adapter?.requestDiagnostics ?? []
+    const responseDiagnostics = adapter?.responseDiagnostics ?? []
+    expect(requestDiagnostics.length).toBeGreaterThan(0)
+    expect(requestDiagnostics.every((request) => request.hasCompressSchema)).toBe(true)
+    expect(responseDiagnostics).toHaveLength(requestDiagnostics.length)
+    expect(responseDiagnostics.every((response) => response.httpStatus === 200)).toBe(true)
+    expect(responseDiagnostics.every((response) => response.finishReason !== undefined)).toBe(
+      true,
+    )
+    expect(
+      responseDiagnostics.some(
+        (response) =>
+          response.xmlToolNames.includes('compress') ||
+          response.channelToolNames.includes('compress'),
+      ),
+    ).toBe(true)
+    const diagnostics = {
+      requests: requestDiagnostics,
+      responses: responseDiagnostics,
+      assistantText: assistantText(),
+    }
+    expect(compressCalls.length, JSON.stringify(diagnostics)).toBeGreaterThan(0)
 
     const state = reduceDcpState(events)
     const toolResults = events
@@ -211,6 +235,6 @@ describe.skipIf(!enabled)('real agent + real model (opencode go, isolated env)',
       new AbortController().signal,
     )
     expect(manualResult?.result.kind).toBe('success')
-    expect(reduceDcpState([...agent.session.events]).manualMode).toBe(true)
+    expect(reduceDcpState(agent.session.snapshotEvents()).manualMode).toBe(true)
   }, 240_000)
 })

@@ -2,6 +2,9 @@
 
 ## v0.2（规划）
 
+- **M8（rc.7，已完成，尚未发布）**：适配 dsh `0.1.2-rc.1` 的私有 session log、品牌化
+  seq、`ToolCallId`、AgentLoop projection 依赖和更严格的 compaction invariant；
+  增加真实激活安装冒烟。
 - **M6.3（已完成，rc.3）**：Code Mode fail-closed、探针 oracle 重写、提示词
   方向修复、发布面统一。
 - **M7.0（最小核心）**：storage-domain + `/dcp stats` 纵向切片（真实

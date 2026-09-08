@@ -32,7 +32,7 @@ jobs:
           cache: pnpm
 
       - name: Install dsh CLI
-        run: npm install -g @deepseek-ai/dsh@0.1.0-rc.6
+        run: npm install -g @deepseek-ai/dsh@0.1.2-rc.1
 
       - name: Install
         run: pnpm install --frozen-lockfile

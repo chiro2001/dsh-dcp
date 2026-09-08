@@ -84,7 +84,7 @@ describe('dcp replay state', () => {
     session.append('step/end', { turn: 3, step: 1 })
     session.append('turn/end', { turn: 3, reason: { kind: 'completed' } })
 
-    const events = [...session.events]
+    const events = [...session.snapshotEvents()]
     const prefix = events.slice(0, checkpoint.seq)
     const tail = events.slice(checkpoint.seq)
     const cold = reduceDcpState(events)
@@ -135,7 +135,7 @@ describe('dcp replay state', () => {
       { surfaceOp: 'append' },
     )
 
-    let state = reduceDcpState([...session.events])
+    let state = reduceDcpState([...session.snapshotEvents()])
     expect(state.blocks[0]?.membership).toBe('active')
     expect(state.boundaryRefs).toEqual(
       expect.arrayContaining([
@@ -175,7 +175,7 @@ describe('dcp replay state', () => {
     session.append('step/end', { turn: 4, step: 1 })
     session.append('turn/end', { turn: 4, reason: { kind: 'completed' } })
 
-    state = reduceDcpState([...session.events])
+    state = reduceDcpState([...session.snapshotEvents()])
     expect(state.blocks[0]?.membership).toBe('absorbed-native')
     expect(state.activeBlockRefs).toEqual([])
     expect(state.boundaryRefs[0]?.active).toBe(false)
@@ -228,8 +228,49 @@ describe('dcp replay state', () => {
       { surfaceOp: 'append' },
     )
 
-    const state = reduceDcpState([...session.events])
+    const state = reduceDcpState([...session.snapshotEvents()])
     expect(state.aliases).toContainEqual({ ref: 'm0001', seq: replacement.seq })
     expect(state.maxMarkerNumber).toBe(2)
+  })
+
+  it('ignores unsafe marker references instead of poisoning maxMarkerNumber', () => {
+    const session = Session.create(SessionId('unsafe-marker-ref'))
+    session.append(
+      'user/message',
+      createUserMessage({
+        content: [
+          {
+            type: 'text',
+            text: '<dcp-boundary ref="m9007199254740992" turn="1" step="1" />',
+          },
+        ],
+        source: { kind: 'plugin', plugin: 'dsh-dcp' },
+      }),
+      { surfaceOp: 'append' },
+    )
+
+    const state = reduceDcpState([...session.snapshotEvents()])
+    expect(state.maxMarkerNumber).toBe(0)
+    expect(state.boundaryRefs).toEqual([])
+  })
+
+  it('ignores unsafe block references instead of poisoning maxBlockNumber', () => {
+    const session = Session.create(SessionId('unsafe-block-ref'))
+    session.append(
+      'user/message',
+      createUserMessage({
+        content: [{ type: 'text', text: 'unsafe block' }],
+        source: {
+          ...compactCheckpointSource(CompactionId('unsafe-block')),
+          dcp: { ...meta('b9007199254740992' as `b${number}`) },
+        } as never,
+      }),
+      { surfaceOp: 'append' },
+    )
+
+    const state = reduceDcpState([...session.snapshotEvents()])
+    expect(state.maxBlockNumber).toBe(0)
+    expect(state.blocks).toEqual([])
+    expect(state.diagnostics.at(-1)?.code).toBe('INVALID_BLOCK_REF')
   })
 })

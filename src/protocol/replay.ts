@@ -4,10 +4,10 @@
  * @module dsh-dcp/protocol/replay
  */
 
-import { foldSurface, type SessionEvent } from '@deepseek-ai/dsh-session'
+import { foldSurface, type SessionEvent, SessionSeq } from '@deepseek-ai/dsh-session'
 import { isCompactCheckpointSource } from '@deepseek-ai/dsh-compaction'
 import { decodeDcpMeta, type DcpCheckpointMetaV1, type DcpDiagnostic } from './metadata.js'
-import { parseAlias } from '../refs/marker.js'
+import { isSafeBoundaryRef, parseAlias } from '../refs/marker.js'
 import {
   foldPruneReplacements,
   reconcileBlockMembership,
@@ -16,14 +16,14 @@ import {
 
 export interface DcpBlockRecord {
   ref: string
-  seq: number
+  seq: SessionSeq
   meta: DcpCheckpointMetaV1
   membership: BlockMembership
 }
 
 export interface DcpBoundaryRecord {
   ref: string
-  seq: number
+  seq: SessionSeq
   active: boolean
 }
 
@@ -33,8 +33,8 @@ export interface DcpReplayState {
   blocks: DcpBlockRecord[]
   activeBlockRefs: string[]
   boundaryRefs: DcpBoundaryRecord[]
-  aliases: Array<{ ref: string; seq: number }>
-  pruneReplacements: Map<number, number>
+  aliases: Array<{ ref: string; seq: SessionSeq }>
+  pruneReplacements: Map<SessionSeq, SessionSeq>
   diagnostics: DcpDiagnostic[]
   maxBlockNumber: number
   maxMarkerNumber: number
@@ -72,7 +72,7 @@ export function reduceDcpState(
   const surface = foldSurface(events)
   const surfaceSeqs = new Set(surface.nodes)
   const membership = reconcileBlockMembership(events)
-  const aliasCandidates: Array<{ ref: string; seq: number }> = []
+  const aliasCandidates: Array<{ ref: string; seq: SessionSeq }> = []
 
   for (const event of events) {
     if (event.type !== 'user/message') continue
@@ -87,19 +87,21 @@ export function reduceDcpState(
       state.blocks.push(record)
       if (record.membership === 'active') state.activeBlockRefs.push(record.ref)
       const blockNumber = Number(BLOCK_REF.exec(decoded.meta.blockRef)?.[1] ?? 0)
-      state.maxBlockNumber = Math.max(state.maxBlockNumber, blockNumber)
+      if (Number.isSafeInteger(blockNumber)) {
+        state.maxBlockNumber = Math.max(state.maxBlockNumber, blockNumber)
+      }
       // Active blocks are also boundary refs (bN) so ranges can nest.
       state.boundaryRefs.push({
         ref: decoded.meta.blockRef,
         seq: event.seq,
         active: membership.get(decoded.meta.blockRef) === 'active',
       })
-    } else if (isCompactCheckpointSource(event.data.source as never)) {
+    } else if (isCompactCheckpointSource(event.data.source)) {
       state.diagnostics.push({ ...decoded.diagnostic, seq: event.seq })
     }
 
-    const source = event.data.source as unknown as { plugin?: string }
-    if (source.plugin === 'dsh-dcp') {
+    const source = event.data.source
+    if (source.kind === 'plugin' && source.plugin === 'dsh-dcp') {
       const text = event.data.content
         .filter((block) => block.type === 'text')
         .map((block) => (block.type === 'text' ? block.text : ''))
@@ -108,20 +110,34 @@ export function reduceDcpState(
         ? event.data.content[0].text.matchAll(BOUNDARY_MARKER)
         : []) {
         const ref = match[1]!
+        if (!isSafeBoundaryRef(ref)) continue
         state.boundaryRefs.push({ ref, seq: event.seq, active: surfaceSeqs.has(event.seq) })
         const markerNumber = Number(MESSAGE_REF.exec(ref)?.[1] ?? 0)
         state.maxMarkerNumber = Math.max(state.maxMarkerNumber, markerNumber)
       }
       for (const line of text.split('\n')) {
         const alias = parseAlias(line)
-        if (alias) aliasCandidates.push({ ref: alias.ref, seq: Number(alias.targetId) })
+        if (alias) {
+          try {
+            aliasCandidates.push({ ref: alias.ref, seq: SessionSeq(Number(alias.targetId)) })
+          } catch {
+            // A malformed/unsafe sequence in persisted marker text is ignored.
+          }
+        }
       }
     }
   }
 
+  const aliasesByRef = new Map<string, { ref: string; seq: SessionSeq }>()
   for (const alias of aliasCandidates) {
-    if (events[alias.seq] !== undefined) state.aliases.push(alias)
+    const exists = events.some((event) => event.seq === alias.seq)
+    // Keep historical aliases when their target event exists.  Whether the
+    // target is still on the *current* surface is intentionally resolved at
+    // use time by resolveBoundaryPosition: a later DCP/native replacement may
+    // consume the target after the alias was logged.
+    if (exists) aliasesByRef.set(alias.ref, alias)
   }
+  state.aliases = [...aliasesByRef.values()]
 
   state.pruneReplacements = foldPruneReplacements(events)
 

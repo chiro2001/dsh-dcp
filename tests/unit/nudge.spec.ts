@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { Session, SessionId } from '@deepseek-ai/dsh-session'
+import { Session, SessionId, SessionLogOffset } from '@deepseek-ai/dsh-session'
 import { createAssistantMessage, createUserMessage } from '@deepseek-ai/dsh-llm/message'
 import type { TokenMeasurement } from '@deepseek-ai/dsh-token-meter'
 import { resolveConfig } from '../../src/config.js'
@@ -48,7 +48,7 @@ function sessionWithMarkers(count: number, withContext = true): Session {
 function fakeMeasure(totalTokens: number): TokenMeasurement {
   return {
     totalTokens,
-    logRevision: 0,
+    logRevision: SessionLogOffset(0),
     baseline: { kind: 'none', tokens: 0 },
     surfaceDeltaTokens: 0,
     surfaceTokens: 0,

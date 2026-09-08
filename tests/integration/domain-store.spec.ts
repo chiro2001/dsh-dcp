@@ -77,7 +77,12 @@ describe('M7.0: real dsh-storage-json domain wiring', () => {
     const records = []
     for (const id of ids) {
       records.push(
-        await syncDomainStats(handle.store, id, ctx.sessions.get(id)!.events, estimate),
+        await syncDomainStats(
+          handle.store,
+          id,
+          ctx.sessions.get(id)!.snapshotEvents(),
+          estimate,
+        ),
       )
     }
     for (const record of records) expect(record.ledger.blockCount).toBe(1)

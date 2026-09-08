@@ -14,7 +14,7 @@ import { formatCompressResult } from './result.js'
 
 export function findAuthorMessageId(session: Session, callId: string): string | undefined {
   for (const seq of session.surface.nodes) {
-    const event = session.events[seq]
+    const event = session.eventAt(seq)
     if (event?.type !== 'assistant/message') continue
     if (
       event.data.message.content.some(

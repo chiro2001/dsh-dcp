@@ -2,6 +2,7 @@ import { afterEach, beforeEach, describe, expect, it } from 'vitest'
 import { Context, type Plugin } from '@deepseek-ai/cordis'
 import AgentLoop from '@deepseek-ai/dsh-agent-loop'
 import { mountAgentLoopTestDependencies } from '@deepseek-ai/dsh-agent-loop-testkit'
+import SessionProjectionRegistry from '@deepseek-ai/dsh-session-projection'
 import TokenMeter from '@deepseek-ai/dsh-token-meter'
 import CommandRuntime from '@deepseek-ai/dsh-commands'
 import InvariantRegistry from '@deepseek-ai/dsh-invariants'
@@ -26,6 +27,7 @@ async function mountHarness(options: { nativeCoexist?: boolean } = {}): Promise<
   await mountAgentLoopTestDependencies(next, {
     systemPrompt: { persona: 'You are a deterministic DCP test agent.' },
   })
+  await next.plugin(SessionProjectionRegistry)
   await next.plugin(sessionInvariant as unknown as Plugin)
   await next.plugin(agentLoopInvariant as unknown as Plugin)
   await next.plugin(compactionInvariant as unknown as Plugin)
@@ -143,7 +145,7 @@ describe('deterministic AgentLoop matrix (M6.0)', () => {
     )
     await waitForIdle(agent)
 
-    const events = [...agent.session.events]
+    const events = agent.session.snapshotEvents()
     expect(
       events.some((event) => event.type === 'tool/call' && event.data.name === 'compress'),
     ).toBe(true)
@@ -190,7 +192,7 @@ describe('deterministic AgentLoop matrix (M6.0)', () => {
     await waitForIdle(agent)
     expect(adapter.dispatchCount).toBe(dispatchesBefore)
     expect(
-      [...agent.session.events].filter((event) => event.type === 'assistant/message'),
+      agent.session.snapshotEvents().filter((event) => event.type === 'assistant/message'),
     ).toHaveLength(1)
   })
 
@@ -274,7 +276,7 @@ describe('deterministic AgentLoop matrix (M6.0)', () => {
     )
     await waitForIdle(agent)
 
-    const events = [...agent.session.events]
+    const events = agent.session.snapshotEvents()
     const compressResult = events.find(
       (event) =>
         event.type === 'tool/result' &&
@@ -315,7 +317,7 @@ describe('deterministic AgentLoop matrix (M6.0)', () => {
     agent.cancel({ kind: 'user' })
     await waitForIdle(agent)
 
-    const events = [...agent.session.events]
+    const events = agent.session.snapshotEvents()
     const lastTurnEnd = events.findLast((event) => event.type === 'turn/end')
     expect(lastTurnEnd?.type).toBe('turn/end')
     if (lastTurnEnd?.type === 'turn/end') {
@@ -365,7 +367,7 @@ describe('deterministic AgentLoop matrix (M6.0)', () => {
       await waitForIdle(agent)
     }
 
-    const events = [...agent.session.events]
+    const events = agent.session.snapshotEvents()
     const state = reduceDcpState(events)
     expect(state.activeBlockRefs).toEqual(['b1', 'b2'])
     const text = agent.session
@@ -415,7 +417,7 @@ describe('deterministic AgentLoop matrix (M6.0)', () => {
       await waitForIdle(agent)
     }
 
-    const events = [...agent.session.events]
+    const events = agent.session.snapshotEvents()
     const native = events.find(
       (event) =>
         event.type === 'user/message' &&

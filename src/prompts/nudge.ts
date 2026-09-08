@@ -5,6 +5,7 @@
  */
 
 import type { Session } from '@deepseek-ai/dsh-session'
+import type { SessionSeq } from '@deepseek-ai/dsh-session'
 import type { TokenMeasurement } from '@deepseek-ai/dsh-token-meter'
 import type { DcpConfig } from '../config.js'
 import { decodeDcpMeta } from '../protocol/metadata.js'
@@ -22,10 +23,10 @@ export function computeNudge(
 ): NudgeResult {
   let markerCount = 0
   let lastNudgeMarker = 0
-  let lastNudgeSeq = -1
-  let lastCompressionSeq = -1
+  let lastNudgeSeq: SessionSeq | -1 = -1
+  let lastCompressionSeq: SessionSeq | -1 = -1
 
-  for (const event of session.events) {
+  for (const event of session.snapshotEvents()) {
     if (event.type !== 'user/message') continue
     const text = event.data.content
       .filter((block) => block.type === 'text')

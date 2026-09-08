@@ -18,7 +18,7 @@ describe('M3 host contract: surface replacements inside an open turn without ste
     const { session, seqs } = buildHistorySession(fixture.ctx)
     session.append('turn/start', { turn: 3 })
 
-    const resultEvent = session.events.find((event) => event.seq === seqs.result)
+    const resultEvent = session.eventAt(seqs.result)
     if (resultEvent?.type !== 'tool/result') throw new Error('result missing')
     const pruned = freezeMessage({
       ...resultEvent.data.message,

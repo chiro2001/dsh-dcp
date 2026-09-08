@@ -63,7 +63,7 @@ export function apply(ctx: Context, config: DcpConfig): void {
     async ({ agent, messages, turn, step, signal }, next): Promise<PreStepDecision> => {
       const decision = await next()
       if (signal.aborted) return decision
-      const state = reduceDcpState(agent.session.events, resolved.manualMode.default)
+      const state = reduceDcpState(agent.session.snapshotEvents(), resolved.manualMode.default)
       if (messages.some(isDcpControlMessage)) {
         for (const message of messages) {
           const control = parseControl(message)
@@ -86,7 +86,10 @@ export function apply(ctx: Context, config: DcpConfig): void {
       }
       if (decision.kind === 'enter') {
         applyAutomaticStrategies(agent.session, ctx.tokenMeter, resolved, state.manualMode)
-        const currentState = reduceDcpState(agent.session.events, resolved.manualMode.default)
+        const currentState = reduceDcpState(
+          agent.session.snapshotEvents(),
+          resolved.manualMode.default,
+        )
         const ref = `m${String(currentState.maxMarkerNumber + 1).padStart(4, '0')}`
         const nudge = computeNudge(
           agent.session,

@@ -3,6 +3,7 @@
 # optionally coverage and e2e. Any failure stops the run.
 set -euo pipefail
 cd "$(dirname "$0")/.."
+mkdir -p .tmp-vitest
 
 COVERAGE=0
 E2E=0
@@ -29,6 +30,9 @@ pnpm build
 echo "== package check =="
 pnpm check:package
 
+echo "== peer dependency check =="
+pnpm peers check
+
 echo "== perf smoke =="
 pnpm perf-smoke
 
@@ -37,12 +41,12 @@ pnpm perf-hotpath
 
 if [[ "$COVERAGE" == "1" ]]; then
   echo "== coverage =="
-  pnpm vitest run --coverage
+  TMPDIR="$PWD/.tmp-vitest" pnpm vitest run --coverage
 fi
 
 if [[ "$E2E" == "1" ]]; then
   echo "== deterministic e2e (contract + integration) =="
-  pnpm vitest run tests/contract tests/integration
+  TMPDIR="$PWD/.tmp-vitest" pnpm vitest run tests/contract tests/integration
   if command -v dsh >/dev/null 2>&1; then
     echo "== e2e install (isolated DSH_HOME) =="
     bash scripts/e2e-install.sh

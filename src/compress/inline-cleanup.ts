@@ -4,7 +4,7 @@
  * @module dsh-dcp/compress/inline-cleanup
  */
 
-import type { Session } from '@deepseek-ai/dsh-session'
+import type { Session, SessionEvent, SessionSeq } from '@deepseek-ai/dsh-session'
 import type { TokenMeter } from '@deepseek-ai/dsh-token-meter'
 import { freezeMessage } from '@deepseek-ai/dsh-llm/message'
 
@@ -24,10 +24,10 @@ export function cleanupInlineSummary(
   compressCallId: string,
   blockRefsByIndex: Array<string | undefined>,
 ): CleanupResult {
-  let authorSeq: number | undefined
-  let original: (typeof session.events)[number] | undefined
+  let authorSeq: SessionSeq | undefined
+  let original: SessionEvent | undefined
   for (const seq of session.surface.nodes) {
-    const event = session.events[seq]
+    const event = session.eventAt(seq)
     if (event?.type !== 'assistant/message') continue
     const hasCall = event.data.message.content.some(
       (block) => block.type === 'tool-call' && block.id === compressCallId,

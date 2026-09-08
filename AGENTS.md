@@ -39,14 +39,21 @@ pnpm lint               # oxlint + prettier check
 pnpm test               # vitest（单测 + 集成）
 pnpm build              # tsdown → lib/
 pnpm run check:package  # 构建产物/入口/声明验证
+pnpm peers check        # dsh/Cordis/Schemastery peer graph
 bash scripts/check-all.sh            # 快速门禁
 bash scripts/check-all.sh --e2e      # 全量门禁（含 e2e）
 bash scripts/check-all.sh --coverage # 附加覆盖率门槛
 pnpm run e2e:real                   # 真实 Agent + 真实 LLM（opencode go / deepseek-v4-flash）
 ```
 
-门禁顺序：typecheck → lint → test → build → check:package → perf smoke →
-（可选）coverage →（可选）e2e。任一失败即停。
+门禁顺序：typecheck → lint → test → build → check:package → peers check →
+perf smoke →（可选）coverage →（可选）e2e。任一失败即停。
+
+- 已发布兼容基线：`v0.1.0-rc.6-1` 精确支持 dsh `0.1.1-rc.2`。
+- 当前兼容迁移：`v0.1.0-rc.7` 已通过完整门禁并精确支持 dsh `0.1.2-rc.1`，但
+  尚未创建 tag 或发布；发布前不得宣称 rc.7 已发布。
+- `pnpm peers check` 必须验证 dsh peer/dev 图、Cordis `4.0.2` 与 Schemastery
+  `3.18.2`；跨 breaking rc 不添加运行时兼容 shim。
 
 - `e2e:real` 在隔离临时 DSH_HOME 中运行真实 dsh agent-loop；key 取自
   `~/litellm/.env`（`OPENCODE_GO_API_KEY`），不打印、不落盘；无 key 自动跳过。

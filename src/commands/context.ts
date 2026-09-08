@@ -18,7 +18,7 @@ export function renderContext(ctx: Context, agent: Agent): string {
     { messageTokens?: number; systemTokens?: number; toolsTokens?: number } | undefined
   const pressure = values.contextPressure as
     { pressureTokens?: number; projectedTokens?: number } | undefined
-  const state = reduceDcpState(session.events)
+  const state = reduceDcpState(session.snapshotEvents())
 
   const lines = [
     'DCP context:',

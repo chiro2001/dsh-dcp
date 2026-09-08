@@ -5,7 +5,7 @@
  * @module dsh-dcp/compress/pipeline
  */
 
-import type { Session } from '@deepseek-ai/dsh-session'
+import type { Session, SessionSeq } from '@deepseek-ai/dsh-session'
 import type { TokenMeter } from '@deepseek-ai/dsh-token-meter'
 import { CompactionId } from '@deepseek-ai/dsh-compaction'
 import type { DcpConfig } from '../config.js'
@@ -17,7 +17,7 @@ import { cleanupInlineSummary } from './inline-cleanup.js'
 
 export interface CompressBlockResult {
   blockRef: string
-  checkpointSeq: number
+  checkpointSeq: SessionSeq
   compressedMessages: number
   compressedTokens: number
 }
@@ -34,9 +34,9 @@ export interface CompressRangeResult {
   cleanupWarning?: string
 }
 
-function findAuthorSeq(session: Session, compressCallId: string): number | undefined {
+function findAuthorSeq(session: Session, compressCallId: string): SessionSeq | undefined {
   for (const seq of session.surface.nodes) {
-    const event = session.events[seq]
+    const event = session.eventAt(seq)
     if (
       event?.type === 'assistant/message' &&
       event.data.message.content.some(
@@ -59,8 +59,17 @@ export function executeCompressRange(
   const errors = validateCompressArgs(args, config.compress.maxRangesPerCall)
   if (errors.length > 0) throw new Error(errors.join('\n'))
 
-  const state = reduceDcpState(session.events)
-  const batch = prepareBatch(session, tokenMeter, config, state, args, state.maxBlockNumber + 1)
+  const events = session.snapshotEvents()
+  const state = reduceDcpState(events)
+  const batch = prepareBatch(
+    session,
+    tokenMeter,
+    config,
+    state,
+    args,
+    state.maxBlockNumber + 1,
+    events,
+  )
   if (!batch.ok) throw new Error(batch.errors.join('\n'))
 
   const blocks: CompressBlockResult[] = []
@@ -74,7 +83,8 @@ export function executeCompressRange(
     try {
       // Re-prepare against the CURRENT surface: earlier commits shift
       // positions, so each range is re-resolved at commit time.
-      const currentState = reduceDcpState(session.events)
+      const currentEvents = session.snapshotEvents()
+      const currentState = reduceDcpState(currentEvents)
       const blockRef = `b${currentState.maxBlockNumber + 1}`
       const preparedResult = prepareRange(
         session,
@@ -84,6 +94,7 @@ export function executeCompressRange(
         entry,
         blockRef,
         args.topic,
+        currentEvents,
       )
       if (!preparedResult.ok) throw new Error(preparedResult.errors.join('\n'))
       const prepared = preparedResult.prepared

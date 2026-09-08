@@ -1,7 +1,7 @@
 import { afterEach, beforeEach, describe, expect, it } from 'vitest'
 import { Session, SessionId, type Session as SessionType } from '@deepseek-ai/dsh-session'
 import { CompactionId } from '@deepseek-ai/dsh-compaction'
-import { CallId } from '@deepseek-ai/dsh-llm/brand'
+import { ToolCallId } from '@deepseek-ai/dsh-llm/brand'
 import {
   createAssistantMessage,
   createToolResultMessage,
@@ -11,6 +11,8 @@ import { mountContractFixture, type ContractFixture } from '../contract/fixture.
 import { resolveConfig, type DcpConfig } from '../../src/config.js'
 import { buildBoundaryMarker } from '../../src/refs/marker.js'
 import { executeCompressRange } from '../../src/compress/pipeline.js'
+import { commitRange } from '../../src/compress/commit.js'
+import { prepareRange } from '../../src/compress/prepare.js'
 import { reduceDcpState } from '../../src/protocol/replay.js'
 
 function markerMessage(ref: string, turn: number, step: number) {
@@ -38,7 +40,7 @@ function buildMarkedSession(ctx: ContractFixture['ctx']): SessionType {
     )
     session.append('step/start', { turn: number, step: 1 })
     if (withTool) {
-      const callId = CallId(`c${number}`)
+      const callId = ToolCallId(`c${number}`)
       session.append(
         'assistant/message',
         {
@@ -128,7 +130,7 @@ function buildMarkedSession(ctx: ContractFixture['ctx']): SessionType {
           { type: 'text', text: 'compressing now' },
           {
             type: 'tool-call',
-            id: CallId('dcp-call'),
+            id: ToolCallId('dcp-call'),
             name: 'compress',
             arguments: inlineArgs,
           },
@@ -141,7 +143,7 @@ function buildMarkedSession(ctx: ContractFixture['ctx']): SessionType {
   session.append('tool/call', {
     turn: 4,
     step: 1,
-    callId: CallId('dcp-call'),
+    callId: ToolCallId('dcp-call'),
     name: 'compress',
     arguments: inlineArgs,
   })
@@ -254,7 +256,7 @@ describe('compress range pipeline (M1)', () => {
     expect(parsed.content[0]!.summary).not.toContain('consolidated summary')
 
     // Replay state and token accounting.
-    const state = reduceDcpState([...session.events])
+    const state = reduceDcpState([...session.snapshotEvents()])
     expect(state.blocks[0]?.membership).toBe('active')
     expect(state.activeBlockRefs).toEqual(['b1'])
     const measure = fixture.ctx.tokenMeter.measure(session)
@@ -263,7 +265,10 @@ describe('compress range pipeline (M1)', () => {
     )
 
     // Restart: reconstruction from the raw log agrees.
-    const restored = Session.create(SessionId(session.id), structuredClone([...session.events]))
+    const restored = Session.create(
+      SessionId(session.id),
+      structuredClone([...session.snapshotEvents()]),
+    )
     expect(restored.deriveMessages()).toEqual(derived)
 
     // Close the turn so the log is complete.
@@ -273,12 +278,22 @@ describe('compress range pipeline (M1)', () => {
         turn: 4,
         step: 1,
         message: createToolResultMessage({
-          callId: CallId('dcp-call'),
+          callId: ToolCallId('dcp-call'),
           content: [{ type: 'text', text: result.blocks[0]!.blockRef }],
           isError: false,
         }),
       },
-      { surfaceOp: 'append', sourceEventSeqs: [session.seq - 1] },
+      {
+        surfaceOp: 'append',
+        sourceEventSeqs: [
+          session
+            .snapshotEvents()
+            .findLast(
+              (event) =>
+                event.type === 'tool/call' && event.data.callId === ToolCallId('dcp-call'),
+            )!.seq,
+        ],
+      },
     )
     session.append('step/end', { turn: 4, step: 1 })
     session.append('turn/end', { turn: 4, reason: { kind: 'completed' } })
@@ -356,5 +371,89 @@ describe('compress range pipeline (M1)', () => {
     )
     expect(multi.blocks.map((block) => block.blockRef)).toEqual(['b1', 'b2'])
     expect(multi.failed).toEqual([])
+  })
+
+  it('returns busy before writing when a summary-only compaction bracket is open', () => {
+    const session = buildMarkedSession(fixture.ctx)
+    const config = resolveConfig({
+      compress: { retainRecentTurns: 1, minNetSavingsTokens: 1 },
+    })
+    const events = session.snapshotEvents()
+    const state = reduceDcpState(events)
+    const entry = {
+      startRef: 'm0001',
+      endRef: 'm0004',
+      summary: 'summary prepared before the competing bracket',
+    }
+    const preparedResult = prepareRange(
+      session,
+      fixture.ctx.tokenMeter,
+      config,
+      state,
+      entry,
+      'b9',
+      'busy regression',
+      events,
+    )
+    expect(preparedResult.ok).toBe(true)
+    if (!preparedResult.ok) return
+
+    const target = session.surface.nodes[0]!
+    const competingId = CompactionId('busy-regression-compaction')
+    session.append('compaction/start', { compactionId: competingId, turn: 4 })
+    session.append('compaction/summary', {
+      compactionId: competingId,
+      summary: [{ type: 'text', text: 'summary without replacement' }],
+      shadowedRange: { start: target, end: target },
+      shadowedSeqs: [target],
+      shadowedTokenCount: 1,
+      provider: 'mock',
+      model: 'mock',
+    })
+    const before = session.snapshotEvents()
+
+    expect(() =>
+      commitRange(session, fixture.ctx.tokenMeter, preparedResult.prepared, 'b9', {
+        compactionId: CompactionId('busy-regression-dcp'),
+        compressCallId: 'dcp-call',
+        authorMessageId: 'author',
+      }),
+    ).toThrow('compaction is busy')
+    expect(session.snapshotEvents()).toHaveLength(before.length)
+  })
+
+  it('rejects a direct commit when prepared shadowed nodes differ from the current surface', () => {
+    const session = buildMarkedSession(fixture.ctx)
+    const config = resolveConfig({
+      compress: { retainRecentTurns: 1, minNetSavingsTokens: 1 },
+    })
+    const events = session.snapshotEvents()
+    const state = reduceDcpState(events)
+    const preparedResult = prepareRange(
+      session,
+      fixture.ctx.tokenMeter,
+      config,
+      state,
+      { startRef: 'm0001', endRef: 'm0004', summary: 'direct commit mismatch' },
+      'b9',
+      'direct commit regression',
+      events,
+    )
+    expect(preparedResult.ok).toBe(true)
+    if (!preparedResult.ok) return
+
+    const mismatched = {
+      ...preparedResult.prepared,
+      shadowedSeqs: [...preparedResult.prepared.shadowedSeqs, preparedResult.prepared.endSeq],
+    }
+    const before = session.snapshotEvents()
+    expect(() =>
+      commitRange(session, fixture.ctx.tokenMeter, mismatched, 'b9', {
+        compactionId: CompactionId('direct-mismatch'),
+        compressCallId: 'dcp-call',
+        authorMessageId: 'author',
+      }),
+    ).toThrow('compress range changed before commit')
+    expect(session.snapshotEvents()).toHaveLength(before.length)
   })
 })

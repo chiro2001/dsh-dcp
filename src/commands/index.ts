@@ -51,7 +51,7 @@ export function registerDcpCommands(ctx: Context, config: DcpConfig): void {
           if (!ref || !/^b\d+$/.test(ref)) {
             return { kind: 'error', text: 'Usage: /dcp show <bN> [--raw]' }
           }
-          const state = reduceDcpState(invocation.agent.session.events)
+          const state = reduceDcpState(invocation.agent.session.snapshotEvents())
           return {
             kind: 'success',
             text: renderBlockShow(
@@ -74,7 +74,7 @@ export function registerDcpCommands(ctx: Context, config: DcpConfig): void {
               text: `${ref} will be expanded into quoted context in a control turn.`,
             }
           }
-          const state = reduceDcpState(invocation.agent.session.events)
+          const state = reduceDcpState(invocation.agent.session.snapshotEvents())
           return {
             kind: 'success',
             text: `${renderBlockShow(invocation.agent.session, state, ref, true)}\n\nNote: model context is unchanged (raw show only). Use --into-context to expand.`,

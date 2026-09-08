@@ -106,7 +106,7 @@ describe('property/fuzz (M5)', () => {
       }
     }
 
-    const events = [...session.events]
+    const events = [...session.snapshotEvents()]
     const cold = reduceDcpState(events)
     const cut = Math.floor(events.length / 2)
     const incremental = applyDcpEvents(reduceDcpState(events.slice(0, cut)), events.slice(cut))

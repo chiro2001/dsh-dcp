@@ -9,6 +9,7 @@ import { writeFile } from 'node:fs/promises'
 import { Context, type Plugin } from '@deepseek-ai/cordis'
 import AgentLoop from '@deepseek-ai/dsh-agent-loop'
 import { mountAgentLoopTestDependencies } from '@deepseek-ai/dsh-agent-loop-testkit'
+import SessionProjectionRegistry from '@deepseek-ai/dsh-session-projection'
 import TokenMeter from '@deepseek-ai/dsh-token-meter'
 import CommandRuntime from '@deepseek-ai/dsh-commands'
 import { SessionId, type SessionEvent } from '@deepseek-ai/dsh-session'
@@ -111,7 +112,7 @@ async function probeForced(ctx: Context, index: number): Promise<ProbeResult> {
     ),
   )
   await waitForIdle(ctx, agent)
-  return summarizeProbe([...agent.session.events])
+  return summarizeProbe(agent.session.snapshotEvents())
 }
 
 async function probeAutonomous(ctx: Context, index: number): Promise<ProbeResult> {
@@ -135,7 +136,7 @@ async function probeAutonomous(ctx: Context, index: number): Promise<ProbeResult
     user('Second turn: continue working on the retained context and reply briefly.'),
   )
   await waitForIdle(ctx, agent)
-  return summarizeProbe([...agent.session.events])
+  return summarizeProbe(agent.session.snapshotEvents())
 }
 
 async function probeCorrection(ctx: Context, index: number): Promise<ProbeResult> {
@@ -156,7 +157,7 @@ async function probeCorrection(ctx: Context, index: number): Promise<ProbeResult
     ),
   )
   await waitForIdle(ctx, agent)
-  const events = [...agent.session.events]
+  const events = agent.session.snapshotEvents()
   const result = summarizeProbe(events)
   const firstError = events.some(
     (event, index) =>
@@ -194,7 +195,7 @@ async function probeNested(ctx: Context, index: number): Promise<ProbeResult> {
     ),
   )
   await waitForIdle(ctx, agent)
-  const events = [...agent.session.events]
+  const events = agent.session.snapshotEvents()
   const state = reduceDcpState(events)
   const newBlocks = state.blocks.filter((block) => block.meta.kind === 'summary')
   const nestedCommitted =
@@ -224,6 +225,7 @@ async function main(): Promise<void> {
         'You are a DCP probe agent. Follow tool instructions exactly; call compress with valid mNNNN refs.',
     },
   })
+  await ctx.plugin(SessionProjectionRegistry)
   await ctx.plugin(TokenMeter)
   await ctx.plugin(CommandRuntime)
   await ctx.plugin(AgentLoop, { agents: [] })

@@ -5,7 +5,12 @@
  * @module dsh-dcp/compress/prepare
  */
 
-import { deriveEventMessage, type Session } from '@deepseek-ai/dsh-session'
+import {
+  deriveEventMessage,
+  type Session,
+  type SessionEvent,
+  type SessionSeq,
+} from '@deepseek-ai/dsh-session'
 import { toolPairingBalancedBefore } from '@deepseek-ai/dsh-compaction'
 import type { TokenMeter } from '@deepseek-ai/dsh-token-meter'
 import { createUserMessage } from '@deepseek-ai/dsh-llm/message'
@@ -23,11 +28,11 @@ import type { CompressRangeEntry } from './schema.js'
 export interface PreparedRange {
   entry: CompressRangeEntry
   topic: string
-  startSeq: number
-  endSeq: number
+  startSeq: SessionSeq
+  endSeq: SessionSeq
   startPosition: number
   endPosition: number
-  shadowedSeqs: number[]
+  shadowedSeqs: SessionSeq[]
   tokensIn: number
   tokensOut: number
   checkpointText: string
@@ -59,6 +64,7 @@ export function prepareRange(
   entry: CompressRangeEntry,
   blockRef: string,
   topic: string,
+  events: readonly SessionEvent[] = session.snapshotEvents(),
 ): PrepareResult {
   const surface = [...session.surface.nodes]
   const resolved = resolveRange(
@@ -89,7 +95,6 @@ export function prepareRange(
   }
 
   // Retention: keep the most recent N turns verbatim.
-  const events = session.events
   const turns = shadowedSeqs
     .map((seq) => turnOfSeq(events, seq))
     .filter((turn): turn is number => turn !== undefined)
@@ -106,7 +111,7 @@ export function prepareRange(
 
   // Hard-protected instruction/snapshot forms may never be shadowed.
   for (const seq of shadowedSeqs) {
-    const event = session.events[seq]
+    const event = session.eventAt(seq)
     if (
       event?.type === 'user/message' &&
       hardProtectedForm((event.data.source as { form?: unknown }).form)
@@ -127,7 +132,7 @@ export function prepareRange(
   )
   const consumedBlockRefs = consumedBlocks.map((block) => block.ref)
   const priorBlocks: PriorBlock[] = consumedBlocks.map((block) => {
-    const event = session.events[block.seq]
+    const event = session.eventAt(block.seq)
     const text =
       event?.type === 'user/message'
         ? event.data.content
@@ -139,11 +144,11 @@ export function prepareRange(
   })
 
   const tokensIn = shadowedSeqs.reduce((sum, seq) => {
-    const message = deriveEventMessage(events[seq]!)
+    const message = deriveEventMessage(session.eventAt(seq)!)
     return sum + (message ? tokenMeter.estimateMessage(message) : 0)
   }, 0)
 
-  const appendix = collectProtectedAppendix(session, shadowedSeqs, config, priorBlocks)
+  const appendix = collectProtectedAppendix(session, shadowedSeqs, config, priorBlocks, events)
   const checkpointText = buildCheckpointText(blockRef, entry.summary, appendix.text)
   const checkpointMessage = createUserMessage({
     content: [{ type: 'text', text: checkpointText }],
@@ -190,6 +195,7 @@ export function prepareBatch(
   state: DcpReplayState,
   args: { topic: string; content: CompressRangeEntry[] },
   firstBlockNumber: number,
+  events: readonly SessionEvent[] = session.snapshotEvents(),
 ): PrepareBatchResult {
   if (args.content.length === 0) return { ok: false, errors: ['content must not be empty'] }
   if (args.content.length > config.compress.maxRangesPerCall) {
@@ -243,6 +249,7 @@ export function prepareBatch(
       resolvedEntry.entry,
       blockRef,
       args.topic,
+      events,
     )
     if (!result.ok) return { ok: false, errors: result.errors }
     prepared.push(result.prepared)

@@ -1,6 +1,6 @@
 import { afterEach, beforeEach, describe, expect, it } from 'vitest'
 import { Session, SessionId, type Session as SessionType } from '@deepseek-ai/dsh-session'
-import { CallId } from '@deepseek-ai/dsh-llm/brand'
+import { ToolCallId } from '@deepseek-ai/dsh-llm/brand'
 import {
   createAssistantMessage,
   createToolResultMessage,
@@ -42,7 +42,7 @@ function toolTurn(
       step: 1,
       message: createAssistantMessage({
         content: [
-          { type: 'tool-call', id: CallId(callId), name: tool, arguments: args },
+          { type: 'tool-call', id: ToolCallId(callId), name: tool, arguments: args },
           { type: 'text', text: `assistant ${turn}` },
         ],
         source: { provider: 'mock', model: 'mock' },
@@ -53,7 +53,7 @@ function toolTurn(
   const call = session.append('tool/call', {
     turn,
     step: 1,
-    callId: CallId(callId),
+    callId: ToolCallId(callId),
     name: tool,
     arguments: args,
   })
@@ -63,7 +63,7 @@ function toolTurn(
       turn,
       step: 1,
       message: createToolResultMessage({
-        callId: CallId(callId),
+        callId: ToolCallId(callId),
         content: [
           {
             type: 'text',
@@ -133,9 +133,9 @@ describe('automatic strategies (M3)', () => {
     const result = applyDeduplication(session, fixture.ctx.tokenMeter, config())
     expect(result.replaced).toBe(1)
 
-    const replacements = session.events.filter(
-      (event) => event.type === 'tool/result' && event.surfaceOp !== 'append',
-    )
+    const replacements = session
+      .snapshotEvents()
+      .filter((event) => event.type === 'tool/result' && event.surfaceOp !== 'append')
     expect(replacements).toHaveLength(1)
     expect(replacements[0]?.data).toMatchObject({
       turn: 1,
