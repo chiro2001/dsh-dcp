@@ -304,6 +304,7 @@ describe('single complex historical-context scenario fixture', () => {
     expect(rejected.status !== 0 || rejectedSummary?.passed === false).toBe(true)
   })
 
+  // This full-input oracle runs isolated Python subprocesses; CI coverage needs a larger per-test ceiling.
   it('qualifies the default full fixture through stdin without altering its original files', async () => {
     const files = createScenarioFiles()
     const qualification = buildScenarioQualification(files)
@@ -327,7 +328,7 @@ describe('single complex historical-context scenario fixture', () => {
     for (const name of Object.keys(files)) {
       expect(await readFile(join(directory, name))).toEqual(before[name])
     }
-  })
+  }, 45_000)
 
   it('builds an isolated replay prefix with three closed turns and complete tool pairs', () => {
     const files = createScenarioFiles()
