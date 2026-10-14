@@ -23,7 +23,7 @@ function buildSession(nodeCount: number): Session {
           },
           { type: 'text', text: `user message ${index} with enough text to price` },
         ],
-        source: { kind: 'plugin', plugin: 'dsh-dcp' },
+        source: { kind: 'dsh-dcp' },
       }),
       { surfaceOp: 'append' },
     )
@@ -33,12 +33,13 @@ function buildSession(nodeCount: number): Session {
       {
         turn,
         step: 1,
+        stream: [],
         message: createAssistantMessage({
           content: [{ type: 'text', text: `assistant reply ${index}` }],
           source: { provider: 'mock', model: 'mock' },
         }),
       },
-      { surfaceOp: 'append', sourceEventSeqs: [] },
+      { surfaceOp: 'append' },
     )
     session.append('step/end', { turn, step: 1 })
     session.append('turn/end', { turn, reason: { kind: 'completed' } })

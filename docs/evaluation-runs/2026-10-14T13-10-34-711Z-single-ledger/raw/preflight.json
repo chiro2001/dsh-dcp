@@ -1,0 +1,11 @@
+{
+  "apiCalls": 0,
+  "prefixBytes": 1466761,
+  "prefixEvents": 346,
+  "inputHashes": {
+    "spec.md": "ba850479b3674f4dfb705c26f58dcb6e2a9ce2754b22457408983f93ba968d63",
+    "ledger.py": "126614dc5bab59fb2bbc29c155afe7fff68bacdb2046bfb45566441b6b5ebe4f",
+    "events.jsonl": "7c33b7e91cf237a8f306e72004b679ee69abe223f344e83c18ffdadfe91ba8e2",
+    "smoke_test.py": "1368f35500ff6cb4b787f293333965bb12396e76a48fa0e33f147c1674b9e907"
+  }
+}

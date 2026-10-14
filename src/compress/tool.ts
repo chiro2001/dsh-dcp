@@ -49,7 +49,7 @@ export function createCompressTool(ctx: Context, config: DcpConfig) {
       topic: {
         type: 'string',
         required: true,
-        description: 'Short 3-5 word label for the compressed section',
+        description: 'Short label for the compressed phase',
       },
       content: {
         type: 'array',
@@ -61,20 +61,18 @@ export function createCompressTool(ctx: Context, config: DcpConfig) {
             startRef: {
               type: 'string',
               required: true,
-              description:
-                'Current closed start boundary ref from context; do not copy a literal example',
+              description: 'Current inclusive start ref (mNNNN or bN)',
             },
             endRef: {
               type: 'string',
               required: true,
-              description:
-                'Current closed exclusive end boundary ref from context; do not copy a literal example',
+              description: 'Current exclusive end ref (mNNNN or bN)',
             },
             summary: {
               type: 'string',
               required: true,
               description:
-                'Technical summary injected as the checkpoint. For substantial ranges use applicable Goal, Constraints, Decisions, Artifacts, Failures, Verification, and Open work fields; for a small, single-purpose range use compact high-fidelity prose. Omit empty fields and never mechanically fill "none", use a pointer, or omit facts.',
+                'Factual technical prose, preserving decisions, artifacts, failures, verification and open work; no pointers or empty fields.',
             },
           },
         },

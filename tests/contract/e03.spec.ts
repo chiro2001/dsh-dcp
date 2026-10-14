@@ -67,7 +67,7 @@ describe('E-03: concurrency, crash, and native compaction state machine', () => 
         source: dcpSource('crash-1', 'b1'),
       }),
       {
-        surfaceOp: { op: 'replace', start: seqs.u1, end: seqs.a1 },
+        surfaceOp: { op: 'replace', startSeq: seqs.u1, endSeq: seqs.a1 },
         sourceEventSeqs: [seqs.u1, seqs.a1],
       },
     )
@@ -148,7 +148,7 @@ describe('E-03: concurrency, crash, and native compaction state machine', () => 
         source: dcpSource('nested-1', 'b1'),
       }),
       {
-        surfaceOp: { op: 'replace', start: seqs.u1, end: seqs.a1 },
+        surfaceOp: { op: 'replace', startSeq: seqs.u1, endSeq: seqs.a1 },
         sourceEventSeqs: [seqs.u1, seqs.a1],
       },
     )
@@ -174,7 +174,7 @@ describe('E-03: concurrency, crash, and native compaction state machine', () => 
         source: compactCheckpointSource(nativeId),
       }),
       {
-        surfaceOp: { op: 'replace', start: b1.seq, end: nativeEnd },
+        surfaceOp: { op: 'replace', startSeq: b1.seq, endSeq: nativeEnd },
         sourceEventSeqs: [...session.surface.nodes],
       },
     )
@@ -211,7 +211,7 @@ describe('E-03: concurrency, crash, and native compaction state machine', () => 
         source: dcpSource('shadow-1', 'b1'),
       }),
       {
-        surfaceOp: { op: 'replace', start: seqs.u1, end: seqs.a1 },
+        surfaceOp: { op: 'replace', startSeq: seqs.u1, endSeq: seqs.a1 },
         sourceEventSeqs: [seqs.u1, seqs.a1],
       },
     )
@@ -246,7 +246,7 @@ describe('E-03: concurrency, crash, and native compaction state machine', () => 
         source: compactCheckpointSource(nativeId),
       }),
       {
-        surfaceOp: { op: 'replace', start: b1.seq, end: b1.seq },
+        surfaceOp: { op: 'replace', startSeq: b1.seq, endSeq: b1.seq },
         sourceEventSeqs: [b1.seq],
       },
     )

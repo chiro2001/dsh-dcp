@@ -19,20 +19,24 @@
 | `checkpointTokens`  | DCP checkpoint 与 prune 替换文本的 estimate                                         |
 | `pruneTokens`       | 被清理原始工具结果的 estimate                                                       |
 | `expansionTokens`   | semantic expansion 的有符号 delta（通常为负）                                       |
-| `markerTokens`      | boundary marker 的 estimate（单独列出）                                             |
+| `markerTokens`      | DCP 追加 boundary/nudge/alias 的 estimate（单独列出）                               |
 | `historyReduction`  | `shadowed + prune - checkpoint + expansion - marker`（有符号；负值显示为 overhead） |
 
 不再使用 clamp 后的 `netSavedTokens`；负数如实呈现为 `history overhead`。
+
+`historyReduction` 描述局部 heuristic 历史变化，不等于累计 API token/费用节省。
+算法优化按[评估方案](EVALUATION.md)计完整请求费用、缓存、失败与恢复，在质量
+达标前提下比较成功任务成本；现有统计账本不是该费用评估 runner。
 
 ### token 口径区分
 
 - `compaction/summary.shadowedTokenCount` 是被压缩**区间**的 heuristic token
   总量，对应 `shadowedTokens`（区间压缩）。
-- `compaction/prune.shadowedTokenCount` 是 **inline cleanup** 所替换的单条
-  作者 assistant 消息 estimate，对应 `pruneTokens`/`checkpointTokens` 中的
+- `compaction/prune.shadowedTokenCount` 是 **延迟 cleanup** 所替换的整个纯 compress assistant + tool result
+  配对区间 estimate，对应 `pruneTokens`/`checkpointTokens` 中的
   prune 部分（去重/错误清理）。
-- 两者口径不同，不要直接比较：前者是整段被遮蔽历史区间，后者只是同一步
-  清理占位时被替换的模型消息。统计聚合时分别进入 `shadowedTokens` 与
+- 两者口径不同，不要直接比较：前者是整段被遮蔽历史区间，后者是工具执行后
+  被归档替换的完整调用/结果配对。统计聚合时分别进入 `shadowedTokens` 与
   `pruneTokens`，不会混入同一个字段。
 
 ## Domain record v1

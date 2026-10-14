@@ -1,0 +1,11 @@
+{
+  "execution": {
+    "status": "completed",
+    "requestCount": 6,
+    "reason": null
+  },
+  "compressionCount": 0,
+  "compressionAttemptCount": 0,
+  "specifiedCompressionApplied": false,
+  "success": true
+}

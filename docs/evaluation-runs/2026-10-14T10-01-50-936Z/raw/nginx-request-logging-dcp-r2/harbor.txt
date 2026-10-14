@@ -1,0 +1,28 @@
+  1/1 Mean: 1.000 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 0:00:46 0:00:00
+adhoc • dsh-dcp-evaluation • deepseek-flash
+┏━━━━━━━━┳━━━━━━━━━━━━┳━━━━━━━┓
+┃ Trials ┃ Exceptions ┃  Mean ┃
+┡━━━━━━━━╇━━━━━━━━━━━━╇━━━━━━━┩
+│      1 │          0 │ 1.000 │
+└────────┴────────────┴───────┘
+
+┏━━━━━━━━┳━━━━━━━┓
+┃ Reward ┃ Count ┃
+┡━━━━━━━━╇━━━━━━━┩
+│ 1.0    │     1 │
+└────────┴───────┘
+
+Job Info
+Total runtime: 46s
+Results written to 
+/home/chiro/projects/dsh-dynamic-context-pruning/dsh-dynamic-context-pruning/.tm
+p-vitest/evaluation-setup/jobs/dsh-pilot-2026-10-14T10-01-50-936Z-nginx-request-
+logging-dcp-r2/result.json
+Inspect results by running `harbor view 
+/home/chiro/projects/dsh-dynamic-context-pruning/dsh-dynamic-context-pruning/.tm
+p-vitest/evaluation-setup/jobs`
+Share results by running `harbor upload 
+/home/chiro/projects/dsh-dynamic-context-pruning/dsh-dynamic-context-pruning/.tm
+p-vitest/evaluation-setup/jobs/dsh-pilot-2026-10-14T10-01-50-936Z-nginx-request-
+logging-dcp-r2`
+

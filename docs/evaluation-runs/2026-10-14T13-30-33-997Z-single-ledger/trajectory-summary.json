@@ -1,0 +1,96 @@
+{
+  "scope": "one public synthetic fixture; read-only trajectory diagnosis",
+  "privateHistoryRead": false,
+  "apiCalledDuringDiagnosis": false,
+  "checkpoint": {
+    "events": 359,
+    "prepareRequests": 1,
+    "preparePromptTokens": 478056
+  },
+  "arms": {
+    "inactive": {
+      "requests": 6,
+      "branchAssistantMessages": 6,
+      "branchToolCalls": 5,
+      "toolCategories": {
+        "smokeTestRelated": 3,
+        "ledgerRuns": 1,
+        "pythonChecks": 1
+      },
+      "failedToolCommands": [],
+      "ledgerWriteInvocations": 1,
+      "ledgerWriteInvocationsSuccessful": 1,
+      "compressionCalls": 0,
+      "verification": {
+        "passed": true,
+        "checksPassed": 12,
+        "checksTotal": 12
+      },
+      "meanPromptTokens": 480692.6667,
+      "costUSD": 0.01141128
+    },
+    "active": {
+      "requests": 23,
+      "branchAssistantMessages": 23,
+      "branchToolCalls": 24,
+      "postCompressionRequests": 22,
+      "promptTokens": {
+        "beforeCompression": 478197,
+        "firstAfterCompression": 3558,
+        "postCompressionMean": 13007.9545
+      },
+      "toolCategories": {
+        "compression": 1,
+        "inspection": 7,
+        "smokeTestRelated": 10,
+        "ledgerEditRelated": 1,
+        "ledgerRuns": 2,
+        "pythonChecks": 3
+      },
+      "failedToolCommands": [
+        { "category": "inspection", "exceptionClass": "KeyError", "count": 1 },
+        { "category": "pythonChecks", "exceptionClass": "AssertionError", "count": 1 },
+        { "category": "smokeTestRelated", "exceptionClass": "NameError", "count": 1 }
+      ],
+      "ledgerWriteInvocations": 5,
+      "ledgerWriteInvocationsSuccessful": 4,
+      "ledgerWriteInvocationsFailed": 1,
+      "compressionReceipt": {
+        "calls": 1,
+        "successful": true,
+        "committedBlockCount": 1,
+        "summaryEvents": 1,
+        "pruneEvents": 1,
+        "shadowedTokens": 279168,
+        "repeatCompressionCalls": 0,
+        "extraCompactionApiRequests": 0
+      },
+      "formatToolInvocations": 0,
+      "verification": {
+        "passed": true,
+        "checksPassed": 12,
+        "checksTotal": 12
+      },
+      "meanPromptTokens": 33233.5652,
+      "costUSD": 0.012177312
+    }
+  },
+  "finalOutput": {
+    "ledgerFilesIdentical": false,
+    "ledgerLineCounts": { "inactive": 181, "active": 181 },
+    "verificationPassedBoth": true,
+    "balancesEqual": {
+      "accepted": 3747,
+      "rejected": 133,
+      "duplicates": 216,
+      "accountCount": 19,
+      "currencyCount": 2
+    }
+  },
+  "interpretation": {
+    "observedRequestDelta": 17,
+    "supportedByTrace": "The active continuation made more coding and verification interactions after compression and recovered from three failed local commands.",
+    "causalClaim": false,
+    "limitation": "One sequential paired run cannot establish that compression caused the request-count difference or changed capability."
+  }
+}

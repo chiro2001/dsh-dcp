@@ -1,0 +1,4 @@
+# Frozen evidence retains terminal whitespace and original line endings.
+docs/evaluation-runs/**/raw/** -text -whitespace
+docs/evaluation-runs/**/inputs/** -text -whitespace
+docs/real-model-validation/** -text -whitespace

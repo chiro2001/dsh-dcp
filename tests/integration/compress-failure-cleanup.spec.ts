@@ -11,7 +11,26 @@ import { mountContractFixture, type ContractFixture } from '../contract/fixture.
 import { resolveConfig } from '../../src/config.js'
 import { buildBoundaryMarker } from '../../src/refs/marker.js'
 import { executeCompressRange } from '../../src/compress/pipeline.js'
+import { cleanupPendingCompressSteps } from '../../src/compress/step-cleanup.js'
 import type { CompressRangeEntry } from '../../src/compress/schema.js'
+
+function appendAssistantObservation(session: Session, turn: number, step: number): void {
+  session.append('step/start', { turn, step })
+  session.append(
+    'assistant/message',
+    {
+      turn,
+      step,
+      stream: [],
+      message: createAssistantMessage({
+        content: [{ type: 'text', text: 'I observed the rejected compress result.' }],
+        source: { provider: 'mock', model: 'mock' },
+      }),
+    },
+    { surfaceOp: 'append' },
+  )
+  session.append('step/end', { turn, step })
+}
 
 describe('failed compress inline cleanup', () => {
   let fixture: ContractFixture
@@ -34,7 +53,7 @@ describe('failed compress inline cleanup', () => {
         'user/message',
         createUserMessage({
           content: [{ type: 'text', text: buildBoundaryMarker(ref, turn, 1) }],
-          source: { kind: 'plugin', plugin: 'dsh-dcp' },
+          source: { kind: 'dsh-dcp' },
         }),
         { surfaceOp: 'append' },
       )
@@ -52,6 +71,7 @@ describe('failed compress inline cleanup', () => {
         {
           turn,
           step: 1,
+          stream: [],
           message: createAssistantMessage({
             content: [
               { type: 'tool-call', id: ToolCallId(callId), name: 'compress', arguments: args },
@@ -59,7 +79,7 @@ describe('failed compress inline cleanup', () => {
             source: { provider: 'mock', model: 'mock' },
           }),
         },
-        { surfaceOp: 'append', sourceEventSeqs: [] },
+        { surfaceOp: 'append' },
       )
       return session.append('tool/call', {
         turn,
@@ -76,12 +96,13 @@ describe('failed compress inline cleanup', () => {
       {
         turn: 1,
         step: 1,
+        stream: [],
         message: createAssistantMessage({
           content: [{ type: 'text', text: 'old answer one' }],
           source: { provider: 'mock', model: 'mock' },
         }),
       },
-      { surfaceOp: 'append', sourceEventSeqs: [] },
+      { surfaceOp: 'append' },
     )
     session.append('step/end', { turn: 1, step: 1 })
     session.append('turn/end', { turn: 1, reason: { kind: 'completed' } })
@@ -92,12 +113,13 @@ describe('failed compress inline cleanup', () => {
       {
         turn: 2,
         step: 1,
+        stream: [],
         message: createAssistantMessage({
           content: [{ type: 'text', text: 'old answer two' }],
           source: { provider: 'mock', model: 'mock' },
         }),
       },
-      { surfaceOp: 'append', sourceEventSeqs: [] },
+      { surfaceOp: 'append' },
     )
     session.append('step/end', { turn: 2, step: 1 })
     session.append('turn/end', { turn: 2, reason: { kind: 'completed' } })
@@ -108,12 +130,13 @@ describe('failed compress inline cleanup', () => {
       {
         turn: 3,
         step: 1,
+        stream: [],
         message: createAssistantMessage({
           content: [{ type: 'text', text: 'old answer three' }],
           source: { provider: 'mock', model: 'mock' },
         }),
       },
-      { surfaceOp: 'append', sourceEventSeqs: [] },
+      { surfaceOp: 'append' },
     )
     session.append('step/end', { turn: 3, step: 1 })
     session.append('turn/end', { turn: 3, reason: { kind: 'completed' } })
@@ -145,25 +168,8 @@ describe('failed compress inline cleanup', () => {
       ),
     ).toThrow(/minNetSavingsTokens/)
 
-    const failedSurfaceText = JSON.stringify(session.deriveMessages())
-    expect(failedSurfaceText).not.toContain(longSummary)
-    const failedAuthor = session
-      .deriveMessages()
-      .find((message) =>
-        message.content.some(
-          (block) => block.type === 'tool-call' && block.id === 'failed-call',
-        ),
-      )
-    const failedToolCall = failedAuthor?.content.find(
-      (block) => block.type === 'tool-call' && block.id === 'failed-call',
-    )
-    expect(failedToolCall?.type).toBe('tool-call')
-    expect(
-      JSON.parse((failedToolCall as { arguments: string }).arguments).content[0].summary,
-    ).toBe(
-      '<dcp-inline-cleanup provenance="dsh-dcp" status="rejected" code="INSUFFICIENT_SAVINGS" />',
-    )
-
+    // Cleanup is deferred: the rejected long summary is still on the raw log
+    // and on the current surface until the completed step is pruned.
     const rawAfterFailure = session.snapshotEvents()
     expect(
       rawAfterFailure.some(
@@ -174,8 +180,10 @@ describe('failed compress inline cleanup', () => {
           ),
       ),
     ).toBe(true)
+    expect(JSON.stringify(session.deriveMessages())).toContain(longSummary)
 
-    // Close the failed model call, then submit a fresh retry in the next turn.
+    // Close the failed model call with a code-bearing result, then run the
+    // deferred pair cleanup before the retry.
     session.append(
       'tool/result',
       {
@@ -183,14 +191,20 @@ describe('failed compress inline cleanup', () => {
         step: 1,
         message: createToolResultMessage({
           callId: ToolCallId('failed-call'),
-          content: [{ type: 'text', text: 'rejected' }],
+          content: [{ type: 'text', text: 'rejected [INSUFFICIENT_SAVINGS]' }],
           isError: true,
         }),
       },
       { surfaceOp: 'append', sourceEventSeqs: [failedCall.seq] },
     )
     session.append('step/end', { turn: 4, step: 1 })
+    appendAssistantObservation(session, 4, 2)
     session.append('turn/end', { turn: 4, reason: { kind: 'completed' } })
+    expect(cleanupPendingCompressSteps(session, fixture.ctx.tokenMeter)).toEqual([])
+    const cleanedText = JSON.stringify(session.deriveMessages())
+    expect(cleanedText).not.toContain(longSummary)
+    expect(cleanedText).toContain('<dcp-cleanup')
+    expect(cleanedText).toContain('INSUFFICIENT_SAVINGS')
 
     appendTurn(5, 'm0005', 'retry compression')
     const retryArgs = JSON.stringify({
@@ -220,7 +234,6 @@ describe('failed compress inline cleanup', () => {
       .map((block) => (block.type === 'text' ? block.text : ''))
       .join('\n')
     expect(derivedText).not.toContain(longSummary)
-    expect(derivedText).not.toContain('rejected')
     expect(derivedText).toContain('short successful retry summary')
 
     const measure = fixture.ctx.tokenMeter.measure(session)

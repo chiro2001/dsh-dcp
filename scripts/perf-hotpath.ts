@@ -1,5 +1,5 @@
 /**
- * M6.1 hot-path perf: full pre-step equivalent (replay + nudge + alias scan)
+ * M6.1 hot-path perf: pre-step replay path (deferred cleanup + replay + nudge + alias scan)
  * over 1k/4k/16k (optional 50k) events, with growth-ratio gates.
  */
 
@@ -8,6 +8,8 @@ import { CompactionId, compactCheckpointSource } from '@deepseek-ai/dsh-compacti
 import { createUserMessage } from '@deepseek-ai/dsh-llm/message'
 import { reduceDcpState } from '../src/protocol/replay.js'
 import { collectNativeAliases } from '../src/refs/alias.js'
+import { cleanupPendingCompressSteps } from '../src/compress/step-cleanup.js'
+import { estimateMessage } from '@deepseek-ai/dsh-token-meter/estimate'
 import { computeNudge } from '../src/prompts/nudge.js'
 import { resolveConfig } from '../src/config.js'
 import type { TokenMeasurement } from '@deepseek-ai/dsh-token-meter'
@@ -29,7 +31,7 @@ function buildCorpus(turnCount: number): Session {
           },
           { type: 'text', text: `user ${turn}` },
         ],
-        source: { kind: 'plugin', plugin: 'dsh-dcp' },
+        source: { kind: 'dsh-dcp' },
       }),
       { surfaceOp: 'append' },
     )
@@ -39,6 +41,7 @@ function buildCorpus(turnCount: number): Session {
       {
         turn,
         step: 1,
+        stream: [],
         message: {
           id: `a${turn}`,
           role: 'assistant',
@@ -46,7 +49,7 @@ function buildCorpus(turnCount: number): Session {
           source: { provider: 'mock', model: 'mock' },
         } as never,
       },
-      { surfaceOp: 'append', sourceEventSeqs: [] },
+      { surfaceOp: 'append' },
     )
     session.append('step/end', { turn, step: 1 })
     session.append('turn/end', { turn, reason: { kind: 'completed' } })
@@ -72,7 +75,7 @@ function buildCorpus(turnCount: number): Session {
           source: compactCheckpointSource(nativeId),
         }),
         {
-          surfaceOp: { op: 'replace', start: target, end: target },
+          surfaceOp: { op: 'replace', startSeq: target, endSeq: target },
           sourceEventSeqs: [target],
         },
       )
@@ -95,6 +98,7 @@ function hotPath(session: Session): number {
   const config = resolveConfig({})
   const measure = { totalTokens: 0 } as TokenMeasurement
   const start = performance.now()
+  cleanupPendingCompressSteps(session, { estimateMessage })
   const state = reduceDcpState(session.snapshotEvents())
   computeNudge(session, measure, config)
   collectNativeAliases(session, state, config.references.maxAliasEntries)

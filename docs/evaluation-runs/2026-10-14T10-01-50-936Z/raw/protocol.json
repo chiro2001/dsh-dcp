@@ -1,0 +1,694 @@
+{
+  "version": 1,
+  "experiment": "development pilot; standard original tasks; production dsh minimal terminal preset",
+  "createdAt": "2026-10-14T10:01:51.062Z",
+  "datasetSHA": "03b464cec2b04f89835bcacdcd9b47e79ca3c7e5008e28384abb0dfd39a2823c",
+  "qualificationSHA": "8e3fb14ef46abeebf4c2b79e8a032c0b1aa3323ca002ea38b59c8077623ea7d0",
+  "sourceHash": "580bd39818dd63c2f014ed8a95829db17569965dbb1b369a6186200e62ee52c0",
+  "selectionMethod": "Frozen metadata-stratified convenience subset; oracle-qualified before each task inference",
+  "selected": [
+    {
+      "split": "dev",
+      "id": "break-filter-js-from-html",
+      "category": "security",
+      "family": "HTML filter security",
+      "difficulty": "medium",
+      "resources": "cpu=1;memory_mb=2048;storage_mb=10240;gpus=0",
+      "declared_mcp_count": "0",
+      "declared_environment_env_keys": "",
+      "screen_note": "Task instructions, tests, and solutions were not read for this audit; credential screen is limited to visible task metadata.",
+      "reason": "Included: passes metadata resource/type screen and selected in category/family-stratified 30-task set; no agent outcome or DCP-benefit criterion.",
+      "inputHashes": {
+        "task.toml": "f820eb1b47e4ccc548b87d9a418fef519137dcf975ad73d0fb5246df00a9669b",
+        "instruction.md": "ad42558111b2a8e8534bdf52b584b804348e1a8d68d756f812a31d5147e65be5"
+      },
+      "qualification": "recorded separately; pending until oracle preflight completes"
+    },
+    {
+      "split": "dev",
+      "id": "build-cython-ext",
+      "category": "debugging",
+      "family": "Python/C extension build debugging",
+      "difficulty": "medium",
+      "resources": "cpu=1;memory_mb=2048;storage_mb=10240;gpus=0",
+      "declared_mcp_count": "0",
+      "declared_environment_env_keys": "",
+      "screen_note": "Task instructions, tests, and solutions were not read for this audit; credential screen is limited to visible task metadata.",
+      "reason": "Included: passes metadata resource/type screen and selected in category/family-stratified 30-task set; no agent outcome or DCP-benefit criterion.",
+      "inputHashes": {
+        "task.toml": "c472f0e7522c128fb7f03e00b50c8cdf2e5e6474daa1e094e7441f4b54e770b2",
+        "instruction.md": "7e52874e45f88505bd21540229719de6639a401477557d814489981d472f0e34"
+      },
+      "qualification": "recorded separately; pending until oracle preflight completes"
+    },
+    {
+      "split": "dev",
+      "id": "cancel-async-tasks",
+      "category": "software-engineering",
+      "family": "Asynchronous runtime debugging",
+      "difficulty": "hard",
+      "resources": "cpu=1;memory_mb=2048;storage_mb=10240;gpus=0",
+      "declared_mcp_count": "0",
+      "declared_environment_env_keys": "",
+      "screen_note": "Task instructions, tests, and solutions were not read for this audit; credential screen is limited to visible task metadata.",
+      "reason": "Included: passes metadata resource/type screen and selected in category/family-stratified 30-task set; no agent outcome or DCP-benefit criterion.",
+      "inputHashes": {
+        "task.toml": "14db0675e04408f2133b0067e8dbddf66a1d6e7baf6b8d38bef8ecccfc4e58a8",
+        "instruction.md": "23d22f7039b50682941652c716f96dac314b8585c32c133614cac77dc067f47e"
+      },
+      "qualification": "recorded separately; pending until oracle preflight completes"
+    },
+    {
+      "split": "dev",
+      "id": "cobol-modernization",
+      "category": "software-engineering",
+      "family": "Legacy-language modernization",
+      "difficulty": "easy",
+      "resources": "cpu=1;memory_mb=2048;storage_mb=10240;gpus=0",
+      "declared_mcp_count": "0",
+      "declared_environment_env_keys": "",
+      "screen_note": "Task instructions, tests, and solutions were not read for this audit; credential screen is limited to visible task metadata.",
+      "reason": "Included: passes metadata resource/type screen and selected in category/family-stratified 30-task set; no agent outcome or DCP-benefit criterion.",
+      "inputHashes": {
+        "task.toml": "4b620211dc3d6b1b989f0210c5ecd2f606974581c8bce27bd78659d48cf0cfbd",
+        "instruction.md": "a87074f1141b7345394cd88053d0debb0dc8f7de95308882c6538ee9a3b359da"
+      },
+      "qualification": "recorded separately; pending until oracle preflight completes"
+    },
+    {
+      "split": "dev",
+      "id": "extract-elf",
+      "category": "file-operations",
+      "family": "Binary metadata extraction",
+      "difficulty": "medium",
+      "resources": "cpu=1;memory_mb=2048;storage_mb=10240;gpus=0",
+      "declared_mcp_count": "0",
+      "declared_environment_env_keys": "",
+      "screen_note": "Task instructions, tests, and solutions were not read for this audit; credential screen is limited to visible task metadata.",
+      "reason": "Included: passes metadata resource/type screen and selected in category/family-stratified 30-task set; no agent outcome or DCP-benefit criterion.",
+      "inputHashes": {
+        "task.toml": "14e2c28fd7cc1c9c7b64ab0db5565899fed538e38c55074824647cacc3f7a172",
+        "instruction.md": "f1dd8c8fd9f01101d2ecb65665bdedc33adc868abd853b3adf556f6aa4982073"
+      },
+      "qualification": "recorded separately; pending until oracle preflight completes"
+    },
+    {
+      "split": "dev",
+      "id": "fix-git",
+      "category": "software-engineering",
+      "family": "Git repository repair",
+      "difficulty": "easy",
+      "resources": "cpu=1;memory_mb=2048;storage_mb=10240;gpus=0",
+      "declared_mcp_count": "0",
+      "declared_environment_env_keys": "",
+      "screen_note": "Task instructions, tests, and solutions were not read for this audit; credential screen is limited to visible task metadata.",
+      "reason": "Included: passes metadata resource/type screen and selected in category/family-stratified 30-task set; no agent outcome or DCP-benefit criterion.",
+      "inputHashes": {
+        "task.toml": "25507ef6cbd6bf73c8bfdfbe7f7ba136224c8453fbba2de2993c639e2a61ad8b",
+        "instruction.md": "f98174e47ba5ce040f6fad22ef3cbca4dd27b3192868ea5d082077222c3ec4e8"
+      },
+      "qualification": "recorded separately; pending until oracle preflight completes"
+    },
+    {
+      "split": "dev",
+      "id": "multi-source-data-merger",
+      "category": "data-processing",
+      "family": "Multi-source data integration",
+      "difficulty": "medium",
+      "resources": "cpu=1;memory_mb=2048;storage_mb=10240;gpus=0",
+      "declared_mcp_count": "0",
+      "declared_environment_env_keys": "",
+      "screen_note": "Task instructions, tests, and solutions were not read for this audit; credential screen is limited to visible task metadata.",
+      "reason": "Included: passes metadata resource/type screen and selected in category/family-stratified 30-task set; no agent outcome or DCP-benefit criterion.",
+      "inputHashes": {
+        "task.toml": "ee3964c0ee040f0a0cb121cefefbc15443d127684acb003fa5b61dd42f31c694",
+        "instruction.md": "d1d28bb6e37f7a255a1b7f78aae8591f35c0494f33e4913392424ad954aab944"
+      },
+      "qualification": "recorded separately; pending until oracle preflight completes"
+    },
+    {
+      "split": "dev",
+      "id": "nginx-request-logging",
+      "category": "system-administration",
+      "family": "Web-server logging configuration",
+      "difficulty": "medium",
+      "resources": "cpu=1;memory_mb=2048;storage_mb=10240;gpus=0",
+      "declared_mcp_count": "0",
+      "declared_environment_env_keys": "",
+      "screen_note": "Task instructions, tests, and solutions were not read for this audit; credential screen is limited to visible task metadata.",
+      "reason": "Included: passes metadata resource/type screen and selected in category/family-stratified 30-task set; no agent outcome or DCP-benefit criterion.",
+      "inputHashes": {
+        "task.toml": "b7a78d00be13656f75069197100b7b8c4fd268decf6f78929c853b3222a2729d",
+        "instruction.md": "26a7ac98aced6107f147206790ada77bbf8ed3c25fb360cf323d5fc6889edf99"
+      },
+      "qualification": "recorded separately; pending until oracle preflight completes"
+    },
+    {
+      "split": "dev",
+      "id": "regex-log",
+      "category": "data-processing",
+      "family": "Regular-expression log parsing",
+      "difficulty": "medium",
+      "resources": "cpu=1;memory_mb=2048;storage_mb=10240;gpus=0",
+      "declared_mcp_count": "0",
+      "declared_environment_env_keys": "",
+      "screen_note": "Task instructions, tests, and solutions were not read for this audit; credential screen is limited to visible task metadata.",
+      "reason": "Included: passes metadata resource/type screen and selected in category/family-stratified 30-task set; no agent outcome or DCP-benefit criterion.",
+      "inputHashes": {
+        "task.toml": "6bc98525852755caf1fe34c174c2f10f4328adb4ce6c1968dcafe1c877e4e160",
+        "instruction.md": "4f7ac05e70cf9220ea0f1e5a052c5f908cd0fa884e847d80b0bd51bae2e96f9c"
+      },
+      "qualification": "recorded separately; pending until oracle preflight completes"
+    },
+    {
+      "split": "dev",
+      "id": "sqlite-db-truncate",
+      "category": "debugging",
+      "family": "SQLite recovery/debugging",
+      "difficulty": "medium",
+      "resources": "cpu=1;memory_mb=2048;storage_mb=10240;gpus=0",
+      "declared_mcp_count": "0",
+      "declared_environment_env_keys": "",
+      "screen_note": "Task instructions, tests, and solutions were not read for this audit; credential screen is limited to visible task metadata.",
+      "reason": "Included: passes metadata resource/type screen and selected in category/family-stratified 30-task set; no agent outcome or DCP-benefit criterion.",
+      "inputHashes": {
+        "task.toml": "56061acd75d9933aa554aeb249b85d7d081227fca1b71a3da7e3dc97a675723e",
+        "instruction.md": "465c135cd80be49023ea3ecf8f1d840c679b3a960efe425d510894e417b9d802"
+      },
+      "qualification": "recorded separately; pending until oracle preflight completes"
+    }
+  ],
+  "qualificationExcluded": [
+    {
+      "split": "dev",
+      "id": "build-cython-ext",
+      "category": "debugging",
+      "family": "Python/C extension build debugging",
+      "difficulty": "medium",
+      "resources": "cpu=1;memory_mb=2048;storage_mb=10240;gpus=0",
+      "declared_mcp_count": "0",
+      "declared_environment_env_keys": "",
+      "screen_note": "Task instructions, tests, and solutions were not read for this audit; credential screen is limited to visible task metadata.",
+      "reason": "Included: passes metadata resource/type screen and selected in category/family-stratified 30-task set; no agent outcome or DCP-benefit criterion.",
+      "inputHashes": {
+        "task.toml": "c472f0e7522c128fb7f03e00b50c8cdf2e5e6474daa1e094e7441f4b54e770b2",
+        "instruction.md": "7e52874e45f88505bd21540229719de6639a401477557d814489981d472f0e34"
+      },
+      "qualification": "recorded separately; pending until oracle preflight completes"
+    }
+  ],
+  "plan": [
+    {
+      "taskId": "extract-elf",
+      "arm": "baseline",
+      "replicate": 1
+    },
+    {
+      "taskId": "extract-elf",
+      "arm": "dcp",
+      "replicate": 1
+    },
+    {
+      "taskId": "extract-elf",
+      "arm": "dcp",
+      "replicate": 2
+    },
+    {
+      "taskId": "extract-elf",
+      "arm": "baseline",
+      "replicate": 2
+    },
+    {
+      "taskId": "multi-source-data-merger",
+      "arm": "dcp",
+      "replicate": 1
+    },
+    {
+      "taskId": "multi-source-data-merger",
+      "arm": "baseline",
+      "replicate": 1
+    },
+    {
+      "taskId": "multi-source-data-merger",
+      "arm": "baseline",
+      "replicate": 2
+    },
+    {
+      "taskId": "multi-source-data-merger",
+      "arm": "dcp",
+      "replicate": 2
+    },
+    {
+      "taskId": "regex-log",
+      "arm": "baseline",
+      "replicate": 1
+    },
+    {
+      "taskId": "regex-log",
+      "arm": "dcp",
+      "replicate": 1
+    },
+    {
+      "taskId": "regex-log",
+      "arm": "dcp",
+      "replicate": 2
+    },
+    {
+      "taskId": "regex-log",
+      "arm": "baseline",
+      "replicate": 2
+    },
+    {
+      "taskId": "break-filter-js-from-html",
+      "arm": "dcp",
+      "replicate": 1
+    },
+    {
+      "taskId": "break-filter-js-from-html",
+      "arm": "baseline",
+      "replicate": 1
+    },
+    {
+      "taskId": "break-filter-js-from-html",
+      "arm": "baseline",
+      "replicate": 2
+    },
+    {
+      "taskId": "break-filter-js-from-html",
+      "arm": "dcp",
+      "replicate": 2
+    },
+    {
+      "taskId": "sqlite-db-truncate",
+      "arm": "baseline",
+      "replicate": 1
+    },
+    {
+      "taskId": "sqlite-db-truncate",
+      "arm": "dcp",
+      "replicate": 1
+    },
+    {
+      "taskId": "sqlite-db-truncate",
+      "arm": "dcp",
+      "replicate": 2
+    },
+    {
+      "taskId": "sqlite-db-truncate",
+      "arm": "baseline",
+      "replicate": 2
+    },
+    {
+      "taskId": "cobol-modernization",
+      "arm": "dcp",
+      "replicate": 1
+    },
+    {
+      "taskId": "cobol-modernization",
+      "arm": "baseline",
+      "replicate": 1
+    },
+    {
+      "taskId": "cobol-modernization",
+      "arm": "baseline",
+      "replicate": 2
+    },
+    {
+      "taskId": "cobol-modernization",
+      "arm": "dcp",
+      "replicate": 2
+    },
+    {
+      "taskId": "nginx-request-logging",
+      "arm": "baseline",
+      "replicate": 1
+    },
+    {
+      "taskId": "nginx-request-logging",
+      "arm": "dcp",
+      "replicate": 1
+    },
+    {
+      "taskId": "nginx-request-logging",
+      "arm": "dcp",
+      "replicate": 2
+    },
+    {
+      "taskId": "nginx-request-logging",
+      "arm": "baseline",
+      "replicate": 2
+    },
+    {
+      "taskId": "cancel-async-tasks",
+      "arm": "dcp",
+      "replicate": 1
+    },
+    {
+      "taskId": "cancel-async-tasks",
+      "arm": "baseline",
+      "replicate": 1
+    },
+    {
+      "taskId": "cancel-async-tasks",
+      "arm": "baseline",
+      "replicate": 2
+    },
+    {
+      "taskId": "cancel-async-tasks",
+      "arm": "dcp",
+      "replicate": 2
+    },
+    {
+      "taskId": "fix-git",
+      "arm": "baseline",
+      "replicate": 1
+    },
+    {
+      "taskId": "fix-git",
+      "arm": "dcp",
+      "replicate": 1
+    },
+    {
+      "taskId": "fix-git",
+      "arm": "dcp",
+      "replicate": 2
+    },
+    {
+      "taskId": "fix-git",
+      "arm": "baseline",
+      "replicate": 2
+    }
+  ],
+  "repetitions": 2,
+  "orderSeed": "dsh-dcp-terminal-bench-pilot-2026-10-14",
+  "armOrder": "contiguous pairs; reversed on alternate repetitions",
+  "budget": {
+    "maxRequests": 80,
+    "maxSeconds": 300,
+    "maxWallSeconds": 480,
+    "maxRunCostUSD": 1,
+    "maxTotalCostUSD": 10
+  },
+  "frozenInputs": {
+    "break-filter-js-from-html": {
+      "imageDigest": "alexgshaw/break-filter-js-from-html@sha256:d7bfb45e47cf10d2e21dc520239215498f4eba9c1ab2d0cd7d647985dddb4fa8",
+      "imageId": "sha256:1c09e20b95f90415fe2f5424335b3bca11e36ee915715b2891aeaaefec475645",
+      "originalTaskTomlSHA": "f820eb1b47e4ccc548b87d9a418fef519137dcf975ad73d0fb5246df00a9669b",
+      "lockedTaskTomlSHA": "162a801da8328f8cfcfa4c14ca5e13bbb196952c448112954064a5830d3add29",
+      "files": {
+        ".gitignore": "9a8dd8d9b6c3adb8e9e56328df27deef859a3e98fffc9b8133c8b22207c25953",
+        "README.md": "6b8b019e58881e2a05eb2c62260f6fed2ea8a6bf567cd364d9293dcf7bba42bd",
+        "environment/Dockerfile": "456f7dbf9eb988d24598e46fd371f8f732061bcdc55031dff2f8fc79030be5c4",
+        "environment/filter.py": "9b04d17c5111dfaf8672b6cec09ae773327848c41b509f3ab4618766eba580f4",
+        "environment/tests/filter.py": "9b04d17c5111dfaf8672b6cec09ae773327848c41b509f3ab4618766eba580f4",
+        "environment/tests/test_outputs.py": "31ba6a0baac550de110680ff32a16bbc4fa858e1bfe41f2a63516f90073729bc",
+        "instruction.md": "ad42558111b2a8e8534bdf52b584b804348e1a8d68d756f812a31d5147e65be5",
+        "solution/solve.sh": "1d77103dc3f10e94d00f3714a773e659211770d9197649e2473227a0ac60f2a5",
+        "task.toml": "162a801da8328f8cfcfa4c14ca5e13bbb196952c448112954064a5830d3add29",
+        "tests/filter.py": "9b04d17c5111dfaf8672b6cec09ae773327848c41b509f3ab4618766eba580f4",
+        "tests/test.sh": "09386b7e4929216fe490deb7d32c99841c03be2471897181dda2bd11f8922c00",
+        "tests/test_outputs.py": "31ba6a0baac550de110680ff32a16bbc4fa858e1bfe41f2a63516f90073729bc"
+      }
+    },
+    "cancel-async-tasks": {
+      "imageDigest": "alexgshaw/cancel-async-tasks@sha256:84c7fae6b256dcc56a350790e2a9715eefc7dad662a9d8e8a472363aa71ef18d",
+      "imageId": "sha256:760c5426807dc80edd6a1b1c3675c197599fc3f9cb46b1a06e7539cb94818553",
+      "originalTaskTomlSHA": "14db0675e04408f2133b0067e8dbddf66a1d6e7baf6b8d38bef8ecccfc4e58a8",
+      "lockedTaskTomlSHA": "f0ac4ccdf4683ea3afb87c3cb1595fdb720b83dac01ae0ef25f059a32522cf05",
+      "files": {
+        ".gitignore": "9a8dd8d9b6c3adb8e9e56328df27deef859a3e98fffc9b8133c8b22207c25953",
+        "README.md": "9adf86b1279cc44f83fe16e6d340595aa992240f1d87243d204cae32e453693b",
+        "environment/Dockerfile": "1ee7bdb4a7536f5f114c11a3ac6ff42790abfea901fcba6b2a8ea8685f19140e",
+        "instruction.md": "23d22f7039b50682941652c716f96dac314b8585c32c133614cac77dc067f47e",
+        "solution/solve.sh": "4938ca4ad5b7dcd36b414b42a1abb10c058ecefce7462b678f9bd05c9fae1844",
+        "task.toml": "f0ac4ccdf4683ea3afb87c3cb1595fdb720b83dac01ae0ef25f059a32522cf05",
+        "tests/test.py": "f533c0a64db068f582b4733c5b81f2e66b8fa52fcd3efa65752e6bd6d24780aa",
+        "tests/test.sh": "79600a6b863def31b4daa008297423010cd2d6243e689d67503e118e4dc53397",
+        "tests/test_outputs.py": "d6f510b51fafc81b4e9b5cc95535aa13491c8753e0e4171db42c45f4de460ee7"
+      }
+    },
+    "cobol-modernization": {
+      "imageDigest": "alexgshaw/cobol-modernization@sha256:593ab9df3d83f771e927888b2d9436b380cdf7ec4d0af2a9f0802d541edebba0",
+      "imageId": "sha256:14e6e693be70ee0c7f07105dfc0f3cae71fd495cc0106042dd530fc5fbd8e637",
+      "originalTaskTomlSHA": "4b620211dc3d6b1b989f0210c5ecd2f606974581c8bce27bd78659d48cf0cfbd",
+      "lockedTaskTomlSHA": "e9de6f73678017a1661df229bf8962fedde73adcbeb8d9e5d3e6acb3b8c6e429",
+      "files": {
+        ".gitignore": "9a8dd8d9b6c3adb8e9e56328df27deef859a3e98fffc9b8133c8b22207c25953",
+        "README.md": "c89318cf59efcc7040e3d946022e2616161b6733931a080cdeea7b1918e7ecc4",
+        "environment/Dockerfile": "8b175c83fc03ec7d16d6101516bc5100230b592f480e435279f4fe051c9280b2",
+        "environment/data/ACCOUNTS.DAT": "46f63eb29442ebc6716bcd8a0c36f4367910f2783f6b84a307ed9a61ccd1046e",
+        "environment/data/BOOKS.DAT": "db04da646207cd87f8e9c5b6f0b57d95953899f3eef22de1a81423f06ef4a9fd",
+        "environment/data/TRANSACTIONS.DAT": "1fa4cc5420ded94d585c563e8196b85166ebbae2bb8924b20014717fb2fb9ee3",
+        "environment/src/INPUT.DAT": "52fc984f0cf14af1495285d7efe02b9bae13159eea59255560ee938c4f78afee",
+        "environment/src/program.cbl": "27cb0e56f65f52fa75f346720b37a180b8e034ebe7d7622b979f195087bd6ebb",
+        "instruction.md": "a87074f1141b7345394cd88053d0debb0dc8f7de95308882c6538ee9a3b359da",
+        "solution/solve.sh": "7d4a0504e1686c1790bfbc074d4e598f4c631f54c2bc5f3d5fd786574b4810b9",
+        "task.toml": "e9de6f73678017a1661df229bf8962fedde73adcbeb8d9e5d3e6acb3b8c6e429",
+        "tests/test.sh": "4770437ea96c3cc84684b4f99d55fb148fcac09f9ea1e8ef49de487716e6c334",
+        "tests/test_outputs.py": "009180a7092583fc8143bb3ffc3957923aa0d61d0aac3a471f76eeb4aae54a88"
+      }
+    },
+    "extract-elf": {
+      "imageDigest": "alexgshaw/extract-elf@sha256:6932e4cb318464307eacd497ef8dc617eaf551b6a90231f815ec0b911895cfed",
+      "imageId": "sha256:ce2d818d338482f97d2dc224b884271798ccd801e922ef08606a64103e08489f",
+      "originalTaskTomlSHA": "14e2c28fd7cc1c9c7b64ab0db5565899fed538e38c55074824647cacc3f7a172",
+      "lockedTaskTomlSHA": "b8f206e23e1d1b7ecea36f48ce6f3b94d71f2f8528c46559419a9b3dea8fb04e",
+      "files": {
+        ".gitignore": "9a8dd8d9b6c3adb8e9e56328df27deef859a3e98fffc9b8133c8b22207c25953",
+        "README.md": "fded9e044b44e8ac84d083f5d915e6f6e4bccfc008537edc1fd2c6cd63feacbc",
+        "environment/Dockerfile": "1c5c0a227bee1f5e2933710f3c9d89848a4dc9353c2516a549196fb18b842606",
+        "environment/task-deps/hi.c": "9f6343607512e0439ba459adc5cbf209691332afd93f39360b0b261afd6cb0f2",
+        "instruction.md": "f1dd8c8fd9f01101d2ecb65665bdedc33adc868abd853b3adf556f6aa4982073",
+        "solution/solve.sh": "c72b1715a26c4eefe4c53934243a1d67f7560b3c126f82d2c98c92870f69df40",
+        "task.toml": "b8f206e23e1d1b7ecea36f48ce6f3b94d71f2f8528c46559419a9b3dea8fb04e",
+        "tests/test.sh": "84ee50194effb4c72b9cbd0306cccaf0f855f3634227cd8359928722a53bbdaf",
+        "tests/test_outputs.py": "825569115217f1cea7b0f3c7547d60d21e6ea36f587d82cc9dfdd5dd98c04570"
+      }
+    },
+    "fix-git": {
+      "imageDigest": "alexgshaw/fix-git@sha256:61e431c00c58df652287aadce5457634d9f9330cfdd153ebdf2802df0d540119",
+      "imageId": "sha256:b041e51b3fd55da33dc43648fcfb28f4887374a8676c77b0836923422e7fde29",
+      "originalTaskTomlSHA": "25507ef6cbd6bf73c8bfdfbe7f7ba136224c8453fbba2de2993c639e2a61ad8b",
+      "lockedTaskTomlSHA": "b51d6a9ea6317305f374ab4a3ea72d3c87beafc617ec848b636616474e10c999",
+      "files": {
+        ".gitignore": "9a8dd8d9b6c3adb8e9e56328df27deef859a3e98fffc9b8133c8b22207c25953",
+        "README.md": "818af93ec53de56cffbd33da3377f5bd013786e1232cc7fa47f7dff6cca9a93f",
+        "environment/Dockerfile": "dfd64a46955909f58d1b562ea233c3cace75195bbef5d75cd6b599f3b8967bb7",
+        "environment/resources/patch_files/about.md": "2e09260b011012f9f7f491cd02809903449924cf8f825acd369fb8990b04e768",
+        "environment/resources/patch_files/default.html": "fb3fad17b83338002f5fd6a99ea1ec3a662cea570f9fff9240b8abc1861be655",
+        "environment/setup.sh": "99125cf2e362f2f4a864ba2f55c2f0e9f0aa0641fed588cef588184fcc192de2",
+        "instruction.md": "f98174e47ba5ce040f6fad22ef3cbca4dd27b3192868ea5d082077222c3ec4e8",
+        "solution/solve.sh": "4789fa74e92e5b7b893c4b8637c26db2b6458b2136edfc3e686cc278dfc23630",
+        "task.toml": "b51d6a9ea6317305f374ab4a3ea72d3c87beafc617ec848b636616474e10c999",
+        "tests/test.sh": "4770437ea96c3cc84684b4f99d55fb148fcac09f9ea1e8ef49de487716e6c334",
+        "tests/test_outputs.py": "a8a6f51eb0d7c4ebdf0813c8f0b645edf29c995f1f9faf2aca3886a6713043f3"
+      }
+    },
+    "multi-source-data-merger": {
+      "imageDigest": "alexgshaw/multi-source-data-merger@sha256:8b32782078ff7383a1b4e5d3cecca8ce287e30f50bb4c0e5db009a18064e666e",
+      "imageId": "sha256:5096d3409e5c692afd62a136f90a2e52dd87653aa6637a3e1ca31ad30fab1096",
+      "originalTaskTomlSHA": "ee3964c0ee040f0a0cb121cefefbc15443d127684acb003fa5b61dd42f31c694",
+      "lockedTaskTomlSHA": "329752d2ae2eb907725e15207bab3828f50cd1ee86618c63846c26109c637183",
+      "files": {
+        ".gitignore": "9a8dd8d9b6c3adb8e9e56328df27deef859a3e98fffc9b8133c8b22207c25953",
+        "README.md": "9bf37162a4c1b88ed93627830bb8512ebae154325d7cb069c883144a0e4c69d6",
+        "environment/Dockerfile": "c95a40d3d35b473dc15ae1e8784ba7fb1725805c0583fc574dd2764325d75e4f",
+        "environment/data/source_a/users.json": "75e51e2d3ab0bdba2269d7cf3757576f84f3ee2c13407d2db94289a5958a1778",
+        "environment/data/source_b/users.csv": "8e87d16dc47d166edd8e56165955bad265b630d53d02762367c816affb5fa760",
+        "environment/data/source_c/users.parquet": "23d1ea51c4170bdba53febb885a0f495e28de525a52667347b2932136b9a72fe",
+        "instruction.md": "d1d28bb6e37f7a255a1b7f78aae8591f35c0494f33e4913392424ad954aab944",
+        "solution/solve.sh": "1b3d0d50e31930d042495d48f4c8e95f1a9c1a979c803b7f7cec651322537e1e",
+        "task.toml": "329752d2ae2eb907725e15207bab3828f50cd1ee86618c63846c26109c637183",
+        "tests/test.sh": "d5a00e64413c0e1ae452f38a1aa1a47c3ed7b4416bbfccae1a4c053025a336d1",
+        "tests/test_outputs.py": "a070888930cf829aeca039771260b1386bda990ea805f313468d381ba3608ca5"
+      }
+    },
+    "nginx-request-logging": {
+      "imageDigest": "alexgshaw/nginx-request-logging@sha256:693e64431a0dbf45952e8b91a298d54fd60247e501c6623fb8fa3ebc07fc3d3d",
+      "imageId": "sha256:41217bae6667f04a767dc1b2c5c12b034dfc51a18226202003313aaf86832055",
+      "originalTaskTomlSHA": "b7a78d00be13656f75069197100b7b8c4fd268decf6f78929c853b3222a2729d",
+      "lockedTaskTomlSHA": "a5bb56455a9ebc7050bd8303d426d5709c408258fba6eaa3860f640a74cd0ec5",
+      "files": {
+        ".gitignore": "9a8dd8d9b6c3adb8e9e56328df27deef859a3e98fffc9b8133c8b22207c25953",
+        "README.md": "d79997586d1c14ed8dbfea050e3580b25500e04c8345acfd3f294152433c795a",
+        "environment/Dockerfile": "43003466d89ab83484a3fa618e35b58cdb74a002b1e8716ef30f12b3ac8302d8",
+        "instruction.md": "26a7ac98aced6107f147206790ada77bbf8ed3c25fb360cf323d5fc6889edf99",
+        "solution/solve.sh": "2454bbbf7c201a9a778165f286373ba2cb991a0eb1d026a8005d57ae71250dd9",
+        "task.toml": "a5bb56455a9ebc7050bd8303d426d5709c408258fba6eaa3860f640a74cd0ec5",
+        "tests/test.sh": "27761195f53cbfe5941fe39b573631f6c926869e64b7c43220377e1e116528e7",
+        "tests/test_outputs.py": "045cc716c14efde3b0dcff5fc7c85ec5d18bfc6ce66f8b40a418fa2a3a4acda0"
+      }
+    },
+    "regex-log": {
+      "imageDigest": "alexgshaw/regex-log@sha256:90101b2e815323a8da20528a1439bebc407eb9761c9c68a3d557730856c878e9",
+      "imageId": "sha256:0a15c19cc78685f8d322945e882ba702ef3d0265d1f621ee00991b8e64ddb750",
+      "originalTaskTomlSHA": "6bc98525852755caf1fe34c174c2f10f4328adb4ce6c1968dcafe1c877e4e160",
+      "lockedTaskTomlSHA": "f5c58a7979a0825122f21a862814f94710201166c6d411ccfc779ede7fd4bc12",
+      "files": {
+        ".gitignore": "9a8dd8d9b6c3adb8e9e56328df27deef859a3e98fffc9b8133c8b22207c25953",
+        "README.md": "29ffd98c55dbb6f4844f1b9d8c1769b2155c117ee475e0df6bbc5ef330d239b3",
+        "environment/Dockerfile": "5f264ff0bf62a49aee3c6398447de5108df141e7a2ad35c6de8ef39fa62049c6",
+        "instruction.md": "4f7ac05e70cf9220ea0f1e5a052c5f908cd0fa884e847d80b0bd51bae2e96f9c",
+        "solution/solve.sh": "7e670d4f2b4bccb1e4db38f2a173e085ceda028c38167912b466b0a84fcc0999",
+        "task.toml": "f5c58a7979a0825122f21a862814f94710201166c6d411ccfc779ede7fd4bc12",
+        "tests/test.sh": "4770437ea96c3cc84684b4f99d55fb148fcac09f9ea1e8ef49de487716e6c334",
+        "tests/test_outputs.py": "345c3bd09ab6f6fe8c8361a58c0a47bf0a13b3fcb38a5ac7824e44ff855e8f72"
+      }
+    },
+    "sqlite-db-truncate": {
+      "imageDigest": "alexgshaw/sqlite-db-truncate@sha256:aabac93c93bd1f310e6a6fb893911d7735026ed18491c72133c9196a09092ca4",
+      "imageId": "sha256:33e71d5cd2768815d8c822af32020cd12ff3b0c35f4609dbd65523d8ee98d358",
+      "originalTaskTomlSHA": "56061acd75d9933aa554aeb249b85d7d081227fca1b71a3da7e3dc97a675723e",
+      "lockedTaskTomlSHA": "1acd971d5b42a665fcd4f3d0c9a4e08d8cf312c36fef71230f5814568c029241",
+      "files": {
+        ".gitignore": "9a8dd8d9b6c3adb8e9e56328df27deef859a3e98fffc9b8133c8b22207c25953",
+        "README.md": "73864a0c6f3b1b56cdc6ba55dc93132936fbf79d0ea11b853efdde4620f746cd",
+        "environment/Dockerfile": "49ac9305c360f117c10c940b5d036a76fb4a29a0f4302e7d75e573c352db0aea",
+        "environment/trunc.db": "a7f00ee232fe621629dc014eb2619ac793131843ede1fd892f3b8b7e17332a5b",
+        "instruction.md": "465c135cd80be49023ea3ecf8f1d840c679b3a960efe425d510894e417b9d802",
+        "solution/solve.sh": "6aa341ba5e614aa5ef991cdd2d398da1c5833b80123795d7da87ea41da431a04",
+        "task.toml": "1acd971d5b42a665fcd4f3d0c9a4e08d8cf312c36fef71230f5814568c029241",
+        "tests/test.sh": "4770437ea96c3cc84684b4f99d55fb148fcac09f9ea1e8ef49de487716e6c334",
+        "tests/test_outputs.py": "8f5bc11018687d8c5894ebf1b4ec6fad004828e5ce442d3cc04d925ef53ef881"
+      }
+    }
+  },
+  "model": {
+    "provider": "deepseek",
+    "model": "deepseek-flash",
+    "thinking": "disabled",
+    "baseURL": "https://api.deepseek.com/v1",
+    "contextWindow": 1000000,
+    "outputLimit": 4096
+  },
+  "compaction": {
+    "auto": true,
+    "maxTokens": 4096,
+    "otherFields": "host defaults, identical arms"
+  },
+  "dcpConfigurations": {
+    "baseline": {
+      "enabled": false,
+      "debug": false,
+      "compress": {
+        "enabled": true,
+        "mode": "range",
+        "maxRangesPerCall": 3,
+        "minNetSavingsTokens": 256,
+        "retainRecentTurns": 2,
+        "protectUserMessages": false,
+        "protectTags": true,
+        "protectedTools": [
+          "subagent",
+          "skill",
+          "todo_write"
+        ],
+        "protectedSources": [
+          "subagent-report",
+          "subagent-settled"
+        ]
+      },
+      "references": {
+        "transport": "marker",
+        "granularity": "turn",
+        "maxAliasEntries": 32,
+        "excerptChars": 80
+      },
+      "nudge": {
+        "enabled": true,
+        "maxRatio": 0.8,
+        "minRatio": 0.6,
+        "frequencySteps": 8,
+        "iterationThreshold": 12
+      },
+      "manualMode": {
+        "default": false,
+        "automaticStrategies": true
+      },
+      "strategies": {
+        "deduplication": {
+          "enabled": true,
+          "protectedTools": []
+        },
+        "purgeErrors": {
+          "enabled": false,
+          "turns": 4,
+          "protectedTools": []
+        }
+      },
+      "protectedFilePatterns": [],
+      "subagents": {
+        "enableCompressionInChild": false,
+        "readChildSession": false
+      }
+    },
+    "dcp": {
+      "enabled": true,
+      "debug": false,
+      "compress": {
+        "enabled": true,
+        "mode": "range",
+        "maxRangesPerCall": 3,
+        "minNetSavingsTokens": 256,
+        "retainRecentTurns": 2,
+        "protectUserMessages": false,
+        "protectTags": true,
+        "protectedTools": [
+          "subagent",
+          "skill",
+          "todo_write"
+        ],
+        "protectedSources": [
+          "subagent-report",
+          "subagent-settled"
+        ]
+      },
+      "references": {
+        "transport": "marker",
+        "granularity": "turn",
+        "maxAliasEntries": 32,
+        "excerptChars": 80
+      },
+      "nudge": {
+        "enabled": true,
+        "maxRatio": 0.8,
+        "minRatio": 0.6,
+        "frequencySteps": 8,
+        "iterationThreshold": 12
+      },
+      "manualMode": {
+        "default": false,
+        "automaticStrategies": true
+      },
+      "strategies": {
+        "deduplication": {
+          "enabled": true,
+          "protectedTools": []
+        },
+        "purgeErrors": {
+          "enabled": false,
+          "turns": 4,
+          "protectedTools": []
+        }
+      },
+      "protectedFilePatterns": [],
+      "subagents": {
+        "enableCompressionInChild": false,
+        "readChildSession": false
+      }
+    }
+  },
+  "compressionOpportunity": "One original user turn per task; default retainRecentTurns=2 may make all turn ranges ineligible. No forced trigger or protection override.",
+  "taskTools": [
+    "terminal"
+  ],
+  "paidExternalTools": false,
+  "price": {
+    "source": "https://api-docs.deepseek.com/quick_start/pricing",
+    "retrievedAt": "2026-10-14",
+    "modelVersion": "DeepSeek-V4.1-Flash",
+    "peakHoursUTC": "Monday-Friday [01:00,04:00) and [06:00,10:00)"
+  },
+  "cache": "Natural provider cache; no forced cold claim; sequential arms, repeated tasks may be warm",
+  "inference": "Pilot only; convenience subset; task-cluster CI; insufficient to establish 1pp non-inferiority"
+}

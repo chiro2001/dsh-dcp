@@ -1,0 +1,671 @@
+{
+  "runId": "2026-10-14T10-01-50-936Z",
+  "runs": 36,
+  "arms": {
+    "baseline": {
+      "runs": 18,
+      "attempts": 449,
+      "knownUsageRequests": 449,
+      "unknownUsageRequests": 0,
+      "knownInputTokensU": 192679,
+      "knownCacheTokensH": 7093248,
+      "knownOutputTokensO": 197309,
+      "knownContextTokensUH": 7285927,
+      "knownCostUSD": 0.16856699400000003,
+      "unknownCostAttempts": 0,
+      "firstRequestPurposes": {
+        "conversation": 18
+      },
+      "terminalToolCalls": 491,
+      "exactRepeatedTerminalCalls": 2,
+      "runsWithExactRepeats": 1,
+      "adjacentRepeatPairs": 0,
+      "repeatedInspectionCalls": 0,
+      "repeatedTestCalls": 0,
+      "dcpSourceUserMessageAppends": 0,
+      "dcpSourceAppendCountHistogram": {
+        "0": 18
+      },
+      "dcpSourceAppendsBeforeFirstRequest": 0,
+      "dcpSourceAppendsAfterFirstRequest": 0,
+      "meanContextTokensUH": 16227.008908685968
+    },
+    "dcp": {
+      "runs": 18,
+      "attempts": 577,
+      "knownUsageRequests": 576,
+      "unknownUsageRequests": 1,
+      "knownInputTokensU": 231127,
+      "knownCacheTokensH": 10489728,
+      "knownOutputTokensO": 240411,
+      "knownContextTokensUH": 10720855,
+      "knownCostUSD": 0.21038483399999997,
+      "unknownCostAttempts": 1,
+      "firstRequestPurposes": {
+        "conversation": 18
+      },
+      "terminalToolCalls": 609,
+      "exactRepeatedTerminalCalls": 4,
+      "runsWithExactRepeats": 3,
+      "adjacentRepeatPairs": 0,
+      "repeatedInspectionCalls": 1,
+      "repeatedTestCalls": 0,
+      "dcpSourceUserMessageAppends": 18,
+      "dcpSourceAppendCountHistogram": {
+        "1": 18
+      },
+      "dcpSourceAppendsBeforeFirstRequest": 18,
+      "dcpSourceAppendsAfterFirstRequest": 0,
+      "meanContextTokensUH": 18612.59548611111
+    }
+  },
+  "firstRequestInputContextDeltaTokens": {
+    "direction": "DCP minus baseline within task/replicate pair",
+    "knownPairs": 18,
+    "unmatchedOrUnknownPairs": 0,
+    "baselineMean": 589.5555555555555,
+    "dcpMean": 1235.5555555555557,
+    "mean": 646,
+    "min": 646,
+    "max": 646
+  },
+  "taskRows": [
+    {
+      "taskId": "break-filter-js-from-html",
+      "requests": {
+        "baseline": 26,
+        "dcp": 49,
+        "dcpMinusBaseline": 23
+      },
+      "knownUsageRequests": {
+        "baseline": 26,
+        "dcp": 49
+      },
+      "contextMeanTokensUH": {
+        "baseline": 4036.4615384615386,
+        "dcp": 7162.65306122449,
+        "dcpMinusBaseline": 3126.191522762951
+      },
+      "knownCostUSD": {
+        "baseline": 0.005635368,
+        "dcp": 0.009647196
+      },
+      "knownCostDeltaUSD": 0.004011828,
+      "knownCostDeltaLowerBoundUSD": 0.004011828,
+      "unknownUsageRequests": {
+        "baseline": 0,
+        "dcp": 0
+      },
+      "unknownCostAttempts": {
+        "baseline": 0,
+        "dcp": 0
+      },
+      "terminalTrace": {
+        "baseline": {
+          "calls": 25,
+          "repeatedExactCalls": 0,
+          "runsWithRepeats": 0,
+          "adjacentRepeatPairs": 0,
+          "repeatedInspectionCalls": 0,
+          "repeatedTestCalls": 0
+        },
+        "dcp": {
+          "calls": 47,
+          "repeatedExactCalls": 1,
+          "runsWithRepeats": 1,
+          "adjacentRepeatPairs": 0,
+          "repeatedInspectionCalls": 1,
+          "repeatedTestCalls": 0
+        }
+      }
+    },
+    {
+      "taskId": "cancel-async-tasks",
+      "requests": {
+        "baseline": 48,
+        "dcp": 93,
+        "dcpMinusBaseline": 45
+      },
+      "knownUsageRequests": {
+        "baseline": 48,
+        "dcp": 93
+      },
+      "contextMeanTokensUH": {
+        "baseline": 14754.541666666666,
+        "dcp": 16063.666666666666,
+        "dcpMinusBaseline": 1309.125
+      },
+      "knownCostUSD": {
+        "baseline": 0.017299788,
+        "dcp": 0.03512729399999999
+      },
+      "knownCostDeltaUSD": 0.01782750599999999,
+      "knownCostDeltaLowerBoundUSD": 0.01782750599999999,
+      "unknownUsageRequests": {
+        "baseline": 0,
+        "dcp": 0
+      },
+      "unknownCostAttempts": {
+        "baseline": 0,
+        "dcp": 0
+      },
+      "terminalTrace": {
+        "baseline": {
+          "calls": 56,
+          "repeatedExactCalls": 2,
+          "runsWithRepeats": 1,
+          "adjacentRepeatPairs": 0,
+          "repeatedInspectionCalls": 0,
+          "repeatedTestCalls": 0
+        },
+        "dcp": {
+          "calls": 98,
+          "repeatedExactCalls": 2,
+          "runsWithRepeats": 1,
+          "adjacentRepeatPairs": 0,
+          "repeatedInspectionCalls": 0,
+          "repeatedTestCalls": 0
+        }
+      }
+    },
+    {
+      "taskId": "cobol-modernization",
+      "requests": {
+        "baseline": 132,
+        "dcp": 159,
+        "dcpMinusBaseline": 27
+      },
+      "knownUsageRequests": {
+        "baseline": 132,
+        "dcp": 158
+      },
+      "contextMeanTokensUH": {
+        "baseline": 27442.022727272728,
+        "dcp": 30192.291139240508,
+        "dcpMinusBaseline": 2750.2684119677797
+      },
+      "knownCostUSD": {
+        "baseline": 0.05866789800000002,
+        "dcp": 0.06813440399999998
+      },
+      "knownCostDeltaUSD": 0.009466505999999965,
+      "knownCostDeltaLowerBoundUSD": 0.009466505999999965,
+      "unknownUsageRequests": {
+        "baseline": 0,
+        "dcp": 1
+      },
+      "unknownCostAttempts": {
+        "baseline": 0,
+        "dcp": 1
+      },
+      "terminalTrace": {
+        "baseline": {
+          "calls": 139,
+          "repeatedExactCalls": 0,
+          "runsWithRepeats": 0,
+          "adjacentRepeatPairs": 0,
+          "repeatedInspectionCalls": 0,
+          "repeatedTestCalls": 0
+        },
+        "dcp": {
+          "calls": 165,
+          "repeatedExactCalls": 1,
+          "runsWithRepeats": 1,
+          "adjacentRepeatPairs": 0,
+          "repeatedInspectionCalls": 0,
+          "repeatedTestCalls": 0
+        }
+      }
+    },
+    {
+      "taskId": "extract-elf",
+      "requests": {
+        "baseline": 46,
+        "dcp": 49,
+        "dcpMinusBaseline": 3
+      },
+      "knownUsageRequests": {
+        "baseline": 46,
+        "dcp": 49
+      },
+      "contextMeanTokensUH": {
+        "baseline": 16492.043478260868,
+        "dcp": 18431.448979591838,
+        "dcpMinusBaseline": 1939.4055013309699
+      },
+      "knownCostUSD": {
+        "baseline": 0.026740476,
+        "dcp": 0.023327909999999993
+      },
+      "knownCostDeltaUSD": -0.0034125660000000058,
+      "knownCostDeltaLowerBoundUSD": -0.0034125660000000058,
+      "unknownUsageRequests": {
+        "baseline": 0,
+        "dcp": 0
+      },
+      "unknownCostAttempts": {
+        "baseline": 0,
+        "dcp": 0
+      },
+      "terminalTrace": {
+        "baseline": {
+          "calls": 58,
+          "repeatedExactCalls": 0,
+          "runsWithRepeats": 0,
+          "adjacentRepeatPairs": 0,
+          "repeatedInspectionCalls": 0,
+          "repeatedTestCalls": 0
+        },
+        "dcp": {
+          "calls": 64,
+          "repeatedExactCalls": 0,
+          "runsWithRepeats": 0,
+          "adjacentRepeatPairs": 0,
+          "repeatedInspectionCalls": 0,
+          "repeatedTestCalls": 0
+        }
+      }
+    },
+    {
+      "taskId": "fix-git",
+      "requests": {
+        "baseline": 24,
+        "dcp": 23,
+        "dcpMinusBaseline": -1
+      },
+      "knownUsageRequests": {
+        "baseline": 24,
+        "dcp": 23
+      },
+      "contextMeanTokensUH": {
+        "baseline": 4193.333333333333,
+        "dcp": 4193.391304347826,
+        "dcpMinusBaseline": 0.0579710144929777
+      },
+      "knownCostUSD": {
+        "baseline": 0.0047625359999999995,
+        "dcp": 0.004092432
+      },
+      "knownCostDeltaUSD": -0.0006701039999999995,
+      "knownCostDeltaLowerBoundUSD": -0.0006701039999999995,
+      "unknownUsageRequests": {
+        "baseline": 0,
+        "dcp": 0
+      },
+      "unknownCostAttempts": {
+        "baseline": 0,
+        "dcp": 0
+      },
+      "terminalTrace": {
+        "baseline": {
+          "calls": 28,
+          "repeatedExactCalls": 0,
+          "runsWithRepeats": 0,
+          "adjacentRepeatPairs": 0,
+          "repeatedInspectionCalls": 0,
+          "repeatedTestCalls": 0
+        },
+        "dcp": {
+          "calls": 24,
+          "repeatedExactCalls": 0,
+          "runsWithRepeats": 0,
+          "adjacentRepeatPairs": 0,
+          "repeatedInspectionCalls": 0,
+          "repeatedTestCalls": 0
+        }
+      }
+    },
+    {
+      "taskId": "multi-source-data-merger",
+      "requests": {
+        "baseline": 12,
+        "dcp": 14,
+        "dcpMinusBaseline": 2
+      },
+      "knownUsageRequests": {
+        "baseline": 12,
+        "dcp": 14
+      },
+      "contextMeanTokensUH": {
+        "baseline": 2536.1666666666665,
+        "dcp": 4143.142857142857,
+        "dcpMinusBaseline": 1606.9761904761904
+      },
+      "knownCostUSD": {
+        "baseline": 0.003949668,
+        "dcp": 0.0057043680000000005
+      },
+      "knownCostDeltaUSD": 0.0017547000000000005,
+      "knownCostDeltaLowerBoundUSD": 0.0017547000000000005,
+      "unknownUsageRequests": {
+        "baseline": 0,
+        "dcp": 0
+      },
+      "unknownCostAttempts": {
+        "baseline": 0,
+        "dcp": 0
+      },
+      "terminalTrace": {
+        "baseline": {
+          "calls": 14,
+          "repeatedExactCalls": 0,
+          "runsWithRepeats": 0,
+          "adjacentRepeatPairs": 0,
+          "repeatedInspectionCalls": 0,
+          "repeatedTestCalls": 0
+        },
+        "dcp": {
+          "calls": 18,
+          "repeatedExactCalls": 0,
+          "runsWithRepeats": 0,
+          "adjacentRepeatPairs": 0,
+          "repeatedInspectionCalls": 0,
+          "repeatedTestCalls": 0
+        }
+      }
+    },
+    {
+      "taskId": "nginx-request-logging",
+      "requests": {
+        "baseline": 21,
+        "dcp": 24,
+        "dcpMinusBaseline": 3
+      },
+      "knownUsageRequests": {
+        "baseline": 21,
+        "dcp": 24
+      },
+      "contextMeanTokensUH": {
+        "baseline": 2560.285714285714,
+        "dcp": 3235.5416666666665,
+        "dcpMinusBaseline": 675.2559523809523
+      },
+      "knownCostUSD": {
+        "baseline": 0.003531012,
+        "dcp": 0.004333902
+      },
+      "knownCostDeltaUSD": 0.0008028899999999997,
+      "knownCostDeltaLowerBoundUSD": 0.0008028899999999997,
+      "unknownUsageRequests": {
+        "baseline": 0,
+        "dcp": 0
+      },
+      "unknownCostAttempts": {
+        "baseline": 0,
+        "dcp": 0
+      },
+      "terminalTrace": {
+        "baseline": {
+          "calls": 20,
+          "repeatedExactCalls": 0,
+          "runsWithRepeats": 0,
+          "adjacentRepeatPairs": 0,
+          "repeatedInspectionCalls": 0,
+          "repeatedTestCalls": 0
+        },
+        "dcp": {
+          "calls": 24,
+          "repeatedExactCalls": 0,
+          "runsWithRepeats": 0,
+          "adjacentRepeatPairs": 0,
+          "repeatedInspectionCalls": 0,
+          "repeatedTestCalls": 0
+        }
+      }
+    },
+    {
+      "taskId": "regex-log",
+      "requests": {
+        "baseline": 52,
+        "dcp": 47,
+        "dcpMinusBaseline": -5
+      },
+      "knownUsageRequests": {
+        "baseline": 52,
+        "dcp": 47
+      },
+      "contextMeanTokensUH": {
+        "baseline": 10121.653846153846,
+        "dcp": 9354.297872340425,
+        "dcpMinusBaseline": -767.3559738134209
+      },
+      "knownCostUSD": {
+        "baseline": 0.017459459999999996,
+        "dcp": 0.018591072
+      },
+      "knownCostDeltaUSD": 0.001131612000000004,
+      "knownCostDeltaLowerBoundUSD": 0.001131612000000004,
+      "unknownUsageRequests": {
+        "baseline": 0,
+        "dcp": 0
+      },
+      "unknownCostAttempts": {
+        "baseline": 0,
+        "dcp": 0
+      },
+      "terminalTrace": {
+        "baseline": {
+          "calls": 51,
+          "repeatedExactCalls": 0,
+          "runsWithRepeats": 0,
+          "adjacentRepeatPairs": 0,
+          "repeatedInspectionCalls": 0,
+          "repeatedTestCalls": 0
+        },
+        "dcp": {
+          "calls": 47,
+          "repeatedExactCalls": 0,
+          "runsWithRepeats": 0,
+          "adjacentRepeatPairs": 0,
+          "repeatedInspectionCalls": 0,
+          "repeatedTestCalls": 0
+        }
+      }
+    },
+    {
+      "taskId": "sqlite-db-truncate",
+      "requests": {
+        "baseline": 88,
+        "dcp": 119,
+        "dcpMinusBaseline": 31
+      },
+      "knownUsageRequests": {
+        "baseline": 88,
+        "dcp": 119
+      },
+      "contextMeanTokensUH": {
+        "baseline": 15688.795454545454,
+        "dcp": 21266.252100840335,
+        "dcpMinusBaseline": 5577.456646294881
+      },
+      "knownCostUSD": {
+        "baseline": 0.030520787999999997,
+        "dcp": 0.041426255999999995
+      },
+      "knownCostDeltaUSD": 0.010905467999999998,
+      "knownCostDeltaLowerBoundUSD": 0.010905467999999998,
+      "unknownUsageRequests": {
+        "baseline": 0,
+        "dcp": 0
+      },
+      "unknownCostAttempts": {
+        "baseline": 0,
+        "dcp": 0
+      },
+      "terminalTrace": {
+        "baseline": {
+          "calls": 100,
+          "repeatedExactCalls": 0,
+          "runsWithRepeats": 0,
+          "adjacentRepeatPairs": 0,
+          "repeatedInspectionCalls": 0,
+          "repeatedTestCalls": 0
+        },
+        "dcp": {
+          "calls": 122,
+          "repeatedExactCalls": 0,
+          "runsWithRepeats": 0,
+          "adjacentRepeatPairs": 0,
+          "repeatedInspectionCalls": 0,
+          "repeatedTestCalls": 0
+        }
+      }
+    }
+  ],
+  "overallDifference": {
+    "attemptDeltaDcpMinusBaseline": 128,
+    "knownCostIncreaseLowerBoundUSD": 0.04181783999999994,
+    "meanKnownContextDeltaTokensUH": 2385.5865774251415,
+    "unknownCostAttemptsDcp": 1,
+    "dcpSourceUserMessageAppends": 18
+  },
+  "topContributors": {
+    "highestDcpKnownCost": [
+      {
+        "taskId": "cobol-modernization",
+        "knownCostUSD": {
+          "baseline": 0.05866789800000002,
+          "dcp": 0.06813440399999998
+        },
+        "unknownUsageRequests": {
+          "baseline": 0,
+          "dcp": 1
+        }
+      },
+      {
+        "taskId": "sqlite-db-truncate",
+        "knownCostUSD": {
+          "baseline": 0.030520787999999997,
+          "dcp": 0.041426255999999995
+        },
+        "unknownUsageRequests": {
+          "baseline": 0,
+          "dcp": 0
+        }
+      },
+      {
+        "taskId": "cancel-async-tasks",
+        "knownCostUSD": {
+          "baseline": 0.017299788,
+          "dcp": 0.03512729399999999
+        },
+        "unknownUsageRequests": {
+          "baseline": 0,
+          "dcp": 0
+        }
+      },
+      {
+        "taskId": "extract-elf",
+        "knownCostUSD": {
+          "baseline": 0.026740476,
+          "dcp": 0.023327909999999993
+        },
+        "unknownUsageRequests": {
+          "baseline": 0,
+          "dcp": 0
+        }
+      }
+    ],
+    "largestKnownCostIncrease": [
+      {
+        "taskId": "cancel-async-tasks",
+        "knownCostDeltaUSD": 0.01782750599999999,
+        "knownCostDeltaLowerBoundUSD": 0.01782750599999999,
+        "unknownUsageRequests": {
+          "baseline": 0,
+          "dcp": 0
+        }
+      },
+      {
+        "taskId": "sqlite-db-truncate",
+        "knownCostDeltaUSD": 0.010905467999999998,
+        "knownCostDeltaLowerBoundUSD": 0.010905467999999998,
+        "unknownUsageRequests": {
+          "baseline": 0,
+          "dcp": 0
+        }
+      },
+      {
+        "taskId": "cobol-modernization",
+        "knownCostDeltaUSD": 0.009466505999999965,
+        "knownCostDeltaLowerBoundUSD": 0.009466505999999965,
+        "unknownUsageRequests": {
+          "baseline": 0,
+          "dcp": 1
+        }
+      },
+      {
+        "taskId": "break-filter-js-from-html",
+        "knownCostDeltaUSD": 0.004011828,
+        "knownCostDeltaLowerBoundUSD": 0.004011828,
+        "unknownUsageRequests": {
+          "baseline": 0,
+          "dcp": 0
+        }
+      }
+    ],
+    "largestRequestExcess": [
+      {
+        "taskId": "cancel-async-tasks",
+        "requests": {
+          "baseline": 48,
+          "dcp": 93,
+          "dcpMinusBaseline": 45
+        },
+        "knownCostDeltaUSD": 0.01782750599999999
+      },
+      {
+        "taskId": "sqlite-db-truncate",
+        "requests": {
+          "baseline": 88,
+          "dcp": 119,
+          "dcpMinusBaseline": 31
+        },
+        "knownCostDeltaUSD": 0.010905467999999998
+      },
+      {
+        "taskId": "cobol-modernization",
+        "requests": {
+          "baseline": 132,
+          "dcp": 159,
+          "dcpMinusBaseline": 27
+        },
+        "knownCostDeltaUSD": 0.009466505999999965
+      },
+      {
+        "taskId": "break-filter-js-from-html",
+        "requests": {
+          "baseline": 26,
+          "dcp": 49,
+          "dcpMinusBaseline": 23
+        },
+        "knownCostDeltaUSD": 0.004011828
+      }
+    ]
+  },
+  "terminalTraceRepeatSummary": {
+    "baseline": {
+      "terminalToolCalls": 491,
+      "exactRepeatedCallsBeyondFirst": 2,
+      "runsWithRepeatedCommands": 1,
+      "adjacentRepeatPairs": 0,
+      "repeatedInspectionCalls": 0,
+      "repeatedTestCalls": 0
+    },
+    "dcp": {
+      "terminalToolCalls": 609,
+      "exactRepeatedCallsBeyondFirst": 4,
+      "runsWithRepeatedCommands": 3,
+      "adjacentRepeatPairs": 0,
+      "repeatedInspectionCalls": 1,
+      "repeatedTestCalls": 0
+    },
+    "taskCategoriesOnly": true,
+    "emittedCommandText": false
+  },
+  "interpretation": {
+    "firstRequestDelta": "A static input-token overhead proxy, not an isolated causal estimate.",
+    "pathways": "Agent trajectories and terminal-command loops are stochastic; cache state, task path and extra requests can change observed cost/context.",
+    "causalLimit": "Whole-task baseline/DCP runs do not isolate fixed prompt/tool/marker cost from path and repeated-work differences."
+  }
+}

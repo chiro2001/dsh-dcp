@@ -22,7 +22,7 @@ export function scheduleCompress(agent: Agent, focus?: string): { text: string }
   agent.followup(
     createUserMessage({
       content: [{ type: 'text', text: prompt }],
-      source: { kind: 'plugin', plugin: 'dsh-dcp' },
+      source: { kind: 'dsh-dcp' },
     }),
   )
   return {

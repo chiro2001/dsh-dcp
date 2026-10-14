@@ -1,13 +1,16 @@
 # dsh-dcp 实施规划与当前快照
 
-> 状态：当前实施快照；M8（rc.7）兼容迁移已完成，M9（rc.8）压缩提示与失败恢复优化
-> 正在收尾；rc.8 尚未创建 tag 或发布。
+> 状态：当前工作版本 rc.9 精确适配 dsh `0.2.0-rc.2`，见 §24。
+> §24/§25 是当前架构差异与真实验证的权威记录；§26 记录历史 trace 暴露的待改设计，
+> §27 规定后续压缩算法的评估目标与实验方法，均不代表已实现。前文保留历史设计与实验依据，
+> cleanup 时序冲突以 §25 为准。
+> rc.7/rc.8/rc.9 均未创建 tag 或发布。
 >
 > 历史规划证据快照：dsh-dcp `27743f2bc25c0cf90c11c3c6c19248f1269e8934`；
 > DeepSeek Harness `47f943859bef60e4160492346772ded9b24f765a`
 > （包版本 `0.1.0-rc.6`）；参考实现 v3.1.15。
 >
-> 上述 hash 与包版本属于原始规划基线，不是当前 rc.8 兼容声明。若宿主版本变化，
+> 上述 hash 与包版本属于原始规划基线，不是当前 rc.9 兼容声明。若宿主版本变化，
 > 先重跑 §4 的契约实验，不把本轮源码观察外推为永久 API 保证。
 
 ## 0. 标注规则与规划原则
@@ -1248,17 +1251,328 @@ marker，以及小范围摘要因机械填充字段而不满足净节省的问�
 - [x] 单元快照锁定集中规则、工具模板、cleanup provenance 和配置注入边界。
 - [x] rejected/partial/success 的工具结果与 inline cleanup 状态一致；失败长摘要不在
       下一次 `deriveMessages()` 中重复出现。
-- [ ] 小范围（包括约 353-token 的历史片段）不会因空字段标题或 `none` 占位而无谓增加
-      摘要；保真与节省冲突时返回可执行 correction 或保持未压缩。
+- [x] 小范围不会因空字段标题或 `none` 占位而无谓增加摘要；本轮校准为 398 heuristic
+      tokens，验证紧凑摘要保真，以及节省目标不可达时的 correction/原文保留。
 - [x] 默认模型可见提示预算保持：system ≤ 2200 字符、tool description ≤ 1300 字符、
       二者合计 ≤ 3500 字符（heuristic token 预算按实际字符测量记录）。
 - [x] `messages === session.deriveMessages()`、重启重放、原生 compaction 共存和多 range
       乱序输入回归测试全绿。
-- [ ] 真实模型 probe 至少覆盖：正常首次提交、范围拒绝后 correction、partial retry、
-      cleanup marker 解释，以及小范围短摘要。
+- [x] 真实模型 probe 覆盖正常首次提交、范围拒绝后 correction、partial retry、
+      cleanup 后召回与不重复调用、小范围短摘要及嵌套保真；具体配置与样本见 §25。
 
 ### 23.3 停止条件
 
 若提示词压缩导致关键事实召回下降、rejected marker 被模型误判为已提交、失败长摘要
 再次进入下一请求，或出现 system/header churn，则停止扩大模型驱动能力，先修规则契约、
 快照和 session surface 回归测试。
+
+## 24. M10：dsh 0.2.0-rc.2 与低开销提示（rc.9）
+
+### 24.1 上游证据与边界
+
+- **[事实]** 目标为 npm `latest` 的 dsh `0.2.0-rc.2`，对应官方
+  `dsh-v0.2.0-rc.2` tag / commit `639ed015397290b3745d163aafe02ffee4aa3f84`。
+  `0.2.1-alpha.2` 不在本轮兼容范围。
+- **[事实]** 上游将 system prompt 写为 `system/message`，tool result 改为
+  `role: tool`、平铺 `content`、顶层 `isError`；消息来源由每个生产者声明 kind。
+  DCP 写 `kind: dsh-dcp`，checkpoint 写 `kind: compact-checkpoint`。
+- **[事实]** `PreStepDecision.startsRequestSeries` 必须随下游决定透传；拒绝和取消
+  的 pre-step 不允许触发 DCP 改写；模型请求仍逐字节等于 `deriveMessages()`。
+- **[推断]** 精确升级整个 dsh peer/dev 家族与 CLI，使用上游要求的 Cordis
+  `4.0.4`、Schemastery `3.18.4`；删除已退役的无用依赖，不添加跨宿主兼容层。
+  旧 DCP 持久来源只读识别属于日志协议兼容，不是旧宿主执行路径。
+
+### 24.2 提示与清理决策
+
+- **[推断]** 默认边界粒度为 turn：首个 step 注入，后续只注入确有需要的 nudge/alias。
+  `references.granularity: step` 可恢复逐步标记；仍使用 `mNNNN`，协议版本保持 v1。
+  不引入 draft 中的 adaptive anchors、dryrun 强制流程或额外模型工具。
+- **[推断]** nudge 频率按日志 `step/start` 计，不依赖 marker 数；只有 DCP 来源
+  的 nudge 和内部 control 有效。同一批 control 不能吞掉正常用户消息。
+- **[推断]** 规则在 system、限额在 tool description、参数含义在 schema，各写一次；
+  默认 system ≤1500 字符、description ≤850 字符，合计 ≤2350 字符。
+- **[事实]** 当前上游禁止历史 assistant replacement。cleanup 改为在后续 pre-step
+  对纯 compress assistant + 配对结果做一次持久 `user/message` replace。
+- **[推断]** cleanup 必须等待 `step/end`，不吞普通文本、reasoning 或其他工具；
+  replacement 的估算 tokens 必须严格少于被替换 pair，否则保持原样。归档只保留
+  call ID、安全 refs、提交凭据、错误码与本地生成的 correction；不回显 topic、
+  planRef、长 summary 或任意工具结果正文。原始 log 和 checkpoint 不受清理影响。
+- **[推断]** system/developer 节点均硬保护，防止新上游动态 prompt 或工具声明
+  被范围压缩消耗。所有 DCP 追加提示成本纳入 marker 账目，cleanup 通过 prune 计量。
+- **[事实]** 工具去重仅在 replacement token 估算严格低于原结果时执行，
+  `tokensSaved` 报原值减替换值的净差，短输出保持原样。
+
+### 24.3 持续适配与验收
+
+`pnpm check:upstream` 与每周 CI 只检测 npm 稳定版本变化，不自动扩大兼容范围。
+迁移流程：读目标 tag 的生命周期/工具管线/invariant → 更新精确依赖与 CLI →
+重跑 typecheck、lint、单元/契约/真实 AgentLoop、build、package、peer、perf、
+coverage 与隔离安装 E2E。安装 E2E 的 CLI 版本从 package.json 读取，避免遗漏 CI。
+
+迁移阶段首次门禁为 149 项通过、1 项真实用例跳过；当时 OpenCode Go 返回 HTTP 403，
+没有真实模型通过证据。此后真实验证与时序修复见 §25，不以该跳过结果代表成功。
+
+最终离线门禁（2026-10-14）：`check-all.sh --coverage --e2e` 全绿，173 项测试通过、
+5 项真实模型用例默认跳过；确定性 E2E 47 项与隔离安装通过。整体行覆盖 90.25%，
+核心模块均超过 85%；构建入口与独立 package consumer 类型编译通过。
+
+真实模型召回和提示行为必须另外运行 `e2e:real`；mock/invariant 全绿只证明插件
+契约与日志一致性，不能单独证明所有模型都能稳定理解 cleanup。
+
+### 24.4 后续实验优先级
+
+1. **[需实验]** 多次真实模型 cleanup 召回，记录误认丢失/重复压缩与首次调用成功率。
+2. **[需实验]** 只读 token/range 预算工具是否减少无效长摘要；先与当前短提示做 A/B，
+   不默认要求每次压缩多一次调用。
+3. **[需实验]** long turn 的闭合前缀压缩和按需 anchors；先证明当前 turn 的提示与
+   最近工作可完整保护，再扩充现有边界契约。
+
+## 25. 真实模型验证与结果观测后的 cleanup
+
+### 25.1 已证伪的测试与时序
+
+- **[事实]** 原真实夹具把现成摘要和召回答案放入后续 user prompt，且在不调用工具时
+  用 XML 提示兜底；同时没有挂 agent-loop 请求不变式。这些用例不能证明模型自行摘要、
+  原生工具调用或从压缩后的上下文召回，因此改为真实 native channel 与日志级 oracle。
+- **[事实]** OpenCode Go 曾返回 403；本轮官方 DeepSeek 的 models 和推理接口均返回 200，
+  使用 `deepseek-flash`、thinking disabled，凭据仅从已有本地环境读取。
+- **[事实]** 官方真实模型在首次结果尚未被消费、call/result 已被整段归档后，重新调用
+  同一成功区间。请求历史里已无该 tool-call，下一响应确为新 call ID；重试被 STALE_REF 拒绝。
+  短归档加上 `status/committed/rejected/correction=STOP` 后仍复现，共 3 次失败。
+- **[推断]** 仅增加提示和结果收据不足以保证执行状态理解；模型必须先看到原生工具结果。
+
+### 25.2 接受的结构修复
+
+- **[事实]** 候选只有在全部配对 result 之后存在一个闭合 step 的 `assistant/message`，
+  才有后续成功响应消费结果的日志证据。首次工具 follow-up 保留原生 call/result。
+- **[推断]** 将 cleanup 放在之后的 pre-step 或公开 `agent/turn-stopping` 终止检查点；
+  仍要求原 step 已闭合、纯 compress、无夹杂节点、净节省为正。全过程只写标准日志，
+  不修改已冻结请求；已有 agent-loop invariant 验证每次请求等于当时的 deriveMessages。
+- **[事实]** 归档含从 checkpoint 与安全错误码重建的短结果收据，不复制任意 raw output；
+  success/partial 的工具结果改为条件性清理说明，不承诺必然归档。
+- **[事实]** 同 refs 的失败范围在原结果之后由另一调用成功提交时，旧归档保留原
+  partial/rejected 身份，以 `resolved_by=bN` 标明解决；不误报旧调用提交了后续块，
+  也不再为已解决范围生成 retry correction。早于结果的同 refs checkpoint 不算解决。
+- **[推断]** 本轮采用时序修复。上游纯 message projection 扩展另需验证通用 token-meter
+  计量、离线读者和卸载行为，暂不引入外置投影事件。
+
+### 25.3 真实矩阵与复现
+
+模型自行摘要 → 原生结果被消费 → 先回复 READY 且不泄露事实 → 清理结束后新 user
+只问事实 → 验证原消息/调用副本已从请求移除，唯一事实来源为 checkpoint。
+另外验证两个合法范围中第二笔开始提交时的一次性 TIMEOUT：真实模型必须只重试失败项，
+随后嵌套保留原 b1 正文，再从 checkpoint 召回两个事实。此 partial 用例明确属于故障注入。
+
+普通 `pnpm test` 只跑离线测试。`e2e:real` 与 `probes:real` 使用统一网关/key-env 配置，
+详见 README；probes 默认重复 3 次，任何失败/零真实断言都不算成功，报告不覆盖既有证据。
+
+最终真实运行结果与次数以 `docs/real-model-validation/` 时间戳报告为准；未运行的模型、
+thinking 模式与数据分布不得据此宣称已验证。
+
+### 25.4 重复运行暴露的问题
+
+- **[事实]** [首份重复报告](real-model-validation/2026-10-14T04-40-07-480Z.md)
+  第 1 轮三个真实场景通过，第 2 轮基础场景通过，但首次摘要遗漏精确恢复短语，
+  嵌套验证也失败；按失败即停规则没有运行第 3 轮，不计为三轮全绿。
+- **[推断]** 摘要保真需明确要求字面值连同含义原样保留；setup 指令只约束该 turn，
+  避免“不要回显”被沿用到后续摘要阶段。嵌套时说明旧 checkpoint 由插件自动追加，
+  模型只摘要其余历史；保留窗口准确描述为当前 turn 加前 `N-1` 个 turn。
+- **[事实]** 修正后的独立 preflight 中基础与首次摘要召回通过；multi-range 生成在
+  2200 output tokens 达到 `finishReason=length`，没有执行任何工具调用。
+  这是夹具输出预算不足；提高多范围预算并报告截断，不降低精确事实或重试断言。
+- **[事实]** runner 同时启用 default/json reporter，保存脱敏 log、完整 failureMessages
+  与成功场景的 token/cache 指标；报告不可覆盖，失败原因及日志位置可追溯。
+
+### 25.5 首组三轮实测证据（2026-10-14）
+
+- **[事实]** 修复后先运行一次完整 `e2e:real`：14 项通过，其中 3 项使用真实 provider、
+  11 项为离线 adapter/oracle；随后[连续三轮报告](real-model-validation/2026-10-14T04-54-26-563Z.md)
+  中 9/9 个真实场景通过，没有失败后挑选或跳过用例。
+- **[事实]** 目标为官方 `api.deepseek.com` 的 `deepseek-flash`，thinking disabled。
+  三轮共 63 个请求，269950 prompt tokens（82430 uncached + 187520 cache read），
+  16180 output tokens。每轮基础 cleanup 后召回、首次模型摘要与独立召回、
+  partial 只重试失败项、嵌套 b1/b2 正文保真及双事实召回均通过。
+- **[事实]** 召回前所有非 checkpoint 派生内容均不得含事实值，工具参数/结果副本必须
+  移除，READY 不泄露事实；嵌套 call 只取当前 turn，按 compressCallId 对应其 checkpoint。
+  请求全过程挂载 Session/AgentLoop/Compaction invariant，fixture 未提供 XML 兜底 prompt。
+  当时 adapter 仍有 XML 转工具的备用路径，最终收紧见 §25.8。
+- **[事实]** 106 个源码、测试、脚本及配置文件的 SHA-256 manifest 与实测结束后的
+  文件一致；9 条场景 metrics 均已入报告。报告和本轮日志检查未包含已加载的凭据值。
+- **[限制]** 三轮样本只能支持该模型、网关、thinking 模式和这些合成历史下的结果；
+  不证明其它模型或任意长会话的质量。该报告尚不含小范围专项，补充实验见 §25.6。
+  partial 为提交故障注入，不是服务商故障。
+
+### 25.6 小范围专项与校准
+
+- **[事实]** 同一单主题历史估算为 398 heuristic tokens；离线固定摘要在
+  `minNetSavingsTokens=32` 下净省 276 tokens，在 `512` 下 prepare 拒绝、没有 checkpoint。
+- **[事实]** [无预先 SKIP 提示的专项报告](real-model-validation/2026-10-14T05-10-07-304Z.md)
+  两个真实场景通过。模型自行保留精确短语、产物、hash、分片、pool、未完任务，以及
+  幂等键迁移决策、旧 cursor/零 lag 的 rollback 约束；成功后只有 checkpoint 承载召回值。
+  严格阈值下原生结果为 `INSUFFICIENT_SAVINGS`，模型没有重复调用，原文保留且可召回。
+- **[事实]** 首次专项中模型在工具调用前加了一句说明，工具结果后的回答确为 READY；
+  旧断言把该 turn 全部文本拼接，误判为未 READY。改为只检查结果之后的闭合模型响应，
+  并显式要求工具调用不附带正文，以建立低阈值用例的唯一 checkpoint 召回 oracle。
+- **[事实]** 子代理审计发现测试 prompt 提前给出了“不可达就 SKIP”的条件，因此移除
+  该条件，只保留遵循原生 correction；同时补决策/约束断言，不把简单标识符召回当成
+  完整语义保真。旧报告、失败消息与源码指纹均原样归档，不用它们替代最终验证。
+- **[限制]** 32/512 是这两个专项的显式配置，保留窗口仍为默认 2；
+  不宣称默认 256 阈值对该范围一定提交，也不把 398-token 夹具称为精确 353-token 复现。
+
+### 25.7 五场景回归（适配器收紧前）
+
+[该轮报告](real-model-validation/2026-10-14T05-11-08-590Z.md)包含连续三轮 15/15 个
+真实场景，独立于上述开发中间报告；没有跳过或失败。每轮另有 13 个离线 adapter/oracle
+断言，不计入真实通过数。
+此时 adapter 还允许 XML 备用路径，该报告保留原始结果；最终原生通道验证以 §25.8 为准。
+
+| 场景              | 真实轮次 | 验证内容                                                       |
+| ----------------- | -------- | -------------------------------------------------------------- |
+| 基础 cleanup 召回 | 3/3      | 先消费原生结果，再清理；独立召回代号/产物，没有重复成功调用    |
+| 首次模型摘要      | 3/3      | 摘要由模型生成；原文/调用副本移除，唯一事实载体为 checkpoint   |
+| partial 与 nested | 3/3      | 故障注入后只重试失败项；b1/b2 原样附录，嵌套后双事实召回       |
+| 小范围，阈值 32   | 3/3      | 398-token 历史生成紧凑摘要，保留字面值、决策、约束并独立召回   |
+| 小范围，阈值 512  | 3/3      | 原生 INSUFFICIENT_SAVINGS；依据 correction 停止，原文/事实保留 |
+
+- **[事实]** 三轮共 99 个请求；313769 prompt tokens = 88129 uncached + 225640 cache read；
+  17587 output tokens。低阈值摘要 555–600 字符，估算消息成本 147–158 tokens；
+  没有填充空字段。严格阈值下每轮仅一次工具调用，没有重复尝试。
+- **[事实]** 107 个源文件与配置的指纹和最终实测输入一致，15 条 metrics 已保存；
+  35 份报告/原始输出检查未包含已加载凭据。原始 JSON 与 `.txt` 输出随报告保存在仓库，
+  不依赖临时目录才能审计。
+- **[事实]** Vitest 的筛选结果使用 `skipped`；runner 同时排除 `pending/skipped`，
+  避免把未选用例计入专项分母。`all` 模式仍要求全部真实断言通过；零真实断言算失败。
+- **[限制]** 结果限于官方 `deepseek-flash`、thinking disabled 与本轮合成夹具。
+  未验证其它模型/网关、thinking 模式或任意历史的全面语义保真。
+
+### 25.8 仅原生工具通道的最终验收
+
+- **[事实]** 最后代码检查发现 adapter 虽优先原生调用，但仍会执行正文 XML 并剥除它。
+  两个失败单测复现了“XML-only 被执行”与“原生调用同时带 XML 时正文被隐藏”。
+  现在只执行服务商 `tool_calls`，raw content 逐字记录；XML parser 只用于离线测试与诊断，
+  不参与执行或正文改写。12 个 adapter 单测通过。
+- **[事实]** 收紧后[重新连续三轮](real-model-validation/2026-10-14T05-15-23-101Z.md)，
+  五场景 15/15 通过，99 个真实请求。原生结果消费/cleanup 召回、首次摘要、partial/nested、
+  小范围成功和拒绝后停止均 3/3；每轮另有 15 个离线 adapter/oracle 断言，不计为真实验证。
+- **[事实]** 最终三轮 305721 prompt tokens（83793 uncached + 221928 cache read），
+  15633 output tokens；低阈值小范围摘要 587–610 字符，估算消息成本 155–161 tokens。
+  小范围每轮仅调用一次，精确值、决策与约束召回通过。32/512 的配置边界仍见 §25.6。
+- **[事实]** [源码核验](real-model-validation/2026-10-14T05-15-23-101Z/source-verification.json)
+  确认模型执行相关输入不变。唯一后续变动是 adapter 单测的 Prettier 格式化；
+  其[测试时原始字节](real-model-validation/2026-10-14T05-15-23-101Z/adapter-regression-before-format.txt)
+  与 manifest 指纹一致，格式化后与最终文件完全一致，没有语义修改。
+  45 份报告/原始输出检查未包含已加载的凭据值。
+- **[事实]** 格式化后的完整离线门禁全绿：172 passed / 5 real skipped、行覆盖 90.25%，
+  核心模块均 ≥85%；确定性 E2E 47 项、隔离安装、build/package/peer/perf 均通过。
+  跳过项不计入上述 15 个真实 provider 场景。
+
+### 25.9 官方 DeepSeek 默认配置
+
+- **[事实]** 用户要求使用官方 DeepSeek API 后，`e2e:real`、`probes:real`、`kv-ab`
+  统一复用 `readRealModelConfig`：默认 `https://api.deepseek.com/v1`、
+  `DEEPSEEK_API_KEY`、`deepseek-flash`、provider `deepseek`、thinking disabled。
+  默认 key 缺失则跳过，不选择其它 key；非官方 origin（包括非默认端口）需显式绑定 key。
+  KV 脚本改为 Node 内存读取 env 文件。
+- **[事实]** 新默认值与此前三轮使用的显式官方配置一致；
+  [不带接口/模型覆盖参数的单轮](real-model-validation/2026-10-14T05-22-36-408Z.md)
+  五个真实场景 5/5 通过，107 个输入文件指纹与最终文件一致，报告/日志无凭据值。
+- **[事实]** 配置单测 8 项通过，覆盖默认 key 选择、旧 key 不回退、origin 绑定与输入校验。
+  完整离线门禁 173 passed / 5 real skipped，行覆盖 90.25%，确定性 E2E 47 项与隔离安装通过。
+  该默认配置复验只跑一轮，不把它写成另一组三轮。
+
+## 26. 历史 session trace 的设计对照（待实现）
+
+完整口径、匿名证据与处置见[历史审计](history-trace-audit/2026-10-14.md)。本轮只读，
+没有把私有历史送给模型，也未修改生产压缩逻辑。
+粒度调整的具体建议见[闭合 step 与 token 尾部方案](closed-step-compression-design.md)，
+包含安全切点、独立保护集合、按需候选和混合作者的延迟归档路径，仍为待实现设计。
+
+- **[事实]** 库存为 817 个物理文件/816 个逻辑 session，宿主 header v0/v3；
+  当前 dsh `0.2.0-rc.2` 为 v4。60 个分层样本中，主会话每 turn step 中位数 5、
+  子会话 79；v3 子会话 120、最大 463。不能将抽样比例当成全库比例。
+- **[事实]** 41 个 DCP 定向样本中有 6 个旧会话、39 次实际调用；按 call ID
+  去重的原始作者 39/39 含 reasoning、4/39 含文本。当前 pure-only cleanup 会在
+  shape gate 排除这种输入。旧 trace 不是当前 rc.9 已部署失败的证据。
+- **[事实]** 旧压缩范围的 104 条子代理来源不匹配当前按 form 查询的保护配置；
+  当前生产者仍用 kind=subagent-settled/form=notice，合成复现没有保护附录。
+  这是来源匹配遗漏，不是已证明事实丢失。
+- **[接受，待实现]** 修正来源 kind/form 匹配并覆盖真实 producer 形态。
+- **[接受，需新安全契约]** 增加当前 turn 的闭合前缀候选，保留用户目标/有效 steering、
+  近期 step/token 尾部、开放工具对和当前请求。仅改变边界粒度不足以解决保留窗口。
+  nudge 应在有可用候选时触发。
+- **[接受，需实验]** 设计混合正文/reasoning 作者的持久清理方案，并测完整压缩周期的
+  请求成本。之前 thinking disabled 的合成真实回归仍有效，但没有验收这些结构。
+- **[待验证]** 定义子会话与 PTC 支持边界。离线复现 PTC-only 的两条 compress 路径
+  被阻断；本轮历史没有观察到 run_code/PTC，不能声称历史频率或失败率。
+- **[待验证]** 本轮没有已提交嵌套样本；嵌套预算及与宿主原生压缩的阈值/时序协同
+  需独立实验。不用跨版本 heuristic 差值冒充 API 实测净节省。
+
+继续保持标准 compaction 日志、请求与 deriveMessages 一致、配对和硬保护、可恢复原文、
+消费原生结果后再归档、失败不误报提交。上述待改项不得通过破坏这些约束来实现。
+
+## 27. 压缩算法的评估与优化目标（首轮开发 pilot 已完成）
+
+详细指标、费用口径、实验控制和初始验收目标见[上下文压缩评估方案](EVALUATION.md)。
+
+- **[接受的设计]** 主目标为安全与质量达标条件下的最低成功任务成本：
+  `K=全部任务费用/成功任务数`，相对节省率 `S=1-K(candidate)/K(baseline)`。
+  失败、重试、摘要/cleanup、恢复、所有 child 与宿主原生压缩都计入分子。
+- **[接受的设计]** 质量按完整任务和跨阶段续作独立验收，关键约束全通过；整体与
+  关键分层做预注册非劣检验。不能用压缩率、摘要自评或字符串召回替代。
+- **[推断，需实验]** 保留稳定定义/任务前缀，压缩闭合阶段，保留近期 token 尾部，
+  是优先候选。最早变更之后的缓存失效、剩余请求数与重读风险决定是否回本，
+  不固定中间偏后的百分比切点，不把模型自称阶段完成当充分触发条件。
+- **[接受的设计]** 分开评价程序许可、阶段完成、摘要后可继续性；置信度需校准。
+  新需求合法重开计恢复费用，不自动算过早完成。
+- **[事实]** 当前真实 adapter 的 inputTokens 为未缓存输入，缓存另计；reasoning
+  为输出分项时不双计。historyReduction 是 heuristic 历史账本，KV 小探针 H/U 比
+  与结束时间也不是缓存命中率/TTFT，不能用它们证明算法收益。
+- **[已实现，首轮已验证]** 请求级用量/失败/价格账本、预算限流、真实 dsh root +
+  Harbor terminal 与独立官方 verifier、任务级配对 A/B runner；缺 usage 不计零，
+  中断保留 partial ledger，冻结源码/任务输入/镜像 digest。真实 child 执行树、阶段
+  续作 oracle、C 新粒度与消融仍待实现。历史只提供本地匿名结构，专项输入用合成事实，cold/warm/
+  首轮失效分别观测；独立留出验证，失败和不确定结果不丢弃。
+- **[已接入]** 自然任务能力/费用主测使用固定标准 benchmark 子集，
+  首选 Terminal-Bench 2.0，SWE-bench Verified 作编码补充；由真实 dsh 执行原题，
+  用官方 verifier 验收。历史衍生专项提供长 turn/阶段依赖的诊断，各来源分报；
+  已冻结 10 dev/20 holdout 的 Terminal-Bench 2.0 便利子集；29/30 oracle 资格通过，
+  失败的 build-cython-ext 原样保留。两臂 fix-git 官方模型预检均 reward=1，均未
+  触发压缩，仅是接入预检。9 个合格 dev 每臂重复 2 次为正式开发 pilot，见评估方案 §12。
+- **[事实]** [首轮报告](evaluation-runs/2026-10-14T10-01-50-936Z/report.md)：36/36 运行、
+  1026 个请求尝试、18 配对全部对账通过，源文件与任务输入匹配。预算内成功
+  baseline 12/18、DCP 13/18；单看官方 reward=1 则为 12/18 与 15/18，两次候选
+  验收通过但超预算，评分规则不事后改动。一条 invalid_response 缺 usage 导致
+  DCP 精确总费/K/S 不可用；已知成本仍推出本 cohort 内 S≤−15.20%，未达到费用准入。
+- **[事实]** 全部标准任务没有 compress、prune、summary/checkpoint 或原生摘要请求；
+  DCP 有 18 次来源消息追加。当前单 turn 与最近两 turn 保护没有实际压缩机会；本轮
+  是短上下文插件部署开销 pilot，不是闭合阶段压缩的实验证明。质量差保守下界 −76.04pp，
+  不能证明 1pp 非劣；20 holdout 未用于模型调参。新粒度与阶段 fork 仍待实现。
+- **[事实]** [历史上下文全库审计](history-trace-audit/2026-10-14T12-11-28-806Z-context/report.md)
+  覆盖 816 个逻辑 session；v3 的 53,649 次精确用量请求平均 258,878 tokens，
+  p95 600,546，主/子会话均值 345,377/245,073。首轮均值 16,227/18,613 tokens
+  无法代表该长上下文负载，其费用结论不得外推。下一轮须预注册公开/合成长上下文
+  任务的 token 分层、阶段 fork、真实压缩机会、缓存回本时域与独立续作验收，
+  详见评估方案 §15；历史原文不发送 API。
+- **[事实]** 离线门禁 248 passed / 5 real skipped、行覆盖 90.54%，确定性 E2E 47 passed，
+  Python 3/3，build/package/peers/perf/隔离安装全绿；实际运行源码已归档，凭据扫描
+  覆盖原始与 gzip 解压 session，未检出已加载 key。费用未知保持 unknown。
+- **[接受的设计，待实现]** 增加公共休眠前缀的阶段 fork 对照，测相同状态后启用
+  DCP 的条件增量收益，同时保留整任务部署 A/B。当前 enabled=false 不注册定义，
+  不能充当休眠模式；分叉必须克隆完整执行状态、验证真实闭合与前缀一致，遵守
+  原保留窗口，共同费用/缓存和条件样本单独解释，详见评估方案 §13。
+- **[已实现，首组真实验证完成]** [单场景协议](evaluation-scenarios/single-ledger-repair.md)
+  提供公开事件账本任务、闭合构造调查回放、真实共同准备、相同 seed 的容器续作、
+  固定一次 DCP 压缩与独立验收，详见评估方案 §16。harness 使用公开 agent seed
+  与 tool guard，保持静态定义和请求日志 invariant；手动模式关闭自动策略，
+  不冒称生产休眠模式或自然触发策略。指定范围/次数/来源元数据与费用完整性
+  均为条件收益判定前提，不事后移除失败。
+- **[事实]** [单场景实际报告](evaluation-runs/2026-10-14T13-30-33-997Z-single-ledger/report.md)
+  共同压力 478,056 tokens，双方独立验收 12/12；inactive 6 请求/$0.011411280，
+  active 23 请求/$0.012177312。平均输入降 93.09% 而续作费用增 6.71%，
+  新增输出/未缓存费用抵消缓存输入节省。唯一指定 DCP 压缩、30 个完整用量
+  请求及静态定义/日志 seed/source 均对账通过；共同准备只计一次，实际支出
+  $0.095298192。不据单例证明自动触发效果或能力退化，不重跑挑选正收益。
+
+首版候选门槛为质量非劣 margin 1pp、有效费用节省点估计至少 10% 且区间下界大于
+零、p95 完成时间增幅不超过 10%，需预注册并用 pilot 校准，不是当前已达结果。
+初始三轮功能回归不足以证明上述质量和费用门槛。

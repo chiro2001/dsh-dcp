@@ -1,24 +1,24 @@
 # dsh-dcp 协议（v1）
 
-> 状态：M4 固化，M8 已完成，M9（rc.8）提示与失败恢复优化待发布；不改变 protocol v1。
+> 状态：rc.9 工作版本，尚未发布；不改变 protocol v1。
 > 当前宿主基线：
-> `@deepseek-ai/*@0.1.2-rc.1`。
+> `@deepseek-ai/dsh-*@0.2.0-rc.2`。
 > 本文定义模型可见内容如何由日志重建、压缩块如何落地、边界如何解析、
 > 命令与恢复语义，以及原生 compaction 的共存规则。
 
 ## 1. 核心不变式
 
 - agent-loop 请求的 `messages` 必须与 `session.deriveMessages()` 逐字节一致；
-  system/tools 必须与最新 `request/header` 一致。
+  system 以 `system/message` 纳入同一 surface，tools 与最新 `request/header` 一致。
 - dsh-dcp **不做请求时改写**；一切模型可见内容先成为已知 surface 事件。
 - 不写 `dcp/*` 自定义 SessionEvent（公开 append 不支持，M0 E-01 锁定）。
 
 ## 2. 边界协议（E-02 决策：候选 B）
 
-- 每个 step 入口追加一条日志化 boundary marker：
+- 默认每个 turn 的首个 step 追加一条日志化 boundary marker（可配置 `references.granularity: step`）：
   `<dcp-boundary ref="mNNNN" turn="T" step="S" />`（user message，
-  source.plugin = `dsh-dcp`）。
-- 原生 compaction 遮蔽 marker 后，下一条 marker 追加 alias delta：
+  source.kind = `dsh-dcp`）。
+- 原生 compaction 遮蔽 marker 后，下一条 DCP 消息追加 alias delta：
   `alias mNNNN=s<seq>`（seq 为遮蔽它的原生 checkpoint 节点），保持旧引用可解析。
 - 引用一律按 **surface position** 解析，绝不按 seq 数值大小。
 - range 是 half-open：`[startRef, endRef)`；endRef 节点本身不被压缩。
@@ -35,7 +35,7 @@ compaction/summary    { compactionId, summary, shadowedRange,
                         shadowedSeqs, shadowedTokenCount,
                         provider, model }
 user/message          source = compaction checkpoint + dcp metadata v1
-                      surfaceOp = replace(start, end)
+                      surfaceOp = replace(startSeq, endSeq)
                       sourceEventSeqs = 全部被遮蔽 surface 节点
 compaction/end        { compactionId, turn }
 ```
@@ -79,8 +79,8 @@ recovered-unclosed / committed / failed-attempt`（M0 E-03 锁定）。
 - 一次可传多个 non-overlapping、已闭合的 range；每个 range 各自独立提交，
   工具按当前 surface 逐笔重解析，失败项返回 partial result。
 - 校验：refs 可解析、范围互不重叠（不要求按旧到新顺序提交，插件内部规范化）、两侧 cuts 工具配对平衡、
-  不进入最近 `retainRecentTurns` 个 turn、不含当前 compress 调用、
-  不含硬保护（instructions/snapshot）、净节省 ≥ `minNetSavingsTokens`；
+  不进入当前 turn 及前 `retainRecentTurns - 1` 个 turn、不含当前 compress 调用、
+  不含硬保护（system/developer、instructions/snapshot）、净节省 ≥ `minNetSavingsTokens`；
   summary 必须包含实际技术正文、不得以 `[bN]` 块引用前缀开头（schema 拒绝，
   checkpoint 构造时也会剥离，blockRef 只能由 `<dcp-message-id>` 表达），
   也不允许写 `<dcp-inline-cleanup ... />` 或历史 `[stored in bN]` 这类指针式占位作为摘要正文；
@@ -89,18 +89,15 @@ recovered-unclosed / committed / failed-attempt`（M0 E-03 锁定）。
   失败项返回 partial result，不伪造跨 range 原子性；全失败返回 rejected result，明确没有任何 range 提交。
 - 嵌套：范围内 active `bN` 被消费，旧摘要 verbatim 保留在
   `Included prior blocks` 附录。
-- inline 摘要参数在提交/拒绝处理后可清理为带 provenance 的 marker（保留
-  block/callId 与 message id）：
-
-  ```text
-  <dcp-inline-cleanup provenance="dsh-dcp" status="committed" block-ref="bN" />
-  <dcp-inline-cleanup provenance="dsh-dcp" status="rejected" code="ERROR_CODE" />
-  ```
-
-- 模型可见语义：cleanup marker 是插件在工具调用之后对历史 assistant 参数的改写，
-  不是模型提交的摘要。committed marker 对应的新 checkpoint `user/message` 保存权威完整摘要；
-  rejected marker 表示没有对应提交，不能被当作摘要正文或“摘要丢失”。
-- `[stored in bN]` 仅保留为 rc.6-1 历史会话/兼容夹具可能出现的旧 marker；新代码不再生成该格式。
+- 摘要调用清理在原生结果已被后续闭合模型响应消费后，于 turn-stopping 或更后 pre-step 执行：只有纯 compress assistant + 全部配对结果、
+  step 已闭合、span 不夹杂其它节点、且估算净节省为正才整体替换。
+- `compaction/prune` 紧邻一条 `user/message` replacement，来源 `kind: dsh-dcp`，
+  `<dcp-cleanup ... status="success|partial|rejected">` 归档记录只含短提交凭据或
+  错误码与本地 correction，不复制正文/任意结果。checkpoint 才是权威摘要，
+  `tool/call` 与原 assistant/result 在 raw log 中仍完整。
+- 原失败范围只有在该结果之后、由另一调用提交相同 refs 的 checkpoint 时，才标为
+  `resolved_by=bN`；保留旧 call 的失败身份，但不为已解决范围生成重试指令。
+- 旧 inline cleanup 和 `[stored in bN]` 仅作为历史只读格式，不再生成。
 
 ## 5. 自动策略（pre-step）
 
@@ -119,8 +116,9 @@ show <bN> [--raw]|decompress <bN> [--into-context]|recompress <bN>`
 - 命令结果不进模型历史；`command/run`/`command/done` 落日志。
 - manual 状态由成功 command lifecycle 对重放（不是私有事件）。
 - 需要 mutation 的命令（sweep、expand、recompress）通过
-  `<dcp-control>...</dcp-control>` followup 打开 control turn；pre-step 消费
-  控制消息、执行 mutation、返回 `enter([])`，不产生模型请求。
+  来源为 `kind: dsh-dcp` 的 `<dcp-control>...` followup 打开 control turn；
+  pre-step 仅消费真实控制消息并执行 mutation，同批正常用户消息保留。纯 control
+  返回 `enter([])` 不产生请求；用户提供的同形文本只是普通输入。
 - `/dcp decompress <bN>` 默认只读 show；`--into-context` 生成 quoted
   transcript 的 semantic expansion（新 `bN`，kind=`expansion`），不是精确
   原角色重放；`/dcp recompress <bN>` 用新 `bN`（`recompressedFrom`）恢复摘要。

@@ -1,0 +1,130 @@
+{
+    "id": "1141803d-1b91-499b-8a6a-fdff43f26970",
+    "task_name": "terminal-bench/sqlite-db-truncate",
+    "trial_name": "sqlite-db-truncate__kvc4wMX",
+    "trial_uri": "file:///home/chiro/projects/dsh-dynamic-context-pruning/dsh-dynamic-context-pruning/.tmp-vitest/evaluation-setup/jobs/dsh-pilot-2026-10-14T10-01-50-936Z-sqlite-db-truncate-baseline-r2/sqlite-db-truncate__kvc4wMX",
+    "task_id": {
+        "path": "/home/chiro/projects/dsh-dynamic-context-pruning/dsh-dynamic-context-pruning/.tmp-vitest/evaluation-setup/frozen-task-inputs/2026-10-14T10-01-50-936Z/sqlite-db-truncate"
+    },
+    "source": null,
+    "task_checksum": "b2af4423ce76cc3c66ff68de993c53bfa6928e3751212aa97c3b4591d1d8348f",
+    "config": {
+        "task": {
+            "path": "/home/chiro/projects/dsh-dynamic-context-pruning/dsh-dynamic-context-pruning/.tmp-vitest/evaluation-setup/frozen-task-inputs/2026-10-14T10-01-50-936Z/sqlite-db-truncate",
+            "git_url": null,
+            "git_commit_id": null,
+            "name": null,
+            "ref": null,
+            "overwrite": false,
+            "download_dir": null,
+            "source": null
+        },
+        "trial_name": "sqlite-db-truncate__kvc4wMX",
+        "trials_dir": "/home/chiro/projects/dsh-dynamic-context-pruning/dsh-dynamic-context-pruning/.tmp-vitest/evaluation-setup/jobs/dsh-pilot-2026-10-14T10-01-50-936Z-sqlite-db-truncate-baseline-r2",
+        "install_only": false,
+        "timeout_multiplier": 1.0,
+        "agent_timeout_multiplier": null,
+        "verifier_timeout_multiplier": null,
+        "agent_setup_timeout_multiplier": null,
+        "environment_build_timeout_multiplier": null,
+        "agent": {
+            "name": "scripts.evaluation.harbor_agent:DSHAgent",
+            "import_path": null,
+            "model_name": "deepseek/deepseek-flash",
+            "n_concurrent": null,
+            "concurrency_group": null,
+            "skills": [],
+            "override_timeout_sec": null,
+            "override_setup_timeout_sec": null,
+            "max_timeout_sec": null,
+            "resume_trajectory": false,
+            "load_trajectory": null,
+            "extra_allowed_hosts": [],
+            "kwargs": {
+                "arm": "baseline",
+                "task_id": "sqlite-db-truncate",
+                "replicate": 2,
+                "max_requests": 80,
+                "max_seconds": 300,
+                "max_cost_usd": 1
+            },
+            "mcp_servers": []
+        },
+        "user_agent": null,
+        "environment": {
+            "type": "docker",
+            "import_path": null,
+            "force_build": false,
+            "delete": true,
+            "stream": false,
+            "cpu_enforcement_policy": "auto",
+            "memory_enforcement_policy": "auto",
+            "override_cpus": null,
+            "override_memory_mb": null,
+            "override_storage_mb": null,
+            "override_gpus": null,
+            "override_tpu": null,
+            "mounts": null,
+            "extra_docker_compose": [],
+            "kwargs": {},
+            "extra_allowed_hosts": []
+        },
+        "verifier": {
+            "override_timeout_sec": null,
+            "max_timeout_sec": null,
+            "disable": false
+        },
+        "artifacts": [],
+        "extra_instruction_paths": [],
+        "extra_instructions": [],
+        "job_id": "7605095d-3261-4f0b-b12f-9224e5c9054d",
+        "source_trial": null
+    },
+    "agent_info": {
+        "name": "dsh-dcp-evaluation",
+        "version": "0.2.0-rc.2/dcp-0.1.0-rc.9",
+        "model_info": {
+            "name": "deepseek-flash",
+            "provider": "deepseek"
+        }
+    },
+    "agent_result": {
+        "n_input_tokens": 331964,
+        "n_cache_tokens": 320384,
+        "n_output_tokens": 11892,
+        "cost_usd": 0.009833352,
+        "model_usage": null,
+        "rollout_details": null,
+        "metadata": {
+            "execution_status": "completed",
+            "verification": "pending",
+            "ledger_path": "/home/chiro/projects/dsh-dynamic-context-pruning/dsh-dynamic-context-pruning/.tmp-vitest/evaluation-setup/jobs/dsh-pilot-2026-10-14T10-01-50-936Z-sqlite-db-truncate-baseline-r2/sqlite-db-truncate__kvc4wMX/agent/ledger.json"
+        }
+    },
+    "verifier_result": {
+        "rewards": {
+            "reward": 1.0
+        }
+    },
+    "verifier_environment_mode": "shared",
+    "exception_info": null,
+    "started_at": "2026-10-14T10:39:02.630303Z",
+    "finished_at": "2026-10-14T10:40:43.048183Z",
+    "environment_setup": {
+        "started_at": "2026-10-14T10:39:02.655243Z",
+        "finished_at": "2026-10-14T10:39:03.650962Z"
+    },
+    "agent_setup": {
+        "started_at": "2026-10-14T10:39:03.651018Z",
+        "finished_at": "2026-10-14T10:39:03.722247Z"
+    },
+    "agent_execution": {
+        "started_at": "2026-10-14T10:39:03.722390Z",
+        "finished_at": "2026-10-14T10:40:20.443248Z"
+    },
+    "verifier": {
+        "started_at": "2026-10-14T10:40:20.719598Z",
+        "finished_at": "2026-10-14T10:40:32.170448Z"
+    },
+    "step_results": null
+}

@@ -11,17 +11,37 @@ import { mountContractFixture, type ContractFixture } from '../contract/fixture.
 import { resolveConfig, type DcpConfig } from '../../src/config.js'
 import { buildBoundaryMarker } from '../../src/refs/marker.js'
 import { executeCompressRange } from '../../src/compress/pipeline.js'
+import { cleanupPendingCompressSteps } from '../../src/compress/step-cleanup.js'
 import { formatCompressResult } from '../../src/compress/result.js'
 import { commitRange } from '../../src/compress/commit.js'
 import { prepareRange } from '../../src/compress/prepare.js'
 import { reduceDcpState } from '../../src/protocol/replay.js'
+import { computeSessionStats } from '../../src/stats/session.js'
 import type { CompressRangeEntry } from '../../src/compress/schema.js'
 
 function markerMessage(ref: string, turn: number, step: number) {
   return createUserMessage({
     content: [{ type: 'text', text: buildBoundaryMarker(ref, turn, step) }],
-    source: { kind: 'plugin', plugin: 'dsh-dcp' },
+    source: { kind: 'dsh-dcp' },
   })
+}
+
+function appendAssistantObservation(session: SessionType, turn: number, step: number): void {
+  session.append('step/start', { turn, step })
+  session.append(
+    'assistant/message',
+    {
+      turn,
+      step,
+      stream: [],
+      message: createAssistantMessage({
+        content: [{ type: 'text', text: 'I observed the compression tool result.' }],
+        source: { provider: 'mock', model: 'mock' },
+      }),
+    },
+    { surfaceOp: 'append' },
+  )
+  session.append('step/end', { turn, step })
 }
 
 function buildMarkedSession(
@@ -51,6 +71,7 @@ function buildMarkedSession(
         {
           turn: number,
           step: 1,
+          stream: [],
           message: createAssistantMessage({
             content: [
               { type: 'text', text: `assistant ${number}` },
@@ -59,7 +80,7 @@ function buildMarkedSession(
             source: { provider: 'mock', model: 'mock' },
           }),
         },
-        { surfaceOp: 'append', sourceEventSeqs: [] },
+        { surfaceOp: 'append' },
       )
       const call = session.append('tool/call', {
         turn: number,
@@ -87,12 +108,13 @@ function buildMarkedSession(
         {
           turn: number,
           step: 1,
+          stream: [],
           message: createAssistantMessage({
             content: [{ type: 'text', text: `assistant ${number}` }],
             source: { provider: 'mock', model: 'mock' },
           }),
         },
-        { surfaceOp: 'append', sourceEventSeqs: [] },
+        { surfaceOp: 'append' },
       )
     }
     session.append('step/end', { turn: number, step: 1 })
@@ -115,24 +137,35 @@ function buildMarkedSession(
     { surfaceOp: 'append' },
   )
   session.append('step/start', { turn: 4, step: 1 })
-  const inlineArgs = JSON.stringify({
-    topic: 'closed turns',
-    content: inlineContent ?? [
+  const cleanupBudgetedEntries = (
+    inlineContent ?? [
       {
         startRef: 'm0001',
         endRef: 'm0004',
         summary: 'a very long inline summary that duplicates the checkpoint',
       },
-    ],
+    ]
+  ).map((entry) => ({
+    ...entry,
+    // Cleanup tests need the old pair to be larger than its replacement.
+    // Short-pair no-growth behavior has a dedicated regression case.
+    summary:
+      entry.summary.length >= 3000
+        ? entry.summary
+        : `${entry.summary}\n${'x'.repeat(3000 - entry.summary.length)}`,
+  }))
+  const inlineArgs = JSON.stringify({
+    topic: 'closed turns',
+    content: cleanupBudgetedEntries,
   })
   session.append(
     'assistant/message',
     {
       turn: 4,
       step: 1,
+      stream: [],
       message: createAssistantMessage({
         content: [
-          { type: 'text', text: 'compressing now' },
           {
             type: 'tool-call',
             id: ToolCallId('dcp-call'),
@@ -143,7 +176,7 @@ function buildMarkedSession(
         source: { provider: 'mock', model: 'mock' },
       }),
     },
-    { surfaceOp: 'append', sourceEventSeqs: [] },
+    { surfaceOp: 'append' },
   )
   session.append('tool/call', {
     turn: 4,
@@ -196,7 +229,6 @@ describe('compress range pipeline (M1)', () => {
 
     expect(result.blocks[0]?.blockRef).toBe('b1')
     expect(result.blocks[0]?.compressedMessages).toBeGreaterThan(0)
-    expect(result.cleanupWarning).toBeUndefined()
 
     const derived = session.deriveMessages()
     expect(
@@ -228,40 +260,10 @@ describe('compress range pipeline (M1)', () => {
       ),
     ).toBe(false)
 
-    // Inline cleanup: the author assistant message now carries an explicit DCP
-    // provenance marker for b1, not a pointer-like natural-language token.
-    const author = derived.find((message) =>
-      message.content.some((block) => block.type === 'tool-call' && block.id === 'dcp-call'),
-    )
-    expect(author).toBeDefined()
-    const call = author!.content.find((block) => block.type === 'tool-call')
-    const parsed = JSON.parse((call as { arguments: string }).arguments) as {
-      content: Array<{ summary: string }>
-    }
-    expect(parsed.content[0]!.summary).toBe(
-      '<dcp-inline-cleanup provenance="dsh-dcp" status="committed" block-ref="b1" />',
-    )
-
-    // Regression: the checkpoint is the authoritative copy of the full summary,
-    // while the DCP marker is only cleanup bookkeeping. This makes the
-    // distinction explicit after the model sees its rewritten message.
-    const checkpointMessages = derived.filter((message) =>
-      message.content.some(
-        (block) =>
-          block.type === 'text' && block.text.includes('<dcp-message-id>b1</dcp-message-id>'),
-      ),
-    )
-    const checkpointText = checkpointMessages
-      .map((message) =>
-        message.content
-          .filter((block) => block.type === 'text')
-          .map((block) => (block.type === 'text' ? block.text : ''))
-          .join('\n'),
-      )
-      .join('\n')
-    expect(checkpointText).toContain('consolidated summary')
-    expect(checkpointText).not.toContain('dcp-inline-cleanup')
-    expect(parsed.content[0]!.summary).not.toContain('consolidated summary')
+    // Cleanup is deferred to the next pre-step. The original inline summary
+    // and the compress call are still on surface immediately after commit.
+    expect(JSON.stringify(derived)).toContain('a very long inline summary')
+    expect(JSON.stringify(derived)).toContain('consolidated summary')
 
     // Replay state and token accounting.
     const state = reduceDcpState([...session.snapshotEvents()])
@@ -304,7 +306,19 @@ describe('compress range pipeline (M1)', () => {
       },
     )
     session.append('step/end', { turn: 4, step: 1 })
+    appendAssistantObservation(session, 4, 2)
     session.append('turn/end', { turn: 4, reason: { kind: 'completed' } })
+
+    // The next pre-step replaces the completed call/result pair with one
+    // expected cleanup record; the authoritative checkpoint is preserved.
+    expect(cleanupPendingCompressSteps(session, fixture.ctx.tokenMeter)).toEqual([])
+    const afterCleanup = session.deriveMessages()
+    const afterCleanupText = JSON.stringify(afterCleanup)
+    expect(afterCleanupText).toContain('<dcp-cleanup')
+    expect(afterCleanupText).toContain('consolidated summary of closed turns')
+    expect(afterCleanupText).not.toContain(
+      'a very long inline summary that duplicates the checkpoint',
+    )
   })
 
   it('rejects stale refs, reversed ranges, multiple ranges, and insufficient savings', () => {
@@ -416,33 +430,37 @@ describe('compress range pipeline (M1)', () => {
     expect(result.blocks.map((block) => block.blockRef)).toEqual(['b1', 'b2'])
     expect(result.failed).toEqual([])
 
-    const author = session
-      .deriveMessages()
-      .find((message) =>
-        message.content.some((block) => block.type === 'tool-call' && block.id === 'dcp-call'),
-      )
-    expect(author).toBeDefined()
-    const call = author!.content.find((block) => block.type === 'tool-call')
-    const parsed = JSON.parse((call as { arguments: string }).arguments) as {
-      content: Array<{ summary: string }>
-    }
-    // b1 belongs to the original second entry (the older range); b2 belongs
-    // to the original first entry (the newer range).
-    expect(parsed.content.map((entry) => entry.summary)).toEqual([
-      '<dcp-inline-cleanup provenance="dsh-dcp" status="committed" block-ref="b2" />',
-      '<dcp-inline-cleanup provenance="dsh-dcp" status="committed" block-ref="b1" />',
-    ])
-
-    const derivedText = session
-      .deriveMessages()
-      .flatMap((message) =>
-        message.content
-          .filter((block) => block.type === 'text')
-          .map((block) => (block.type === 'text' ? block.text : '')),
-      )
-      .join('\n')
-    expect(derivedText).toContain('later closed turns')
-    expect(derivedText).toContain('earlier closed turn')
+    // The original refs are normalized by commit; complete the step and run
+    // the deferred pair cleanup to prove the archive keeps both block refs.
+    const call = session
+      .snapshotEvents()
+      .findLast((event) => event.type === 'tool/call' && event.data.callId === 'dcp-call')
+    if (call?.type !== 'tool/call') throw new Error('compress call missing')
+    session.append(
+      'tool/result',
+      {
+        turn: 4,
+        step: 1,
+        message: createToolResultMessage({
+          callId: ToolCallId('dcp-call'),
+          content: [
+            { type: 'text', text: result.blocks.map((block) => block.blockRef).join(',') },
+          ],
+          isError: false,
+        }),
+      },
+      { surfaceOp: 'append', sourceEventSeqs: [call.seq] },
+    )
+    session.append('step/end', { turn: 4, step: 1 })
+    appendAssistantObservation(session, 4, 2)
+    session.append('turn/end', { turn: 4, reason: { kind: 'completed' } })
+    expect(cleanupPendingCompressSteps(session, fixture.ctx.tokenMeter)).toEqual([])
+    const cleaned = JSON.stringify(session.deriveMessages())
+    expect(cleaned).toContain('<dcp-cleanup')
+    expect(cleaned).toContain('b1')
+    expect(cleaned).toContain('b2')
+    expect(cleaned).toContain('m0002..m0004')
+    expect(cleaned).toContain('m0001..m0002')
   })
 
   it('keeps cleanup mapping when a later normalized range fails', () => {
@@ -495,116 +513,226 @@ describe('compress range pipeline (M1)', () => {
         error: 'simulated later commit failure',
       })
 
-      const author = session
-        .deriveMessages()
-        .find((message) =>
-          message.content.some(
-            (block) => block.type === 'tool-call' && block.id === 'dcp-call',
-          ),
-        )
-      expect(author).toBeDefined()
-      const call = author!.content.find((block) => block.type === 'tool-call')
-      const parsed = JSON.parse((call as { arguments: string }).arguments) as {
-        content: Array<{ summary: string }>
-      }
-      // The successful older range was normalized to b1, but that ref must
-      // return to original content[1], not the first (failed) entry.
-      expect(parsed.content.map((entry) => entry.summary)).toEqual([
-        '<dcp-inline-cleanup provenance="dsh-dcp" status="rejected" code="UNKNOWN" />',
-        '<dcp-inline-cleanup provenance="dsh-dcp" status="committed" block-ref="b1" />',
-      ])
+      expect(JSON.stringify(session.deriveMessages())).toContain(
+        'later range must remain inline after failure',
+      )
     } finally {
       appendSpy.mockRestore()
     }
+
+    const call = session
+      .snapshotEvents()
+      .findLast((event) => event.type === 'tool/call' && event.data.callId === 'dcp-call')
+    if (call?.type !== 'tool/call') throw new Error('compress call missing')
+    session.append(
+      'tool/result',
+      {
+        turn: 4,
+        step: 1,
+        message: createToolResultMessage({
+          callId: ToolCallId('dcp-call'),
+          content: [{ type: 'text', text: 'partial result' }],
+          isError: false,
+        }),
+      },
+      { surfaceOp: 'append', sourceEventSeqs: [call.seq] },
+    )
+    session.append('step/end', { turn: 4, step: 1 })
+    appendAssistantObservation(session, 4, 2)
+    session.append('turn/end', { turn: 4, reason: { kind: 'completed' } })
+    expect(cleanupPendingCompressSteps(session, fixture.ctx.tokenMeter)).toEqual([])
+    const cleaned = JSON.stringify(session.deriveMessages()).replaceAll('\\"', '"')
+    expect(cleaned).toContain('<dcp-cleanup')
+    expect(cleaned).toContain('status="partial"')
+    expect(cleaned).toContain('b1')
+    expect(cleaned).toContain('<dcp-rejected')
   })
 
-  it('keeps a committed checkpoint when inline cleanup append fails', () => {
+  it('keeps the committed checkpoint and defers cleanup until the next pre-step', () => {
     const session = buildMarkedSession(fixture.ctx)
     const config: DcpConfig = resolveConfig({
       compress: { retainRecentTurns: 1, minNetSavingsTokens: 1 },
     })
-    const append = session.append.bind(session)
-    const appendSpy = vi.spyOn(session, 'append').mockImplementation((type, data, ...opts) => {
-      // Let the shadow-price event land, then fail the cleanup replacement.
-      // This is the more dangerous append failure: the following tool result
-      // must expire the pending claim without changing the committed block.
-      if (type === 'assistant/message') throw new Error('simulated cleanup append failure')
-      return Reflect.apply(append, session, [type, data, ...opts]) as ReturnType<typeof append>
+
+    const result = executeCompressRange(
+      session,
+      fixture.ctx.tokenMeter,
+      config,
+      {
+        topic: 'closed turns',
+        content: [
+          {
+            startRef: 'm0001',
+            endRef: 'm0004',
+            summary: 'checkpoint must survive deferred cleanup',
+          },
+        ],
+      },
+      {
+        compactionId: CompactionId('dcp-cleanup-failure'),
+        compressCallId: 'dcp-call',
+        authorMessageId: 'author-cleanup-failure',
+      },
+    )
+
+    expect(result.status).toBe('success')
+    expect(result.blocks.map((block) => block.blockRef)).toEqual(['b1'])
+    expect(formatCompressResult(result)).toContain('cleanup=deferred')
+    expect(reduceDcpState(session.snapshotEvents()).activeBlockRefs).toEqual(['b1'])
+
+    const call = session
+      .snapshotEvents()
+      .findLast((event) => event.type === 'tool/call' && event.data.callId === 'dcp-call')
+    expect(call?.type).toBe('tool/call')
+    if (call?.type !== 'tool/call') throw new Error('compress call missing')
+    session.append(
+      'tool/result',
+      {
+        turn: 4,
+        step: 1,
+        message: createToolResultMessage({
+          callId: ToolCallId('dcp-call'),
+          content: [{ type: 'text', text: 'compressed with deferred cleanup' }],
+          isError: false,
+        }),
+      },
+      { surfaceOp: 'append', sourceEventSeqs: [call.seq] },
+    )
+    session.append('step/end', { turn: 4, step: 1 })
+    appendAssistantObservation(session, 4, 2)
+    session.append('turn/end', { turn: 4, reason: { kind: 'completed' } })
+    const postResultMeasure = fixture.ctx.tokenMeter.measure(session)
+    expect(
+      fixture.ctx.sessionProjections.snapshot(session).values.contextBreakdown?.messageTokens,
+    ).toBe(postResultMeasure.surfaceTokens)
+
+    expect(cleanupPendingCompressSteps(session, fixture.ctx.tokenMeter)).toEqual([])
+    expect(JSON.stringify(session.deriveMessages())).toContain('<dcp-cleanup')
+    const restored = Session.create(
+      SessionId(session.id),
+      structuredClone([...session.snapshotEvents()]),
+    )
+    expect(restored.deriveMessages()).toEqual(session.deriveMessages())
+  })
+
+  it('recovers from cleanup replacement append failure without double-counting an orphan prune', () => {
+    const session = buildMarkedSession(fixture.ctx, [
+      {
+        startRef: 'm0001',
+        endRef: 'm0004',
+        summary: 's'.repeat(6000),
+      },
+    ])
+    const config: DcpConfig = resolveConfig({
+      compress: { retainRecentTurns: 1, minNetSavingsTokens: 1 },
     })
+    const content = [
+      {
+        startRef: 'm0001',
+        endRef: 'm0004',
+        summary: 'A concise, factual summary of the three closed turns.',
+      },
+    ]
+    const result = executeCompressRange(
+      session,
+      fixture.ctx.tokenMeter,
+      config,
+      { topic: 'closed turns', content },
+      {
+        compactionId: CompactionId('cleanup-append-recovery'),
+        compressCallId: 'dcp-call',
+        authorMessageId: 'cleanup-append-recovery-author',
+      },
+    )
+    expect(result.blocks.map((block) => block.blockRef)).toEqual(['b1'])
+    const call = session
+      .snapshotEvents()
+      .findLast((event) => event.type === 'tool/call' && event.data.callId === 'dcp-call')
+    if (call?.type !== 'tool/call') throw new Error('compress call missing')
+    session.append(
+      'tool/result',
+      {
+        turn: 4,
+        step: 1,
+        message: createToolResultMessage({
+          callId: ToolCallId('dcp-call'),
+          content: [{ type: 'text', text: 'status=success; committed=b1' }],
+          isError: false,
+        }),
+      },
+      { surfaceOp: 'append', sourceEventSeqs: [call.seq] },
+    )
+    session.append('step/end', { turn: 4, step: 1 })
+    appendAssistantObservation(session, 4, 2)
+    session.append('turn/end', { turn: 4, reason: { kind: 'completed' } })
 
+    const pairSurfaceBefore = [...session.surface.nodes]
+    const surfaceTokensBefore = fixture.ctx.tokenMeter.measure(session).surfaceTokens
+    let failOnce = true
+    const append = session.append.bind(session)
+    const appendSpy = vi
+      .spyOn(session, 'append')
+      .mockImplementation((type, data, ...options) => {
+        if (
+          failOnce &&
+          type === 'user/message' &&
+          JSON.stringify(data).includes('<dcp-cleanup')
+        ) {
+          failOnce = false
+          throw new Error('simulated cleanup user-message append failure')
+        }
+        return Reflect.apply(append, session, [type, data, ...options]) as ReturnType<
+          typeof append
+        >
+      })
+    let firstWarnings: string[]
     try {
-      const result = executeCompressRange(
-        session,
-        fixture.ctx.tokenMeter,
-        config,
-        {
-          topic: 'closed turns',
-          content: [
-            {
-              startRef: 'm0001',
-              endRef: 'm0004',
-              summary: 'checkpoint must survive cleanup failure',
-            },
-          ],
-        },
-        {
-          compactionId: CompactionId('dcp-cleanup-failure'),
-          compressCallId: 'dcp-call',
-          authorMessageId: 'author-cleanup-failure',
-        },
-      )
-
-      expect(result.status).toBe('success')
-      expect(result.blocks.map((block) => block.blockRef)).toEqual(['b1'])
-      expect(result.cleanupWarning).toContain('simulated cleanup append failure')
-      const formatted = formatCompressResult(result)
-      expect(formatted).toContain('status=success')
-      expect(formatted).toContain('committed=b1')
-      expect(formatted).not.toContain('committed=none')
-      expect(reduceDcpState(session.snapshotEvents()).activeBlockRefs).toEqual(['b1'])
-      const measure = fixture.ctx.tokenMeter.measure(session)
-      expect(measure.surfaceTokens).toBe(
-        measure.nodes.reduce((sum: number, node) => sum + node.tokens, 0),
-      )
-      expect(
-        fixture.ctx.sessionProjections.snapshot(session).values.contextBreakdown?.messageTokens,
-      ).toBe(measure.surfaceTokens)
-
-      const call = session
-        .snapshotEvents()
-        .findLast((event) => event.type === 'tool/call' && event.data.callId === 'dcp-call')
-      expect(call?.type).toBe('tool/call')
-      if (call?.type !== 'tool/call') throw new Error('compress call missing')
-      // A subsequent durable result expires the pending prune claim if the
-      // replacement append failed. The checkpoint and token projection must
-      // remain valid for the next request despite the failed cleanup.
-      session.append(
-        'tool/result',
-        {
-          turn: 4,
-          step: 1,
-          message: createToolResultMessage({
-            callId: ToolCallId('dcp-call'),
-            content: [{ type: 'text', text: 'compressed with cleanup warning' }],
-            isError: false,
-          }),
-        },
-        { surfaceOp: 'append', sourceEventSeqs: [call.seq] },
-      )
-      session.append('step/end', { turn: 4, step: 1 })
-      session.append('turn/end', { turn: 4, reason: { kind: 'completed' } })
-      const postResultMeasure = fixture.ctx.tokenMeter.measure(session)
-      expect(
-        fixture.ctx.sessionProjections.snapshot(session).values.contextBreakdown?.messageTokens,
-      ).toBe(postResultMeasure.surfaceTokens)
-      const restored = Session.create(
-        SessionId(session.id),
-        structuredClone([...session.snapshotEvents()]),
-      )
-      expect(restored.deriveMessages()).toEqual(session.deriveMessages())
+      firstWarnings = cleanupPendingCompressSteps(session, fixture.ctx.tokenMeter)
     } finally {
       appendSpy.mockRestore()
     }
+
+    expect(firstWarnings!).toEqual(['simulated cleanup user-message append failure'])
+    expect([...session.surface.nodes]).toEqual(pairSurfaceBefore)
+    expect(fixture.ctx.tokenMeter.measure(session).surfaceTokens).toBe(surfaceTokensBefore)
+    expect(JSON.stringify(session.deriveMessages())).toContain('s'.repeat(100))
+    expect(reduceDcpState(session.snapshotEvents()).activeBlockRefs).toEqual(['b1'])
+    const orphanPrunes = session
+      .snapshotEvents()
+      .filter((event) => event.type === 'compaction/prune')
+    expect(orphanPrunes.length).toBeGreaterThanOrEqual(1)
+
+    expect(cleanupPendingCompressSteps(session, fixture.ctx.tokenMeter)).toEqual([])
+    const events = [...session.snapshotEvents()]
+    const cleanupText = JSON.stringify(session.deriveMessages())
+    expect(cleanupText).toContain('<dcp-cleanup')
+    expect(cleanupText).not.toContain('s'.repeat(100))
+    expect(reduceDcpState(events).activeBlockRefs).toEqual(['b1'])
+
+    const stats = computeSessionStats(events)
+    expect(stats.pruneReplacements).toBe(1)
+    expect(stats.pruneTokens).toBeGreaterThan(0)
+    expect(stats.historyReduction).toBe(
+      stats.shadowedTokens +
+        stats.pruneTokens -
+        stats.checkpointTokens +
+        stats.expansionTokens -
+        stats.markerTokens,
+    )
+
+    const restored = Session.create(SessionId(session.id), structuredClone(events))
+    expect(restored.deriveMessages()).toEqual(session.deriveMessages())
+    expect(reduceDcpState(restored.snapshotEvents()).activeBlockRefs).toEqual(['b1'])
+    expect(computeSessionStats([...restored.snapshotEvents()])).toEqual(stats)
+    const liveMeasure = fixture.ctx.tokenMeter.measure(session)
+    const coldMeasure = fixture.ctx.tokenMeter.measure(restored)
+    expect(coldMeasure.surfaceTokens).toBe(liveMeasure.surfaceTokens)
+    expect(
+      fixture.ctx.sessionProjections.snapshot(session).values.contextBreakdown?.messageTokens,
+    ).toBe(liveMeasure.surfaceTokens)
+    expect(
+      fixture.ctx.sessionProjections.snapshot(restored).values.contextBreakdown?.messageTokens,
+    ).toBe(coldMeasure.surfaceTokens)
   })
 
   it('returns busy before writing when a summary-only compaction bracket is open', () => {

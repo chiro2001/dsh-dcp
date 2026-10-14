@@ -1,0 +1,92 @@
+{
+  "version": 1,
+  "taskId": "single-ledger-repair-v1",
+  "execute": false,
+  "eventCount": 4096,
+  "prefixProvenance": "Explicitly synthetic investigation replay; no fabricated usage; public task data only",
+  "constructedPrefixHash": "aa67cb4ff3754717b40c4c81eeecbaef790b0351399d4c8c34229a7f07e2931b",
+  "inputHashes": {
+    "spec.md": "ba850479b3674f4dfb705c26f58dcb6e2a9ce2754b22457408983f93ba968d63",
+    "ledger.py": "126614dc5bab59fb2bbc29c155afe7fff68bacdb2046bfb45566441b6b5ebe4f",
+    "events.jsonl": "7c33b7e91cf237a8f306e72004b679ee69abe223f344e83c18ffdadfe91ba8e2",
+    "smoke_test.py": "1368f35500ff6cb4b787f293333965bb12396e76a48fa0e33f147c1674b9e907"
+  },
+  "model": "deepseek-flash",
+  "provider": "deepseek",
+  "thinking": "disabled",
+  "contextWindow": 1000000,
+  "dcpConfig": {
+    "enabled": true,
+    "debug": false,
+    "compress": {
+      "enabled": true,
+      "mode": "range",
+      "maxRangesPerCall": 3,
+      "minNetSavingsTokens": 256,
+      "retainRecentTurns": 2,
+      "protectUserMessages": true,
+      "protectTags": true,
+      "protectedTools": [
+        "subagent",
+        "skill",
+        "todo_write"
+      ],
+      "protectedSources": [
+        "subagent-report",
+        "subagent-settled"
+      ]
+    },
+    "references": {
+      "transport": "marker",
+      "granularity": "turn",
+      "maxAliasEntries": 32,
+      "excerptChars": 80
+    },
+    "nudge": {
+      "enabled": false,
+      "maxRatio": 0.8,
+      "minRatio": 0.6,
+      "frequencySteps": 8,
+      "iterationThreshold": 12
+    },
+    "manualMode": {
+      "default": true,
+      "automaticStrategies": false
+    },
+    "strategies": {
+      "deduplication": {
+        "enabled": true,
+        "protectedTools": []
+      },
+      "purgeErrors": {
+        "enabled": false,
+        "turns": 4,
+        "protectedTools": []
+      }
+    },
+    "protectedFilePatterns": [],
+    "subagents": {
+      "enableCompressionInChild": false,
+      "readChildSession": false
+    }
+  },
+  "branchOrder": [
+    "inactive",
+    "active"
+  ],
+  "budgets": {
+    "prepare": {
+      "requests": 3,
+      "seconds": 120,
+      "costUSD": 0.5
+    },
+    "continuation": {
+      "requests": 40,
+      "seconds": 600,
+      "costUSD": 1
+    }
+  },
+  "actualSpendAccounting": "common preparation once + both continuations; construction model cost unmeasured, not fabricated",
+  "inferenceScope": "Single specified compression action and real continuation; no population quality/automatic-trigger claim",
+  "pressureMinimumPromptTokens": 100000
+}

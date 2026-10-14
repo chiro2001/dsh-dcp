@@ -1,0 +1,41 @@
+raw=/home/chiro/projects/dsh-dynamic-context-pruning/dsh-dynamic-context-pruning/docs/evaluation-runs/2026-10-14T10-01-50-936Z/raw
+outcomes=36; planned=36; checked=36; completedPairs=18; fullyCostedPairs=17; unknownCostPairs=1
+completedPairRequests=1026; knownAttemptCostUSD=0.378951828; fullyCostedPairAllRequestCostUSD=0.295827822
+ledgerRequests={"gradedRequests":1026,"sourceRequests":1026,"sourceUnavailableRuns":0,"sourcePendingAttempts":0,"abortedFromPending":0,"gradedPendingAttempts":0,"unknownAttemptCosts":1,"unknownCostRuns":1}
+checked extract-elf-baseline-r1: attempts=27, completed=27, knownCostUSD=0.013981391999999999, usageComplete=true
+checked extract-elf-dcp-r1: attempts=21, completed=21, knownCostUSD=0.010987733999999997, usageComplete=true
+checked extract-elf-dcp-r2: attempts=28, completed=28, knownCostUSD=0.012340175999999998, usageComplete=true
+checked extract-elf-baseline-r2: attempts=19, completed=19, knownCostUSD=0.012759084, usageComplete=true
+checked multi-source-data-merger-dcp-r1: attempts=8, completed=8, knownCostUSD=0.004066542, usageComplete=true
+checked multi-source-data-merger-baseline-r1: attempts=5, completed=5, knownCostUSD=0.001774728, usageComplete=true
+checked multi-source-data-merger-baseline-r2: attempts=7, completed=7, knownCostUSD=0.0021749399999999998, usageComplete=true
+checked multi-source-data-merger-dcp-r2: attempts=6, completed=6, knownCostUSD=0.001637826, usageComplete=true
+checked regex-log-baseline-r1: attempts=6, completed=6, knownCostUSD=0.00303396, usageComplete=true
+checked regex-log-dcp-r1: attempts=17, completed=17, knownCostUSD=0.005851974, usageComplete=true
+checked regex-log-dcp-r2: attempts=30, completed=30, knownCostUSD=0.012739097999999999, usageComplete=true
+checked regex-log-baseline-r2: attempts=46, completed=46, knownCostUSD=0.014425499999999996, usageComplete=true
+checked break-filter-js-from-html-dcp-r1: attempts=32, completed=32, knownCostUSD=0.006546743999999999, usageComplete=true
+checked break-filter-js-from-html-baseline-r1: attempts=12, completed=12, knownCostUSD=0.002289618, usageComplete=true
+checked break-filter-js-from-html-baseline-r2: attempts=14, completed=14, knownCostUSD=0.00334575, usageComplete=true
+checked break-filter-js-from-html-dcp-r2: attempts=17, completed=17, knownCostUSD=0.003100452, usageComplete=true
+checked sqlite-db-truncate-baseline-r1: attempts=58, completed=58, knownCostUSD=0.020687435999999997, usageComplete=true
+checked sqlite-db-truncate-dcp-r1: attempts=80, completed=80, knownCostUSD=0.026706828, usageComplete=true
+checked sqlite-db-truncate-dcp-r2: attempts=39, completed=39, knownCostUSD=0.014719428, usageComplete=true
+checked sqlite-db-truncate-baseline-r2: attempts=30, completed=30, knownCostUSD=0.009833352, usageComplete=true
+checked cobol-modernization-dcp-r1: attempts=79, completed=79, knownCostUSD=0.04527783, usageComplete=false
+checked cobol-modernization-baseline-r1: attempts=79, completed=79, knownCostUSD=0.03784617600000001, usageComplete=true
+checked cobol-modernization-baseline-r2: attempts=53, completed=53, knownCostUSD=0.020821722000000008, usageComplete=true
+checked cobol-modernization-dcp-r2: attempts=80, completed=80, knownCostUSD=0.022856573999999984, usageComplete=true
+checked nginx-request-logging-baseline-r1: attempts=10, completed=10, knownCostUSD=0.0017418719999999998, usageComplete=true
+checked nginx-request-logging-dcp-r1: attempts=14, completed=14, knownCostUSD=0.0023938199999999996, usageComplete=true
+checked nginx-request-logging-dcp-r2: attempts=10, completed=10, knownCostUSD=0.0019400819999999999, usageComplete=true
+checked nginx-request-logging-baseline-r2: attempts=11, completed=11, knownCostUSD=0.00178914, usageComplete=true
+checked cancel-async-tasks-dcp-r1: attempts=57, completed=57, knownCostUSD=0.021459107999999994, usageComplete=true
+checked cancel-async-tasks-baseline-r1: attempts=40, completed=40, knownCostUSD=0.015661746, usageComplete=true
+checked cancel-async-tasks-baseline-r2: attempts=8, completed=8, knownCostUSD=0.0016380419999999997, usageComplete=true
+checked cancel-async-tasks-dcp-r2: attempts=36, completed=36, knownCostUSD=0.013668185999999995, usageComplete=true
+checked fix-git-baseline-r1: attempts=11, completed=11, knownCostUSD=0.0023424839999999997, usageComplete=true
+checked fix-git-dcp-r1: attempts=10, completed=10, knownCostUSD=0.002074272, usageComplete=true
+checked fix-git-dcp-r2: attempts=13, completed=13, knownCostUSD=0.00201816, usageComplete=true
+checked fix-git-baseline-r2: attempts=13, completed=13, knownCostUSD=0.002420052, usageComplete=true
+PASS: no reconciliation mismatches in currently archived runs

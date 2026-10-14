@@ -43,20 +43,30 @@ pnpm peers check        # dsh/Cordis/Schemastery peer graph
 bash scripts/check-all.sh            # 快速门禁
 bash scripts/check-all.sh --e2e      # 全量门禁（含 e2e）
 bash scripts/check-all.sh --coverage # 附加覆盖率门槛
-pnpm run e2e:real                   # 真实 Agent + 真实 LLM（opencode go / deepseek-v4-flash）
+pnpm run e2e:real                   # 真实 Agent + 官方 DeepSeek API / deepseek-flash
 ```
 
 门禁顺序：typecheck → lint → test → build → check:package → peers check →
 perf smoke →（可选）coverage →（可选）e2e。任一失败即停。
 
 - 已发布兼容基线：`v0.1.0-rc.6-1` 精确支持 dsh `0.1.1-rc.2`。
-- 下一发布目标：`v0.1.0-rc.8`，在 rc.7 的 dsh `0.1.2-rc.1` 兼容迁移上增加
-  压缩提示词与失败恢复优化；尚未创建 tag 或发布，发布前不得宣称 rc.8 已发布。
-- `pnpm peers check` 必须验证 dsh peer/dev 图、Cordis `4.0.2` 与 Schemastery
-  `3.18.2`；跨 breaking rc 不添加运行时兼容 shim。
+- 当前工作版本：`v0.1.0-rc.9`，精确支持 dsh `0.2.0-rc.2`；包含上游迁移、
+  低开销提示与安全的延迟 cleanup，尚未创建 tag 或发布。
+- `pnpm peers check` 必须验证 dsh peer/dev 图、Cordis `4.0.4` 与 Schemastery
+  `3.18.4`；跨 breaking rc 不添加运行时兼容 shim。
+- 上游检查：`pnpm check:upstream`；CI 每周检查 npm 稳定渠道，发现新版本后必须
+  重新跑宿主契约和全量门禁，再更新精确依赖，不跟随 alpha 自动声明兼容。
 
-- `e2e:real` 在隔离临时 DSH_HOME 中运行真实 dsh agent-loop；key 取自
-  `~/litellm/.env`（`OPENCODE_GO_API_KEY`），不打印、不落盘；无 key 自动跳过。
+- `e2e:real` 在隔离临时 DSH_HOME 中运行真实 dsh agent-loop；Node 从
+  `~/litellm/.env` 只在内存加载 key，外部 env 优先，不打印、不落盘。默认使用
+  官方 `https://api.deepseek.com/v1`、`DEEPSEEK_API_KEY`、`deepseek-flash`、
+  provider `deepseek`、thinking disabled。非官方 origin（含非默认端口）必须
+  显式给 `DSH_DCP_LLM_API_KEY_ENV`，不自动回退其它 key。`kv-ab` 共用此配置。
+  普通 `pnpm test` 必须保持 `DSH_DCP_REAL_MODEL` 关闭；无默认 key 跳过，显式 key 缺失报错。
+- `pnpm probes:real` 复用有 invariant 的真实 suite，默认重复 3 次，按真实断言
+  统计且失败即停；报告用不可覆盖时间戳路径。不得以 XML 兜底或给模型答案伪造通过。
+- cleanup 必须等模型真实消费一次原生 tool result（后续闭合 assistant/message），
+  才在 turn-stopping 或更后 pre-step 归档；不得先删掉模型尚未看到的执行凭据。
 - 本地 `/tmp` 受限（EDQUOT/-122）时，测试使用仓库内 `.tmp-vitest/` 作为
   TMPDIR（已 gitignore）。
 

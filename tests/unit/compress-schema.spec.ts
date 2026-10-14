@@ -113,6 +113,16 @@ describe('compress schema validation (M5 coverage)', () => {
     ).toContain('summary must contain technical content, not a stored pointer')
   })
 
+  it.each([
+    '<dcp-cleanup provenance="dsh-dcp" expected="true" status="success">record</dcp-cleanup>',
+    '<dcp-archived in b1; submitted_chars=42; stored_chars=42; verbatim=true>',
+    '<dcp-rejected; code=INVALID_ARGS; body_removed=true>',
+  ])('rejects a summary that starts with the %s cleanup pointer', (summary) => {
+    expect(
+      messages({ topic: 't', content: [{ startRef: 'm1', endRef: 'm2', summary }] }),
+    ).toContain('summary must contain technical content, not a cleanup marker')
+  })
+
   it('allows technical prose that mentions reserved markers in the middle', () => {
     const summary =
       'The protocol records <dcp-inline-cleanup status="committed" block-ref="b1" /> ' +

@@ -1,0 +1,130 @@
+{
+    "id": "f78d5a3e-a3c9-486a-a3ea-87ee019ad139",
+    "task_name": "terminal-bench/fix-git",
+    "trial_name": "fix-git__g8QvwEU",
+    "trial_uri": "file:///home/chiro/projects/dsh-dynamic-context-pruning/dsh-dynamic-context-pruning/.tmp-vitest/evaluation-setup/jobs/dsh-pilot-2026-10-14T10-01-50-936Z-fix-git-baseline-r2/fix-git__g8QvwEU",
+    "task_id": {
+        "path": "/home/chiro/projects/dsh-dynamic-context-pruning/dsh-dynamic-context-pruning/.tmp-vitest/evaluation-setup/frozen-task-inputs/2026-10-14T10-01-50-936Z/fix-git"
+    },
+    "source": null,
+    "task_checksum": "6677943326e053b80b0e63ecc587e4a9d1d850f9e90e50441dfde9f05c250291",
+    "config": {
+        "task": {
+            "path": "/home/chiro/projects/dsh-dynamic-context-pruning/dsh-dynamic-context-pruning/.tmp-vitest/evaluation-setup/frozen-task-inputs/2026-10-14T10-01-50-936Z/fix-git",
+            "git_url": null,
+            "git_commit_id": null,
+            "name": null,
+            "ref": null,
+            "overwrite": false,
+            "download_dir": null,
+            "source": null
+        },
+        "trial_name": "fix-git__g8QvwEU",
+        "trials_dir": "/home/chiro/projects/dsh-dynamic-context-pruning/dsh-dynamic-context-pruning/.tmp-vitest/evaluation-setup/jobs/dsh-pilot-2026-10-14T10-01-50-936Z-fix-git-baseline-r2",
+        "install_only": false,
+        "timeout_multiplier": 1.0,
+        "agent_timeout_multiplier": null,
+        "verifier_timeout_multiplier": null,
+        "agent_setup_timeout_multiplier": null,
+        "environment_build_timeout_multiplier": null,
+        "agent": {
+            "name": "scripts.evaluation.harbor_agent:DSHAgent",
+            "import_path": null,
+            "model_name": "deepseek/deepseek-flash",
+            "n_concurrent": null,
+            "concurrency_group": null,
+            "skills": [],
+            "override_timeout_sec": null,
+            "override_setup_timeout_sec": null,
+            "max_timeout_sec": null,
+            "resume_trajectory": false,
+            "load_trajectory": null,
+            "extra_allowed_hosts": [],
+            "kwargs": {
+                "arm": "baseline",
+                "task_id": "fix-git",
+                "replicate": 2,
+                "max_requests": 80,
+                "max_seconds": 300,
+                "max_cost_usd": 1
+            },
+            "mcp_servers": []
+        },
+        "user_agent": null,
+        "environment": {
+            "type": "docker",
+            "import_path": null,
+            "force_build": false,
+            "delete": true,
+            "stream": false,
+            "cpu_enforcement_policy": "auto",
+            "memory_enforcement_policy": "auto",
+            "override_cpus": null,
+            "override_memory_mb": null,
+            "override_storage_mb": null,
+            "override_gpus": null,
+            "override_tpu": null,
+            "mounts": null,
+            "extra_docker_compose": [],
+            "kwargs": {},
+            "extra_allowed_hosts": []
+        },
+        "verifier": {
+            "override_timeout_sec": null,
+            "max_timeout_sec": null,
+            "disable": false
+        },
+        "artifacts": [],
+        "extra_instruction_paths": [],
+        "extra_instructions": [],
+        "job_id": "66c862fe-49b1-42f1-aff3-8adc7e00d6b4",
+        "source_trial": null
+    },
+    "agent_info": {
+        "name": "dsh-dcp-evaluation",
+        "version": "0.2.0-rc.2/dcp-0.1.0-rc.9",
+        "model_info": {
+            "name": "deepseek-flash",
+            "provider": "deepseek"
+        }
+    },
+    "agent_result": {
+        "n_input_tokens": 57062,
+        "n_cache_tokens": 51584,
+        "n_output_tokens": 2406,
+        "cost_usd": 0.002420052,
+        "model_usage": null,
+        "rollout_details": null,
+        "metadata": {
+            "execution_status": "completed",
+            "verification": "pending",
+            "ledger_path": "/home/chiro/projects/dsh-dynamic-context-pruning/dsh-dynamic-context-pruning/.tmp-vitest/evaluation-setup/jobs/dsh-pilot-2026-10-14T10-01-50-936Z-fix-git-baseline-r2/fix-git__g8QvwEU/agent/ledger.json"
+        }
+    },
+    "verifier_result": {
+        "rewards": {
+            "reward": 1.0
+        }
+    },
+    "verifier_environment_mode": "shared",
+    "exception_info": null,
+    "started_at": "2026-10-14T11:17:46.919183Z",
+    "finished_at": "2026-10-14T11:18:29.894997Z",
+    "environment_setup": {
+        "started_at": "2026-10-14T11:17:46.942854Z",
+        "finished_at": "2026-10-14T11:17:47.951429Z"
+    },
+    "agent_setup": {
+        "started_at": "2026-10-14T11:17:47.951484Z",
+        "finished_at": "2026-10-14T11:17:48.024657Z"
+    },
+    "agent_execution": {
+        "started_at": "2026-10-14T11:17:48.024792Z",
+        "finished_at": "2026-10-14T11:18:08.522461Z"
+    },
+    "verifier": {
+        "started_at": "2026-10-14T11:18:08.769635Z",
+        "finished_at": "2026-10-14T11:18:19.220672Z"
+    },
+    "step_results": null
+}

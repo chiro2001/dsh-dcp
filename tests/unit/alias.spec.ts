@@ -14,7 +14,7 @@ describe('native alias collection (M6.1)', () => {
       'user/message',
       createUserMessage({
         content: [{ type: 'text', text: '<dcp-boundary ref="m0001" turn="1" step="1" />' }],
-        source: { kind: 'plugin', plugin: 'dsh-dcp' },
+        source: { kind: 'dsh-dcp' },
       }),
       { surfaceOp: 'append' },
     )
@@ -36,7 +36,7 @@ describe('native alias collection (M6.1)', () => {
         source: compactCheckpointSource(nativeId),
       }),
       {
-        surfaceOp: { op: 'replace', start: marker.seq, end: marker.seq },
+        surfaceOp: { op: 'replace', startSeq: marker.seq, endSeq: marker.seq },
         sourceEventSeqs: [marker.seq],
       },
     )
@@ -57,7 +57,7 @@ describe('native alias collection (M6.1)', () => {
       'user/message',
       createUserMessage({
         content: [{ type: 'text', text: '<dcp-boundary ref="m0001" turn="1" step="1" />' }],
-        source: { kind: 'plugin', plugin: 'dsh-dcp' },
+        source: { kind: 'dsh-dcp' },
       }),
       { surfaceOp: 'append' },
     )
@@ -80,7 +80,7 @@ describe('native alias collection (M6.1)', () => {
         source: compactCheckpointSource(firstNativeId),
       }),
       {
-        surfaceOp: { op: 'replace', start: marker.seq, end: marker.seq },
+        surfaceOp: { op: 'replace', startSeq: marker.seq, endSeq: marker.seq },
         sourceEventSeqs: [marker.seq],
       },
     )
@@ -94,7 +94,7 @@ describe('native alias collection (M6.1)', () => {
             text: `<dcp-boundary ref="m0002" turn="2" step="1" />\nalias m0001=s${nativeN.seq}`,
           },
         ],
-        source: { kind: 'plugin', plugin: 'dsh-dcp' },
+        source: { kind: 'dsh-dcp' },
       }),
       { surfaceOp: 'append' },
     )
@@ -117,7 +117,7 @@ describe('native alias collection (M6.1)', () => {
         source: compactCheckpointSource(secondNativeId),
       }),
       {
-        surfaceOp: { op: 'replace', start: nativeN.seq, end: nativeN.seq },
+        surfaceOp: { op: 'replace', startSeq: nativeN.seq, endSeq: nativeN.seq },
         sourceEventSeqs: [nativeN.seq],
       },
     )
@@ -137,7 +137,7 @@ describe('native alias collection (M6.1)', () => {
             text: `<dcp-boundary ref="m0003" turn="3" step="1" />\nalias m0001=s${nativeN.seq}\nalias m0001=s${nativeM.seq}`,
           },
         ],
-        source: { kind: 'plugin', plugin: 'dsh-dcp' },
+        source: { kind: 'dsh-dcp' },
       }),
       { surfaceOp: 'append' },
     )

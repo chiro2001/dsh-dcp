@@ -2,19 +2,19 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { Context, type Plugin } from '@deepseek-ai/cordis'
 import AgentLoop from '@deepseek-ai/dsh-agent-loop'
 import { mountAgentLoopTestDependencies } from '@deepseek-ai/dsh-agent-loop-testkit'
-import SessionProjectionRegistry from '@deepseek-ai/dsh-session-projection'
 import TokenMeter from '@deepseek-ai/dsh-token-meter'
 import CommandRuntime from '@deepseek-ai/dsh-commands'
 import InvariantRegistry from '@deepseek-ai/dsh-invariants'
 import * as sessionInvariant from '@deepseek-ai/dsh-session/invariant'
 import * as agentLoopInvariant from '@deepseek-ai/dsh-agent-loop/invariant'
 import * as compactionInvariant from '@deepseek-ai/dsh-compaction/invariant'
-import { Session, SessionId } from '@deepseek-ai/dsh-session'
+import { Session, SessionId, type ToolResultMessage } from '@deepseek-ai/dsh-session'
 import { CompactionId, compactCheckpointSource } from '@deepseek-ai/dsh-compaction'
 import { createUserMessage } from '@deepseek-ai/dsh-llm/message'
 import * as dcpPlugin from '../../src/index.js'
 import { resolveConfig } from '../../src/config.js'
 import { reduceDcpState } from '../../src/protocol/replay.js'
+import { cleanupPendingCompressSteps } from '../../src/compress/step-cleanup.js'
 import { controlMessage } from '../../src/strategies/control.js'
 import { ScriptedAdapter } from './agentloop-scripted.js'
 
@@ -25,9 +25,8 @@ async function mountHarness(options: { nativeCoexist?: boolean } = {}): Promise<
   const next = new Context()
   await next.plugin(InvariantRegistry)
   await mountAgentLoopTestDependencies(next, {
-    systemPrompt: { persona: 'You are a deterministic DCP test agent.' },
+    systemPrompt: { personaPrefix: 'You are a deterministic DCP test agent.' },
   })
-  await next.plugin(SessionProjectionRegistry)
   await next.plugin(sessionInvariant as unknown as Plugin)
   await next.plugin(agentLoopInvariant as unknown as Plugin)
   await next.plugin(compactionInvariant as unknown as Plugin)
@@ -57,7 +56,15 @@ async function mountHarness(options: { nativeCoexist?: boolean } = {}): Promise<
       if (!injected && turn === 2) {
         injected = true
         const surface = [...agent.session.surface.nodes]
-        const target = surface[0]
+        const target = surface.find((seq) => {
+          const event = agent.session.eventAt(seq)
+          return (
+            event?.type === 'user/message' &&
+            event.data.content.some(
+              (block) => block.type === 'text' && block.text.includes('ref="m0001"'),
+            )
+          )
+        })
         if (target !== undefined) {
           const nativeId = CompactionId('native-coexist')
           agent.session.append('compaction/start', { compactionId: nativeId, turn })
@@ -77,7 +84,7 @@ async function mountHarness(options: { nativeCoexist?: boolean } = {}): Promise<
               source: compactCheckpointSource(nativeId),
             }),
             {
-              surfaceOp: { op: 'replace', start: target, end: target },
+              surfaceOp: { op: 'replace', startSeq: target, endSeq: target },
               sourceEventSeqs: [target],
             },
           )
@@ -109,6 +116,13 @@ function waitForIdle(agent: { id: string }): Promise<void> {
   })
 }
 
+function toolResultText(message: ToolResultMessage): string {
+  return message.content
+    .filter((block) => block.type === 'text')
+    .map((block) => (block.type === 'text' ? block.text : ''))
+    .join('\n')
+}
+
 describe('deterministic AgentLoop matrix (M6.0)', () => {
   beforeEach(async () => {
     ctx = await mountHarness()
@@ -124,7 +138,7 @@ describe('deterministic AgentLoop matrix (M6.0)', () => {
 
   it('drives compress through the real agent loop with a scripted adapter', async () => {
     if (!ctx || !adapter) throw new Error('harness not mounted')
-    const agent = ctx.agentLoop.create(SessionId('deterministic-dcp'), {
+    const agent = await ctx.agentLoop.create(SessionId('deterministic-dcp'), {
       provider: 'scripted',
       model: 'scripted',
     })
@@ -176,7 +190,7 @@ describe('deterministic AgentLoop matrix (M6.0)', () => {
 
   it('consumes control turns without any LLM dispatch', async () => {
     if (!ctx || !adapter) throw new Error('harness not mounted')
-    const agent = ctx.agentLoop.create(SessionId('control-sweep'), {
+    const agent = await ctx.agentLoop.create(SessionId('control-sweep'), {
       provider: 'scripted',
       model: 'scripted',
     })
@@ -198,7 +212,7 @@ describe('deterministic AgentLoop matrix (M6.0)', () => {
 
   it('commands fail closed on illegal arguments and register dcp-compress', async () => {
     if (!ctx || !adapter) throw new Error('harness not mounted')
-    const agent = ctx.agentLoop.create(SessionId('command-matrix'), {
+    const agent = await ctx.agentLoop.create(SessionId('command-matrix'), {
       provider: 'scripted',
       model: 'scripted',
     })
@@ -235,7 +249,7 @@ describe('deterministic AgentLoop matrix (M6.0)', () => {
     expect(manual?.result.text).toContain('OFF')
   })
 
-  it('denies compress via guard without any DCP mutation', async () => {
+  it('denies compress through the guard and prunes the rejected long payload', async () => {
     if (!ctx || !adapter) throw new Error('harness not mounted')
     let deny = true
     ctx.tools.guard((execution) =>
@@ -250,14 +264,14 @@ describe('deterministic AgentLoop matrix (M6.0)', () => {
             name: 'compress',
             arguments: JSON.stringify({
               topic: 't',
-              content: [{ startRef: 'm0001', endRef: 'm0002', summary: 's' }],
+              content: [{ startRef: 'm0001', endRef: 'm0002', summary: 's'.repeat(1000) }],
             }),
           },
         ],
       },
       { text: 'after denial' },
     ]
-    const agent = ctx.agentLoop.create(SessionId('deny-compress'), {
+    const agent = await ctx.agentLoop.create(SessionId('deny-compress'), {
       provider: 'scripted',
       model: 'scripted',
     })
@@ -288,30 +302,17 @@ describe('deterministic AgentLoop matrix (M6.0)', () => {
     )
     expect(compressResult?.type).toBe('tool/result')
     if (compressResult?.type !== 'tool/result') throw new Error('compress result missing')
-    expect(compressResult.data.message.content[0]?.isError).toBe(true)
-    const deniedResultText = compressResult.data.message.content[0]?.content
-      .filter((block) => block.type === 'text')
-      .map((block) => (block.type === 'text' ? block.text : ''))
-      .join('\n')
+    expect(compressResult.data.message.isError).toBe(true)
+    const deniedResultText = toolResultText(compressResult.data.message)
     expect(deniedResultText).toContain('status=rejected')
     expect(deniedResultText).toContain('[DENIED]')
     expect(deniedResultText).toContain('committed=none')
     expect(reduceDcpState(events).activeBlockRefs).toEqual([])
-    const deniedAuthor = agent.session
-      .deriveMessages()
-      .find((message) =>
-        message.content.some((block) => block.type === 'tool-call' && block.id === 'dcp-call'),
-      )
-    const deniedCall = deniedAuthor?.content.find(
-      (block) => block.type === 'tool-call' && block.id === 'dcp-call',
-    )
-    expect(deniedCall?.type).toBe('tool-call')
-    expect(
-      JSON.parse((deniedCall as { arguments: string }).arguments).content[0].summary,
-    ).toContain('<dcp-inline-cleanup provenance="dsh-dcp" status="rejected"')
-    expect(
-      JSON.parse((deniedCall as { arguments: string }).arguments).content[0].summary,
-    ).toContain('code="DENIED"')
+    expect(cleanupPendingCompressSteps(agent.session, ctx.tokenMeter)).toEqual([])
+    const deniedText = JSON.stringify(agent.session.deriveMessages())
+    expect(deniedText).not.toContain('"id":"dcp-call"')
+    expect(deniedText).toContain('<dcp-cleanup')
+    expect(deniedText).toContain('DENIED')
     deny = false
   })
 
@@ -341,7 +342,7 @@ describe('deterministic AgentLoop matrix (M6.0)', () => {
       },
       { text: 'after invalid compress' },
     ]
-    const agent = ctx.agentLoop.create(SessionId('invalid-compress-schema'), {
+    const agent = await ctx.agentLoop.create(SessionId('invalid-compress-schema'), {
       provider: 'scripted',
       model: 'scripted',
     })
@@ -370,25 +371,11 @@ describe('deterministic AgentLoop matrix (M6.0)', () => {
           ),
       ),
     ).toBe(true)
-    const author = agent.session
-      .deriveMessages()
-      .find((message) =>
-        message.content.some(
-          (block) => block.type === 'tool-call' && block.id === 'invalid-call',
-        ),
-      )
-    const call = author?.content.find(
-      (block) => block.type === 'tool-call' && block.id === 'invalid-call',
-    )
-    expect(call?.type).toBe('tool-call')
-    const cleanedSummary = JSON.parse((call as { arguments: string }).arguments).content[0]
-      .summary
-    expect(cleanedSummary).toContain(
-      '<dcp-inline-cleanup provenance="dsh-dcp" status="rejected"',
-    )
-    expect(cleanedSummary).toContain('code="INVALID_ARGS"')
-    expect(cleanedSummary).not.toContain(longSummary)
-    expect(JSON.stringify(agent.session.deriveMessages())).not.toContain(longSummary)
+    expect(cleanupPendingCompressSteps(agent.session, ctx.tokenMeter)).toEqual([])
+    const derivedText = JSON.stringify(agent.session.deriveMessages())
+    expect(derivedText).toContain('<dcp-cleanup')
+    expect(derivedText).toContain('INVALID_ARGS')
+    expect(derivedText).not.toContain(longSummary)
     const invalidResult = events.find(
       (event) =>
         event.type === 'tool/result' &&
@@ -396,10 +383,8 @@ describe('deterministic AgentLoop matrix (M6.0)', () => {
     )
     expect(invalidResult?.type).toBe('tool/result')
     if (invalidResult?.type !== 'tool/result') throw new Error('invalid result missing')
-    const invalidResultText = invalidResult.data.message.content[0]?.content
-      .filter((block) => block.type === 'text')
-      .map((block) => (block.type === 'text' ? block.text : ''))
-      .join('\n')
+    expect(invalidResult.data.message.isError).toBe(true)
+    const invalidResultText = toolResultText(invalidResult.data.message)
     expect(invalidResultText).toContain('status=rejected')
     expect(invalidResultText).toContain('[INVALID_ARGS]')
     expect(invalidResultText).not.toContain(longSummary)
@@ -416,7 +401,7 @@ describe('deterministic AgentLoop matrix (M6.0)', () => {
       }
       return nextListener()
     })
-    const agent = ctx.agentLoop.create(SessionId('compress-post-policy-block'), {
+    const agent = await ctx.agentLoop.create(SessionId('compress-post-policy-block'), {
       provider: 'scripted',
       model: 'scripted',
     })
@@ -442,12 +427,8 @@ describe('deterministic AgentLoop matrix (M6.0)', () => {
     )
     expect(resultEvent?.type).toBe('tool/result')
     if (resultEvent?.type !== 'tool/result') throw new Error('compress result missing')
-    expect(resultEvent.data.message.content[0]?.isError).toBe(true)
-    const resultText = resultEvent.data.message.content
-      .flatMap((block) => (block.type === 'tool-result' ? block.content : []))
-      .filter((block) => block.type === 'text')
-      .map((block) => (block.type === 'text' ? block.text : ''))
-      .join('\n')
+    expect(resultEvent.data.message.isError).toBe(true)
+    const resultText = toolResultText(resultEvent.data.message)
     expect(resultText).toContain('status=success')
     expect(resultText).toContain('committed=b1')
     expect(resultText).toContain('correction=STOP')
@@ -466,7 +447,7 @@ describe('deterministic AgentLoop matrix (M6.0)', () => {
       }
       return nextListener()
     })
-    const agent = ctx.agentLoop.create(SessionId('compress-cleanup-then-policy-block'), {
+    const agent = await ctx.agentLoop.create(SessionId('compress-cleanup-then-policy-block'), {
       provider: 'scripted',
       model: 'scripted',
     })
@@ -510,28 +491,16 @@ describe('deterministic AgentLoop matrix (M6.0)', () => {
     )
     expect(resultEvent?.type).toBe('tool/result')
     if (resultEvent?.type !== 'tool/result') throw new Error('compress result missing')
-    expect(resultEvent.data.message.content[0]?.isError).toBe(true)
-    const resultText = resultEvent.data.message.content
-      .flatMap((block) => (block.type === 'tool-result' ? block.content : []))
-      .filter((block) => block.type === 'text')
-      .map((block) => (block.type === 'text' ? block.text : ''))
-      .join('\n')
+    expect(resultEvent.data.message.isError).toBe(true)
+    const resultText = toolResultText(resultEvent.data.message)
     expect(resultText).toContain('status=success')
     expect(resultText).toContain('committed=b1')
     expect(resultText).toContain('correction=STOP')
 
-    const author = agent.session
-      .deriveMessages()
-      .find((message) =>
-        message.content.some((block) => block.type === 'tool-call' && block.id === 'dcp-call'),
-      )
-    const call = author?.content.find(
-      (block) => block.type === 'tool-call' && block.id === 'dcp-call',
-    )
-    expect(call?.type).toBe('tool-call')
-    expect(JSON.parse((call as { arguments: string }).arguments).content[0].summary).toBe(
-      '<dcp-inline-cleanup provenance="dsh-dcp" status="committed" block-ref="b1" />',
-    )
+    expect(cleanupPendingCompressSteps(agent.session, ctx.tokenMeter)).toEqual([])
+    const cleanupText = JSON.stringify(agent.session.deriveMessages())
+    expect(cleanupText).toContain('<dcp-cleanup')
+    expect(cleanupText).toContain('b1')
     expect(reduceDcpState(events).activeBlockRefs).toEqual(['b1'])
   })
 
@@ -543,7 +512,7 @@ describe('deterministic AgentLoop matrix (M6.0)', () => {
       }
       return nextListener()
     })
-    const agent = ctx.agentLoop.create(SessionId('compress-post-policy-throw'), {
+    const agent = await ctx.agentLoop.create(SessionId('compress-post-policy-throw'), {
       provider: 'scripted',
       model: 'scripted',
     })
@@ -569,12 +538,8 @@ describe('deterministic AgentLoop matrix (M6.0)', () => {
     )
     expect(resultEvent?.type).toBe('tool/result')
     if (resultEvent?.type !== 'tool/result') throw new Error('compress result missing')
-    expect(resultEvent.data.message.content[0]?.isError).toBe(true)
-    const resultText = resultEvent.data.message.content
-      .flatMap((block) => (block.type === 'tool-result' ? block.content : []))
-      .filter((block) => block.type === 'text')
-      .map((block) => (block.type === 'text' ? block.text : ''))
-      .join('\n')
+    expect(resultEvent.data.message.isError).toBe(true)
+    const resultText = toolResultText(resultEvent.data.message)
     expect(resultText).toContain('status=success')
     expect(resultText).toContain('committed=b1')
     expect(resultText).toContain('correction=STOP')
@@ -584,7 +549,7 @@ describe('deterministic AgentLoop matrix (M6.0)', () => {
   it('aborts an in-flight turn without leaving DCP state', async () => {
     if (!ctx || !adapter) throw new Error('harness not mounted')
     adapter.script = [{ text: 'first' }, { hang: true }]
-    const agent = ctx.agentLoop.create(SessionId('abort-turn'), {
+    const agent = await ctx.agentLoop.create(SessionId('abort-turn'), {
       provider: 'scripted',
       model: 'scripted',
     })
@@ -641,7 +606,7 @@ describe('deterministic AgentLoop matrix (M6.0)', () => {
       },
       { text: 'done' },
     ]
-    const agent = ctx.agentLoop.create(SessionId('multi-compress'), {
+    const agent = await ctx.agentLoop.create(SessionId('multi-compress'), {
       provider: 'scripted',
       model: 'scripted',
     })
@@ -691,7 +656,7 @@ describe('deterministic AgentLoop matrix (M6.0)', () => {
       },
       { text: 'done' },
     ]
-    const agent = ctx.agentLoop.create(SessionId('native-coexist'), {
+    const agent = await ctx.agentLoop.create(SessionId('native-coexist'), {
       provider: 'scripted',
       model: 'scripted',
     })

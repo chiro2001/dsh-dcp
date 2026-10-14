@@ -2,4 +2,10 @@ lib/
 node_modules/
 coverage/
 pnpm-lock.yaml
-
+# Generated validation evidence is preserved exactly as written by the runner.
+docs/real-model-validation/
+# Frozen machine-readable benchmark manifests and raw execution evidence.
+docs/evaluation-datasets/*.json
+docs/evaluation-runs/**/raw/
+# Byte-identical public task inputs; formatting would change the frozen fixture.
+docs/evaluation-runs/**/inputs/

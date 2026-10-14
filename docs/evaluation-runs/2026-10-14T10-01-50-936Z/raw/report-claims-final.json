@@ -1,0 +1,95 @@
+{
+  "checks": {
+    "cohortMatchesProtocol": true,
+    "officialRewardsMatchDiagnostics": true,
+    "strictSuccessMatchesSummary": true,
+    "officialAndStrictCountsDifferForDcp": true,
+    "dcpKnownCostAndSuccessSource": true,
+    "baselineKSource": true,
+    "candidateTotalCostUnavailable": true,
+    "savingsAndIntervalUnavailable": true,
+    "computedCandidateKLowerBound": true,
+    "computedSavingsUpperBound": true,
+    "reportStatesBoundNotEstimateOrCI": true,
+    "reportContainsKFormula": true,
+    "reportContainsConservativeSBound": true,
+    "reportContainsComputedSUpperBound": true,
+    "evaluationDocsExplainBound": true,
+    "officialVsStrictExplained": true,
+    "overlapExplanationPresent": true,
+    "invalidResponseNoCausalClaim": true,
+    "failureCountsMatchDiagnostics": true,
+    "gateSummaryClaimsHaveLogEvidence": true,
+    "preflightTotalMatchesReport": true
+  },
+  "allChecksPass": true,
+  "computed": {
+    "baselineK": 0.014047249500000003,
+    "candidateKLowerBound": 0.016183448769230765,
+    "savingsUpperBoundPercent": -15.207242309113699,
+    "officialRewardOne": {
+      "baseline": 12,
+      "dcp": 15
+    },
+    "strictSuccess": {
+      "baseline": 12,
+      "dcp": 13
+    },
+    "reasonCounts": {
+      "budget": {
+        "baseline": {
+          "deadline": 1
+        },
+        "dcp": {
+          "request_count": 2,
+          "deadline": 2
+        }
+      },
+      "maxTokens": {
+        "baseline": 2,
+        "dcp": 1
+      },
+      "normalRewardZeroRuns": {
+        "baseline": 3,
+        "dcp": 0
+      },
+      "verifierExceptionTypes": {
+        "baseline": {
+          "ConnectionResetError": 1
+        },
+        "dcp": {
+          "ConnectionResetError": 1
+        }
+      },
+      "deadlineAndVerifierExceptionRuns": {
+        "baseline": 1,
+        "dcp": 1
+      },
+      "deadlineAndMissingUsageRuns": {
+        "baseline": 0,
+        "dcp": 1
+      },
+      "invalidResponseRuns": {
+        "baseline": 0,
+        "dcp": 1
+      }
+    },
+    "totalLedgerRequests": 1026,
+    "preflight": [
+      {
+        "arm": "baseline",
+        "requests": 11,
+        "knownCost": 0.003974376,
+        "totalCost": 0.003974376
+      },
+      {
+        "arm": "dcp",
+        "requests": 11,
+        "knownCost": 0.005355491999999999,
+        "totalCost": 0.005355491999999999
+      }
+    ],
+    "preflightRequests": 22,
+    "preflightKnownCost": 0.009329867999999998
+  }
+}

@@ -1,0 +1,72 @@
+{
+  "sourceFiles": 107,
+  "changedFiles": [
+    "tests/e2e-real/opencode-go-adapter.spec.ts"
+  ],
+  "capturedUnitInputMatches": true,
+  "onlyUnitFormattingChanged": true,
+  "realPassed": 15,
+  "realFailed": 0,
+  "metrics": 15,
+  "requests": 99,
+  "promptTokens": 305721,
+  "uncachedInputTokens": 83793,
+  "cacheReadTokens": 221928,
+  "outputTokens": 15633,
+  "small": [
+    {
+      "run": 1,
+      "scenario": "small-summary-recall",
+      "tokens": 398,
+      "summaryChars": 587,
+      "summaryTokens": 155,
+      "minNetSavingsTokens": 32,
+      "calls": 1
+    },
+    {
+      "run": 1,
+      "scenario": "small-savings-rejection",
+      "tokens": 398,
+      "summaryChars": 644,
+      "summaryTokens": 169,
+      "minNetSavingsTokens": 512,
+      "calls": 1
+    },
+    {
+      "run": 2,
+      "scenario": "small-summary-recall",
+      "tokens": 398,
+      "summaryChars": 610,
+      "summaryTokens": 161,
+      "minNetSavingsTokens": 32,
+      "calls": 1
+    },
+    {
+      "run": 2,
+      "scenario": "small-savings-rejection",
+      "tokens": 398,
+      "summaryChars": 622,
+      "summaryTokens": 164,
+      "minNetSavingsTokens": 512,
+      "calls": 1
+    },
+    {
+      "run": 3,
+      "scenario": "small-summary-recall",
+      "tokens": 398,
+      "summaryChars": 595,
+      "summaryTokens": 157,
+      "minNetSavingsTokens": 32,
+      "calls": 1
+    },
+    {
+      "run": 3,
+      "scenario": "small-savings-rejection",
+      "tokens": 398,
+      "summaryChars": 564,
+      "summaryTokens": 149,
+      "minNetSavingsTokens": 512,
+      "calls": 1
+    }
+  ]
+}

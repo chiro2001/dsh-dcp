@@ -1,0 +1,130 @@
+{
+  "version": 1,
+  "protocol": {
+    "officialRoute": true,
+    "specifiedIntervention": true,
+    "dcpConfig": true
+  },
+  "fixture": {
+    "dataRows": 4096,
+    "constructedPrefixEvents": 346,
+    "inputHashesMatch": true,
+    "constructedPrefixHashMatch": true,
+    "toolCalls": 65,
+    "toolResults": 65,
+    "unpairedToolMessages": 0,
+    "usageFields": 0,
+    "fixtureQualification": {
+      "buggySmokeFailed": true,
+      "referencePassed": true
+    }
+  },
+  "prepare": {
+    "requests": 1,
+    "ready": true,
+    "closed": true,
+    "promptTokens": 478056,
+    "pressureMatchesUsage": true,
+    "pressureMinimumMet": true,
+    "totalCostUSD": 0.07170959999999998
+  },
+  "branches": {
+    "inactive": {
+      "success": true,
+      "requests": 6,
+      "meanPromptTokens": 480692.6666666667,
+      "p95PromptTokens": 482837,
+      "usageComplete": true,
+      "usageTotals": {
+        "uncachedInputTokens": 1596,
+        "cacheReadTokens": 2882560,
+        "outputTokens": 4207,
+        "reasoningTokens": 0
+      },
+      "totalCostUSD": 0.01141128,
+      "verifierPassed": true,
+      "verifierChecks": 12,
+      "compressionAttempts": 0,
+      "dcpBlocks": 0,
+      "reportedCompressionCount": 0,
+      "specifiedCompressionApplied": false,
+      "exactCallBlockMatch": false,
+      "nativeCompactionSummaries": 0,
+      "seedPrefixMatches": true,
+      "requestInvariantCount": 6,
+      "allRequestSeedsMatch": true
+    },
+    "active": {
+      "success": true,
+      "requests": 23,
+      "meanPromptTokens": 33233.565217391304,
+      "p95PromptTokens": 21767,
+      "usageComplete": true,
+      "usageTotals": {
+        "uncachedInputTokens": 13268,
+        "cacheReadTokens": 751104,
+        "outputTokens": 13223,
+        "reasoningTokens": 0
+      },
+      "totalCostUSD": 0.012177312,
+      "verifierPassed": true,
+      "verifierChecks": 12,
+      "compressionAttempts": 1,
+      "dcpBlocks": 1,
+      "reportedCompressionCount": 1,
+      "specifiedCompressionApplied": true,
+      "exactCallBlockMatch": true,
+      "nativeCompactionSummaries": 0,
+      "seedPrefixMatches": true,
+      "requestInvariantCount": 23,
+      "allRequestSeedsMatch": true,
+      "compactionSummaryEvents": 1,
+      "dcpAttributedSummaryEvents": 1,
+      "nonDcpSummaryEvents": 0,
+      "compactionPurposeRequests": 0,
+      "compactionAttributionBySourceId": true
+    }
+  },
+  "pairedDefinitions": {
+    "sameFirstSystemAndTools": true,
+    "allSeedPrefixesMatch": true,
+    "modelMessagesLogInvariantPassed": true
+  },
+  "source": {
+    "manifestEntries": 57,
+    "currentWorkspaceMatches": 57,
+    "archiveMembers": 57,
+    "archiveMatches": 57
+  },
+  "spend": {
+    "knownSpendUSD": 0.09529819199999998,
+    "recomputedKnownSpendUSD": 0.09529819199999998,
+    "actualSpendUSD": 0.09529819199999998,
+    "recomputedActualSpendUSD": 0.09529819199999998,
+    "commonCostUSD": 0.07170959999999998,
+    "conditionalTotalCosts": {
+      "inactive": 0.08312087999999998,
+      "active": 0.08388691199999998
+    },
+    "usageComplete": true,
+    "comparable": true,
+    "continuationSavings": -0.06712936673186531
+  },
+  "credential": {
+    "runnerScanMatches": 0,
+    "independentExactMatches": 0,
+    "independentlyScannedArtifacts": 33,
+    "independentAuditFileExactCredentialMatches": 0
+  },
+  "partialArtifactAbsent": true,
+  "allChecks": true,
+  "compactionAttribution": {
+    "method": "match compaction/summary.data.compactionId to DCP checkpoint user/message.source.compactionId; auxiliary requests counted from ledger purpose",
+    "active": {
+      "summaryEvents": 1,
+      "dcpAttributed": 1,
+      "nonDcp": 0,
+      "compactionPurposeRequests": 0
+    }
+  }
+}

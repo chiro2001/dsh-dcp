@@ -1,0 +1,190 @@
+{
+  "runId": "multi-source-data-merger-baseline-r1-multi-source-data-merger__erDxxET__agent",
+  "taskId": "multi-source-data-merger",
+  "arm": "baseline",
+  "replicate": 1,
+  "model": "deepseek-flash",
+  "provider": "deepseek",
+  "startedAt": 1791972772729,
+  "version": 1,
+  "attempts": [
+    {
+      "attemptId": "multi-source-data-merger-baseline-r1-multi-source-data-merger__erDxxET__agent:1",
+      "metadata": {
+        "agentId": "multi-source-data-merger-baseline-r1-multi-source-data-merger__erDxxET__agent",
+        "sessionId": "multi-source-data-merger-baseline-r1-multi-source-data-merger__erDxxET__agent",
+        "purpose": "conversation",
+        "startedAt": 1791972772931,
+        "requestHash": "ac05cb1de508dcf80c8fcc33aac3fd82e5172961ad5e4f326c62f944f339ffc1",
+        "turn": 1,
+        "step": 1
+      },
+      "prices": {
+        "currency": "USD",
+        "date": "2026-10-14",
+        "source": "https://api-docs.deepseek.com/quick_start/pricing",
+        "retrievedAt": "2026-10-14",
+        "model": "deepseek-flash",
+        "window": "off-peak",
+        "rates": {
+          "uncachedInputPerMillion": 0.15,
+          "cacheReadPerMillion": 0.003,
+          "outputPerMillion": 0.6
+        }
+      },
+      "status": "success",
+      "finishedAt": 1791972773963,
+      "usage": {
+        "uncachedInputTokens": 699,
+        "cacheReadTokens": 128,
+        "outputTokens": 149
+      },
+      "cost": 0.00019463399999999998
+    },
+    {
+      "attemptId": "multi-source-data-merger-baseline-r1-multi-source-data-merger__erDxxET__agent:2",
+      "metadata": {
+        "agentId": "multi-source-data-merger-baseline-r1-multi-source-data-merger__erDxxET__agent",
+        "sessionId": "multi-source-data-merger-baseline-r1-multi-source-data-merger__erDxxET__agent",
+        "purpose": "conversation",
+        "startedAt": 1791972774695,
+        "requestHash": "9a6a5257e77dbb93847a77b407c7f95ea038212a47958d19a028066b774aeda2",
+        "turn": 1,
+        "step": 2
+      },
+      "prices": {
+        "currency": "USD",
+        "date": "2026-10-14",
+        "source": "https://api-docs.deepseek.com/quick_start/pricing",
+        "retrievedAt": "2026-10-14",
+        "model": "deepseek-flash",
+        "window": "off-peak",
+        "rates": {
+          "uncachedInputPerMillion": 0.15,
+          "cacheReadPerMillion": 0.003,
+          "outputPerMillion": 0.6
+        }
+      },
+      "status": "success",
+      "finishedAt": 1791972775479,
+      "usage": {
+        "uncachedInputTokens": 552,
+        "cacheReadTokens": 896,
+        "outputTokens": 85
+      },
+      "cost": 0.000136488
+    },
+    {
+      "attemptId": "multi-source-data-merger-baseline-r1-multi-source-data-merger__erDxxET__agent:3",
+      "metadata": {
+        "agentId": "multi-source-data-merger-baseline-r1-multi-source-data-merger__erDxxET__agent",
+        "sessionId": "multi-source-data-merger-baseline-r1-multi-source-data-merger__erDxxET__agent",
+        "purpose": "conversation",
+        "startedAt": 1791972775983,
+        "requestHash": "e77d648e0f0551420b2d29044357c5a4f7bd34391e8047508d9f464b7ff110a4",
+        "turn": 1,
+        "step": 3
+      },
+      "prices": {
+        "currency": "USD",
+        "date": "2026-10-14",
+        "source": "https://api-docs.deepseek.com/quick_start/pricing",
+        "retrievedAt": "2026-10-14",
+        "model": "deepseek-flash",
+        "window": "off-peak",
+        "rates": {
+          "uncachedInputPerMillion": 0.15,
+          "cacheReadPerMillion": 0.003,
+          "outputPerMillion": 0.6
+        }
+      },
+      "status": "success",
+      "finishedAt": 1791972780340,
+      "usage": {
+        "uncachedInputTokens": 232,
+        "cacheReadTokens": 1408,
+        "outputTokens": 1220
+      },
+      "cost": 0.000771024
+    },
+    {
+      "attemptId": "multi-source-data-merger-baseline-r1-multi-source-data-merger__erDxxET__agent:4",
+      "metadata": {
+        "agentId": "multi-source-data-merger-baseline-r1-multi-source-data-merger__erDxxET__agent",
+        "sessionId": "multi-source-data-merger-baseline-r1-multi-source-data-merger__erDxxET__agent",
+        "purpose": "conversation",
+        "startedAt": 1791972780830,
+        "requestHash": "a91d1f044fb86fd7800b17d27a966e69d961586c41d4efe651f9c047aea28d3b",
+        "turn": 1,
+        "step": 4
+      },
+      "prices": {
+        "currency": "USD",
+        "date": "2026-10-14",
+        "source": "https://api-docs.deepseek.com/quick_start/pricing",
+        "retrievedAt": "2026-10-14",
+        "model": "deepseek-flash",
+        "window": "off-peak",
+        "rates": {
+          "uncachedInputPerMillion": 0.15,
+          "cacheReadPerMillion": 0.003,
+          "outputPerMillion": 0.6
+        }
+      },
+      "status": "success",
+      "finishedAt": 1791972782501,
+      "usage": {
+        "uncachedInputTokens": 175,
+        "cacheReadTokens": 2816,
+        "outputTokens": 376
+      },
+      "cost": 0.000260298
+    },
+    {
+      "attemptId": "multi-source-data-merger-baseline-r1-multi-source-data-merger__erDxxET__agent:5",
+      "metadata": {
+        "agentId": "multi-source-data-merger-baseline-r1-multi-source-data-merger__erDxxET__agent",
+        "sessionId": "multi-source-data-merger-baseline-r1-multi-source-data-merger__erDxxET__agent",
+        "purpose": "conversation",
+        "startedAt": 1791972783496,
+        "requestHash": "d1584ccead4e0e4720e1596566c1441b1e5dc9fe2e89086e7147f44bd562026d",
+        "turn": 1,
+        "step": 5
+      },
+      "prices": {
+        "currency": "USD",
+        "date": "2026-10-14",
+        "source": "https://api-docs.deepseek.com/quick_start/pricing",
+        "retrievedAt": "2026-10-14",
+        "model": "deepseek-flash",
+        "window": "off-peak",
+        "rates": {
+          "uncachedInputPerMillion": 0.15,
+          "cacheReadPerMillion": 0.003,
+          "outputPerMillion": 0.6
+        }
+      },
+      "status": "success",
+      "finishedAt": 1791972787692,
+      "usage": {
+        "uncachedInputTokens": 602,
+        "cacheReadTokens": 3328,
+        "outputTokens": 520
+      },
+      "cost": 0.000412284
+    }
+  ],
+  "outcome": "success",
+  "success": true,
+  "finishedAt": 1791972816875,
+  "externalCost": 0,
+  "usageComplete": true,
+  "usageTotals": {
+    "uncachedInputTokens": 2260,
+    "cacheReadTokens": 8576,
+    "outputTokens": 2350,
+    "reasoningTokens": 0
+  },
+  "knownCost": 0.001774728,
+  "totalCost": 0.001774728
+}

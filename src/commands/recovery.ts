@@ -148,7 +148,7 @@ function appendRecoveryBracket(
       }),
     }),
     {
-      surfaceOp: { op: 'replace', start: targetSeq, end: targetSeq },
+      surfaceOp: { op: 'replace', startSeq: targetSeq, endSeq: targetSeq },
       sourceEventSeqs: [targetSeq],
     },
   )

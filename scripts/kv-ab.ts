@@ -1,21 +1,22 @@
 /**
  * M6.1 online KV-cache A/B (optional, real provider): same synthetic
  * transcript with DCP markers on vs off; records cache-read/input ratio.
- * Requires OPENCODE_GO_API_KEY (sourced from ~/litellm/.env by caller).
+ * Uses the shared real-model configuration, defaulting to the official
+ * DeepSeek API (credentials loaded from ~/litellm/.env in memory by Node).
  */
 
 import { OpenCodeGoAdapter } from '../tests/e2e-real/opencode-go-adapter.js'
 import { createUserMessage } from '@deepseek-ai/dsh-llm/message'
 import type { GenerateOptions } from '@deepseek-ai/dsh-llm'
+import { readRealModelConfig } from './real-model-config.js'
 
-const apiKey = process.env.OPENCODE_GO_API_KEY
-if (!apiKey) {
-  console.log('kv-ab: OPENCODE_GO_API_KEY missing; skipping')
+const config = readRealModelConfig()
+if (!config) {
+  console.log('kv-ab: no configured credential; skipping')
   process.exit(0)
 }
 
-const baseUrl = process.env.DSH_DCP_LLM_BASE_URL ?? 'https://opencode.ai/zen/go/v1'
-const model = process.env.DSH_DCP_LLM_MODEL ?? 'deepseek-v4-flash'
+const { model, provider } = config
 
 function messages(markerOn: boolean): GenerateOptions['messages'] {
   const result: GenerateOptions['messages'] = []
@@ -23,7 +24,7 @@ function messages(markerOn: boolean): GenerateOptions['messages'] {
     result.push(
       createUserMessage({
         content: [{ type: 'text', text: '<dcp-boundary ref="m0001" turn="1" step="1" />' }],
-        source: { kind: 'plugin', plugin: 'dsh-dcp' },
+        source: { kind: 'dsh-dcp' },
       }),
     )
   }
@@ -37,7 +38,7 @@ function messages(markerOn: boolean): GenerateOptions['messages'] {
     result.push(
       createUserMessage({
         content: [{ type: 'text', text: '<dcp-boundary ref="m0002" turn="2" step="1" />' }],
-        source: { kind: 'plugin', plugin: 'dsh-dcp' },
+        source: { kind: 'dsh-dcp' },
       }),
     )
   }
@@ -62,7 +63,7 @@ async function measure(
   let usage: { inputTokens: number; cacheReadTokens: number } | undefined
   let sawDelta = false
   for await (const chunk of adapter.stream({
-    provider: 'go',
+    provider,
     model,
     messages: messages(markerOn),
     maxTokens: 32,
@@ -84,7 +85,7 @@ async function measure(
   }
 }
 
-const adapter = new OpenCodeGoAdapter({ baseUrl, apiKey, model })
+const adapter = new OpenCodeGoAdapter(config)
 // Warmup both variants, then measure each twice.
 await measure(false, adapter)
 await measure(true, adapter)

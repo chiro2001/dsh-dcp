@@ -1,0 +1,54 @@
+{
+  "performedBy": "gpt-6-luna[max] sub-agent",
+  "recordedBy": "primary agent from the completed sub-agent audit result",
+  "privacy": {
+    "privatePayloadsExported": false,
+    "modelCallsForHistoricalPayloads": 0,
+    "newApiBenchmarkCalls": 0
+  },
+  "inputReportSha256": "8c9b23e40125af0acdfac253d048c5050debb40d7b4444d72859e3de677689d0",
+  "method": "Independent v3 settlement usage aggregation compared with stream usage aggregation; raw trace events read only in local memory",
+  "v3": {
+    "sessions": 315,
+    "count": 53649,
+    "sumPromptTokens": 13888570988,
+    "mean": 258878.46908609665,
+    "p50": 232655,
+    "p90": 502241,
+    "p95": 600546,
+    "max": 792554,
+    "firstObservationUtc": "2026-09-10T10:37:28.397Z",
+    "lastObservationUtc": "2026-09-26T17:17:18.979Z",
+    "matchesMainAggregation": true,
+    "mainAggregationDiagnostics": {
+      "embeddedSamples": 53649,
+      "settlementCopiesSkipped": 53649,
+      "inheritedEventsSkipped": 0,
+      "replacementMessagesSkipped": 0,
+      "settlementFallbackSamples": 0,
+      "ambiguousEmbeddedUsageGroups": 0
+    }
+  },
+  "zeroSensitivity": {
+    "zeroPromptCount": 72,
+    "allZeroSessionCount": 14,
+    "zeroPromptPct": 0.1342056701895655,
+    "sourceClassification": "unknown; no explicit mock/test/fixture/fake marker found, which does not establish production provenance",
+    "originalPopulationRetained": true,
+    "positivePromptCount": 53577,
+    "positivePromptMean": 259226.36556731432,
+    "meanIncreaseTokens": 347.89648121767095,
+    "meanIncreasePct": 0.13438602385351925
+  },
+  "rootScope": {
+    "defaultPhysicalTraceCount": 817,
+    "additionalTraceCountInScannedCandidates": 0,
+    "historicalV4TraceCount": 0,
+    "excludedProjectDirectoriesNotDecoded": true
+  },
+  "limitations": [
+    "Available local historical inventory only; no conclusion about missing later sessions",
+    "Historical model/provider/thinking modes not stratified",
+    "Independent check targets the fully exact v3 population; v0 missing cache buckets remain lower bounds"
+  ]
+}

@@ -98,8 +98,8 @@ export function commitRange(
     {
       surfaceOp: {
         op: 'replace',
-        start: prepared.startSeq,
-        end: prepared.shadowedSeqs.at(-1) ?? prepared.endSeq,
+        startSeq: prepared.startSeq,
+        endSeq: prepared.shadowedSeqs.at(-1) ?? prepared.endSeq,
       },
       sourceEventSeqs: [prepared.startSeq, summarySeq, ...prepared.shadowedSeqs.slice(1)],
     },

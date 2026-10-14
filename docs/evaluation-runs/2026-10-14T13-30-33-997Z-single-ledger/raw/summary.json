@@ -1,0 +1,49 @@
+{
+  "taskId": "single-ledger-repair-v1",
+  "sharedDefinitionAndSeedVerified": true,
+  "comparable": true,
+  "continuationSavings": -0.06712936673186531,
+  "actualSpendUSD": 0.09529819199999998,
+  "knownSpendUSD": 0.09529819199999998,
+  "commonCostUSD": 0.07170959999999998,
+  "conditionalTotalCosts": {
+    "inactive": 0.08312087999999998,
+    "active": 0.08388691199999998
+  },
+  "arms": {
+    "inactive": {
+      "success": true,
+      "requests": 6,
+      "compressionCount": 0,
+      "compressionAttemptCount": 0,
+      "specifiedCompressionApplied": false,
+      "totalCostUSD": 0.01141128,
+      "meanPromptTokens": 480692.6666666667,
+      "p95PromptTokens": 482837,
+      "usageComplete": true,
+      "usageTotals": {
+        "uncachedInputTokens": 1596,
+        "cacheReadTokens": 2882560,
+        "outputTokens": 4207,
+        "reasoningTokens": 0
+      }
+    },
+    "active": {
+      "success": true,
+      "requests": 23,
+      "compressionCount": 1,
+      "compressionAttemptCount": 1,
+      "specifiedCompressionApplied": true,
+      "totalCostUSD": 0.012177312,
+      "meanPromptTokens": 33233.565217391304,
+      "p95PromptTokens": 21767,
+      "usageComplete": true,
+      "usageTotals": {
+        "uncachedInputTokens": 13268,
+        "cacheReadTokens": 751104,
+        "outputTokens": 13223,
+        "reasoningTokens": 0
+      }
+    }
+  }
+}

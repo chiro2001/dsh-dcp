@@ -55,8 +55,7 @@ export function encodeDcpCheckpointSource(
   meta: DcpCheckpointMetaV1,
 ): DcpCheckpointSourceV1 {
   return {
-    kind: 'plugin',
-    plugin: 'compact',
+    kind: 'compact-checkpoint',
     compactionId,
     dcp: { ...meta },
   }

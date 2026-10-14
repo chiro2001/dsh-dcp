@@ -20,6 +20,7 @@ export interface DcpCompressConfig {
 
 export interface DcpReferencesConfig {
   transport: 'marker' | 'context-tool'
+  granularity: 'turn' | 'step'
   maxAliasEntries: number
   excerptChars: number
 }
@@ -86,6 +87,7 @@ export const DCP_CONFIG_DEFAULTS: DcpConfig = {
   },
   references: {
     transport: 'marker',
+    granularity: 'turn',
     maxAliasEntries: 32,
     excerptChars: 80,
   },
@@ -146,6 +148,9 @@ export const Config = z.object({
       transport: z
         .union([z.const('marker'), z.const('context-tool')])
         .default(DCP_CONFIG_DEFAULTS.references.transport),
+      granularity: z
+        .union([z.const('turn'), z.const('step')])
+        .default(DCP_CONFIG_DEFAULTS.references.granularity),
       maxAliasEntries: positiveInt.default(DCP_CONFIG_DEFAULTS.references.maxAliasEntries),
       excerptChars: positiveInt.default(DCP_CONFIG_DEFAULTS.references.excerptChars),
     })
@@ -237,6 +242,7 @@ const VALID_KEYS = new Set([
   'compress.protectedSources',
   'references',
   'references.transport',
+  'references.granularity',
   'references.maxAliasEntries',
   'references.excerptChars',
   'nudge',

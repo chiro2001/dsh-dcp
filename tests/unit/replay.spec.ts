@@ -76,7 +76,7 @@ describe('dcp replay state', () => {
         source: encodeDcpCheckpointSource(compactionId, meta('b1')),
       }),
       {
-        surfaceOp: { op: 'replace', start: seqs.u1, end: seqs.a1 },
+        surfaceOp: { op: 'replace', startSeq: seqs.u1, endSeq: seqs.a1 },
         sourceEventSeqs: [seqs.u1, seqs.a1],
       },
     )
@@ -117,7 +117,7 @@ describe('dcp replay state', () => {
         source: encodeDcpCheckpointSource(dcpId, meta('b1')),
       }),
       {
-        surfaceOp: { op: 'replace', start: seqs.u1, end: seqs.a1 },
+        surfaceOp: { op: 'replace', startSeq: seqs.u1, endSeq: seqs.a1 },
         sourceEventSeqs: [seqs.u1, seqs.a1],
       },
     )
@@ -130,7 +130,7 @@ describe('dcp replay state', () => {
       'user/message',
       createUserMessage({
         content: [{ type: 'text', text: '<dcp-boundary ref="m0007" turn="3" step="1" />' }],
-        source: { kind: 'plugin', plugin: 'dsh-dcp' },
+        source: { kind: 'dsh-dcp' },
       }),
       { surfaceOp: 'append' },
     )
@@ -167,7 +167,7 @@ describe('dcp replay state', () => {
         source: compactCheckpointSource(nativeId),
       }),
       {
-        surfaceOp: { op: 'replace', start: checkpoint.seq, end: marker.seq },
+        surfaceOp: { op: 'replace', startSeq: checkpoint.seq, endSeq: marker.seq },
         sourceEventSeqs: shadowedSeqs,
       },
     )
@@ -187,7 +187,7 @@ describe('dcp replay state', () => {
       'user/message',
       createUserMessage({
         content: [{ type: 'text', text: '<dcp-boundary ref="m0001" turn="1" step="1" />' }],
-        source: { kind: 'plugin', plugin: 'dsh-dcp' },
+        source: { kind: 'dsh-dcp' },
       }),
       { surfaceOp: 'append' },
     )
@@ -209,7 +209,7 @@ describe('dcp replay state', () => {
         source: compactCheckpointSource(nativeId),
       }),
       {
-        surfaceOp: { op: 'replace', start: marker.seq, end: marker.seq },
+        surfaceOp: { op: 'replace', startSeq: marker.seq, endSeq: marker.seq },
         sourceEventSeqs: [marker.seq],
       },
     )
@@ -223,7 +223,7 @@ describe('dcp replay state', () => {
             text: `<dcp-boundary ref="m0002" turn="2" step="1" />\nalias m0001=s${replacement.seq}`,
           },
         ],
-        source: { kind: 'plugin', plugin: 'dsh-dcp' },
+        source: { kind: 'dsh-dcp' },
       }),
       { surfaceOp: 'append' },
     )
@@ -244,7 +244,7 @@ describe('dcp replay state', () => {
             text: '<dcp-boundary ref="m9007199254740992" turn="1" step="1" />',
           },
         ],
-        source: { kind: 'plugin', plugin: 'dsh-dcp' },
+        source: { kind: 'dsh-dcp' },
       }),
       { surfaceOp: 'append' },
     )

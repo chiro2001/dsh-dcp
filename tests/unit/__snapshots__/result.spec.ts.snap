@@ -1,0 +1,5 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`formatCompressResult (inline-cleanup clarity) > snapshots conditional cleanup wording for successful and partial outcomes > partial cleanup may save tokens 1`] = `"Compressed 6 message(s) into b1. status=partial; committed=b1; rejected=m0003..m0004[UNKNOWN]; correction=HANDLE ONLY the rejected ranges as directed; do not retry committed ranges; cleanup=deferred; eligible completed calls may be archived when this saves tokens; details=choose a new valid range; do not repeat the rejected call unchanged."`;
+
+exports[`formatCompressResult (inline-cleanup clarity) > snapshots conditional cleanup wording for successful and partial outcomes > success cleanup may save tokens 1`] = `"Compressed 6 message(s) into b1. status=success; committed=b1; rejected=none; correction=STOP; checkpoints contain the full summaries; do not retry committed ranges; cleanup=deferred; eligible completed calls may be archived when this saves tokens."`;

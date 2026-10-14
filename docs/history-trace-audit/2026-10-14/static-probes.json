@@ -1,0 +1,29 @@
+{
+  "generatedAt": "2026-10-14T06:41:26.979Z",
+  "kind": "synthetic offline structural probes; no model calls or historical text",
+  "targetDsh": "0.2.0-rc.2",
+  "logicalSessionFormat": 4,
+  "longTurn": {
+    "closedSteps": 14,
+    "granularity": "step",
+    "retainRecentTurns": 2,
+    "rangeAccepted": false,
+    "retentionRejected": true,
+    "nudgeEmittedWithoutEligibleClosedTurn": true
+  },
+  "ptc": {
+    "mode": "ptc",
+    "directCompressResolvable": false,
+    "nestedCompressResolvable": true,
+    "nestedCompressRefusedByPlugin": true,
+    "caveat": "registry resolution was inspected in a test harness; production changes must use public extension points"
+  },
+  "protectedSource": {
+    "kind": "subagent-settled",
+    "form": "notice",
+    "configuredProtectedSource": "subagent-settled",
+    "preservedInAppendix": false
+  },
+  "rawHistoricalTextIncluded": false,
+  "externalCalls": 0
+}

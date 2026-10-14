@@ -25,7 +25,7 @@ describe('boundary markers', () => {
 
   it('builds a logged step marker with optional nudge text', () => {
     const message = buildStepMarkerMessage('m0001', 1, 1, 'DCP compression recommended')
-    expect(message.source).toEqual({ kind: 'plugin', plugin: 'dsh-dcp' })
+    expect(message.source).toEqual({ kind: 'dsh-dcp' })
     expect(message.content[0]?.type).toBe('text')
     if (message.content[0]?.type === 'text') {
       expect(message.content[0].text).toContain(

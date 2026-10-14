@@ -1,5 +1,36 @@
 # CHANGELOG
 
+## 0.1.0-rc.9 (Unreleased)
+
+- 精确升级 dsh 至 `0.2.0-rc.2`，Cordis/Schemastery 至 `4.0.4 / 3.18.4`；
+  适配 system/developer surface、生产者 source kind、平铺 tool result 与 request series。
+- 默认每 turn 一个边界，后续 step 按需记录 nudge/alias；关闭 compress 后停止压缩提示。
+- 缩短系统规则与工具说明；nudge 基于真实 step 计数，控制消息与提示按来源校验。
+- cleanup 改为模型先消费一次原生工具结果，再对闭合的纯 compress 调用/结果整体归档；
+  保留普通回答和 reasoning，
+  只在净节省为正时执行，不回显任意 metadata 或工具结果正文。
+- system/developer 节点硬保护，保留 pre-step 下游决定与同批用户输入。
+- 工具去重跳过没有净节省的短结果，`tokensSaved` 按原始值减替换值计。
+- 安装 E2E 从依赖读取 CLI 版本；新增每周 npm 稳定渠道漂移检查。
+- 真实测试采用统一的显式网关/key-env配置、原生工具调用与独立无答案召回；
+  删除 XML 兜底，挂载真实请求不变式并重复记录不可覆盖的报告。
+- 保留窗口描述包含当前 turn；明确字面值保真与嵌套自动附录，防止重复摘要。
+  归档以 `resolved_by` 标明后续成功解决的失败范围，停止过时的重试建议。
+- 官方 `deepseek-flash`、thinking disabled 五场景连续三轮真实回归 15/15 通过（99 请求）；
+  包含 398-token 小范围在显式 32/512 阈值下的摘要保真与拒绝后停止。
+  适配器只接受原生 `tool_calls`，XML 正文原样保留；收紧通道后重新完成三轮实测。
+  离线全量门禁 172 项通过、行覆盖 90.25%，确定性 E2E 47 项与隔离安装通过。
+- 原 rc.7/rc.8 工作内容仍未发布；本节不代表已创建 tag 或 Release。
+- `e2e:real`、`probes:real`、`kv-ab` 默认统一使用官方 DeepSeek API、
+  `DEEPSEEK_API_KEY`、`deepseek-flash`、thinking disabled；非官方 origin 必须显式
+  绑定 key，缺 key 不回退其它凭据。KV 脚本改为 Node 内存加载环境文件。
+  无接口/模型覆盖参数的官方默认配置复验 5/5 通过；离线门禁 173 项通过。
+- 新增独立验收、请求级用量/费用账本、预算限制及标准任务配对 runner；
+  完成 36 次 Terminal-Bench 2.0 开发 pilot，保留未触发压缩与未知费用的限制。
+- 新增本地历史上下文审计与公开长上下文单场景：同一 478,056-token 状态下，
+  两边均通过 12 项验收，指定压缩使平均输入降 93.1%，续作费用仍增 6.7%。
+  README 如实展示结果和结论边界，详细证据与复现入口见 `docs/EVALUATION.md`。
+
 ## 0.1.0-rc.8 (Unreleased)
 
 - 新增压缩关键规则维护专区与单一提示词来源，集中锁定安全不变式、

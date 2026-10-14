@@ -11,7 +11,7 @@ import { buildBoundaryMarker } from '../../src/refs/marker.js'
 export function markerMessage(ref: string, turn: number, step: number) {
   return createUserMessage({
     content: [{ type: 'text', text: buildBoundaryMarker(ref, turn, step) }],
-    source: { kind: 'plugin', plugin: 'dsh-dcp' },
+    source: { kind: 'dsh-dcp' },
   })
 }
 
@@ -38,6 +38,7 @@ export function buildMarkedSession(ctx: Context): Session {
         {
           turn: number,
           step: 1,
+          stream: [],
           message: createAssistantMessage({
             content: [
               { type: 'text', text: `assistant ${number}` },
@@ -46,7 +47,7 @@ export function buildMarkedSession(ctx: Context): Session {
             source: { provider: 'mock', model: 'mock' },
           }),
         },
-        { surfaceOp: 'append', sourceEventSeqs: [] },
+        { surfaceOp: 'append' },
       )
       const call = session.append('tool/call', {
         turn: number,
@@ -74,12 +75,13 @@ export function buildMarkedSession(ctx: Context): Session {
         {
           turn: number,
           step: 1,
+          stream: [],
           message: createAssistantMessage({
             content: [{ type: 'text', text: `assistant ${number}` }],
             source: { provider: 'mock', model: 'mock' },
           }),
         },
-        { surfaceOp: 'append', sourceEventSeqs: [] },
+        { surfaceOp: 'append' },
       )
     }
     session.append('step/end', { turn: number, step: 1 })
@@ -116,6 +118,7 @@ export function buildMarkedSession(ctx: Context): Session {
     {
       turn: 4,
       step: 1,
+      stream: [],
       message: createAssistantMessage({
         content: [
           { type: 'text', text: 'compressing now' },
@@ -129,7 +132,7 @@ export function buildMarkedSession(ctx: Context): Session {
         source: { provider: 'mock', model: 'mock' },
       }),
     },
-    { surfaceOp: 'append', sourceEventSeqs: [] },
+    { surfaceOp: 'append' },
   )
   session.append('tool/call', {
     turn: 4,

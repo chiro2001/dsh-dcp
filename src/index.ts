@@ -1,3 +1,4 @@
+import './protocol/source.js'
 /**
  * dsh-dcp plugin entry (M1): system guidance, compress tool, /dcp commands,
  * settings namespace.
@@ -19,11 +20,11 @@ import { reduceDcpState } from './protocol/replay.js'
 import { applyAutomaticStrategies } from './strategies/index.js'
 import { isDcpControlMessage, parseControl } from './strategies/control.js'
 import { applyExpansion, applyRecompress } from './commands/recovery.js'
+import { createUserMessage } from '@deepseek-ai/dsh-llm/message'
 import { buildStepMarkerMessage } from './refs/marker.js'
 import { computeNudge } from './prompts/nudge.js'
 import { collectNativeAliases } from './refs/alias.js'
-import { cleanupRejectedCompressCall } from './compress/pipeline.js'
-import { classifyCompressToolFailure } from './compress/schema.js'
+import { cleanupPendingCompressSteps } from './compress/step-cleanup.js'
 import {
   openDcpStatsStore,
   registerDcpStatsStore,
@@ -48,52 +49,39 @@ export function apply(ctx: Context, config: DcpConfig): void {
     logger.warn('dcp config contains unknown keys: %s', unknown.join(', '))
   }
 
-  ctx.systemPrompt.section({
-    name: DCP_GUIDANCE_SECTION,
-    order: DCP_GUIDANCE_ORDER,
-    text: () => renderDcpGuidance(resolved, resolved.manualMode.default),
-  })
-
   if (resolved.compress.enabled) {
-    ctx.tools.register(createCompressTool(ctx, resolved))
-
-    // `tools/result` is the last public observer before AgentLoop appends the
-    // durable `tool/result`.  The tool-owned finalizer handles ordinary
-    // failures; this idempotent observer covers calls that never reach that
-    // finalizer (for example a collapsed/denied/timeout pipeline result).
-    // It mutates only the logged surface through the same append-only cleanup
-    // path, never the result/request in flight.
-    ctx.on('tools/result', (exec, result) => {
-      if (exec.name !== 'compress' || exec.parent !== undefined || !exec.agent) return
-      if (!result.isError) return
-      try {
-        cleanupRejectedCompressCall(
-          exec.agent.session,
-          ctx.tokenMeter,
-          String(exec.callId),
-          exec.arguments,
-          classifyCompressToolFailure(result.error),
-        )
-      } catch (error) {
-        logger.warn(
-          'failed to clean rejected compress call %s: %s',
-          String(exec.callId),
-          error instanceof Error ? error.message : String(error),
-        )
-      }
+    ctx.systemPrompt.section({
+      name: DCP_GUIDANCE_SECTION,
+      order: DCP_GUIDANCE_ORDER,
+      text: () => renderDcpGuidance(resolved, resolved.manualMode.default),
     })
+    ctx.tools.register(createCompressTool(ctx, resolved))
   }
 
   registerDcpCommands(ctx, resolved)
 
+  ctx.on('agent/turn-stopping', ({ agent }) => {
+    for (const warning of cleanupPendingCompressSteps(agent.session, ctx.tokenMeter)) {
+      logger.warn('observed compress cleanup failed: %s', warning)
+    }
+  })
+
   ctx.on(
     'agent/pre-step',
-    async ({ agent, messages, turn, step, signal }, next): Promise<PreStepDecision> => {
-      const decision = await next()
-      if (signal.aborted) return decision
+    async ({ agent, turn, step, signal }, next): Promise<PreStepDecision> => {
+      let decision = await next()
+      if (
+        signal.aborted ||
+        decision.kind !== 'enter' ||
+        (step === 1 && decision.messages.length === 0)
+      )
+        return decision
+      for (const warning of cleanupPendingCompressSteps(agent.session, ctx.tokenMeter)) {
+        logger.warn('deferred compress cleanup failed: %s', warning)
+      }
       const state = reduceDcpState(agent.session.snapshotEvents(), resolved.manualMode.default)
-      if (messages.some(isDcpControlMessage)) {
-        for (const message of messages) {
+      if (decision.messages.some(isDcpControlMessage)) {
+        for (const message of decision.messages) {
           const control = parseControl(message)
           if (!control) continue
           if (control.kind === 'sweep') {
@@ -110,7 +98,9 @@ export function apply(ctx: Context, config: DcpConfig): void {
               ctx.logger('dsh-dcp').warn('control recompress failed: %s', result.error)
           }
         }
-        return { kind: 'enter', messages: [] }
+        const admitted = decision.messages.filter((message) => !isDcpControlMessage(message))
+        if (admitted.length === 0) return { ...decision, messages: [] }
+        decision = { ...decision, messages: admitted }
       }
       if (decision.kind === 'enter') {
         applyAutomaticStrategies(agent.session, ctx.tokenMeter, resolved, state.manualMode)
@@ -118,33 +108,32 @@ export function apply(ctx: Context, config: DcpConfig): void {
           agent.session.snapshotEvents(),
           resolved.manualMode.default,
         )
-        const ref = `m${String(currentState.maxMarkerNumber + 1).padStart(4, '0')}`
-        const nudge = computeNudge(
-          agent.session,
-          ctx.tokenMeter.measure(agent.session),
-          resolved,
-        )
+        if (!resolved.compress.enabled) return decision
+        const nudgeText = currentState.manualMode
+          ? undefined
+          : computeNudge(agent.session, ctx.tokenMeter.measure(agent.session), resolved).text
         const aliasLines = collectNativeAliases(
           agent.session,
           currentState,
           resolved.references.maxAliasEntries,
         )
-        const marker = buildStepMarkerMessage(
-          ref,
-          turn,
-          step,
-          nudge.text,
-          aliasLines.length > 0 ? aliasLines.join('\n') : undefined,
-        )
-        return { kind: 'enter', messages: [marker, ...decision.messages] }
+        const extraText = aliasLines.length > 0 ? aliasLines.join('\n') : undefined
+        if (step === 1 || resolved.references.granularity === 'step') {
+          const ref = `m${String(currentState.maxMarkerNumber + 1).padStart(4, '0')}`
+          const marker = buildStepMarkerMessage(ref, turn, step, nudgeText, extraText)
+          return { ...decision, messages: [marker, ...decision.messages] }
+        }
+        const text = [nudgeText, extraText].filter(Boolean).join('\n')
+        if (text.length === 0) return decision
+        const context = createUserMessage({
+          content: [{ type: 'text', text }],
+          source: { kind: 'dsh-dcp' },
+        })
+        return { ...decision, messages: [context, ...decision.messages] }
       }
       return decision
     },
   )
-
-  const settings = ctx.get('settings') as
-    { register?: (ns: string, schema: unknown) => void } | undefined
-  settings?.register?.('dcp', Config)
 
   ctx.inject(['storageDomain'], async (child): Promise<() => Promise<void>> => {
     try {

@@ -1,15 +1,16 @@
 import { existsSync, readFileSync } from 'node:fs'
+import { execFileSync } from 'node:child_process'
 import { resolve } from 'node:path'
 
 const root = resolve(import.meta.dirname, '..')
 const manifest = JSON.parse(readFileSync(resolve(root, 'package.json'), 'utf8'))
 
 const failures = []
-const supportedDshVersion = '0.1.2-rc.1'
-const expectedPeerCordis = '>=4.0.2 <5.0.0'
+const supportedDshVersion = manifest.devDependencies['@deepseek-ai/dsh-agent-loop']
+const expectedPeerCordis = '~4.0.4'
 const expectedDevVersions = {
-  '@deepseek-ai/cordis': '4.0.2',
-  '@deepseek-ai/schemastery': '3.18.2',
+  '@deepseek-ai/cordis': '4.0.4',
+  '@deepseek-ai/schemastery': '3.18.4',
 }
 
 const peerCordis = manifest.peerDependencies?.['@deepseek-ai/cordis']
@@ -63,6 +64,36 @@ if (!patch) {
   failures.push('dsh.bundle.patch missing')
 } else if (!existsSync(resolve(root, patch))) {
   failures.push(`dsh.bundle.patch -> ${patch} missing`)
+}
+
+if (failures.length === 0) {
+  try {
+    const entry = await import('@chiro2001/dsh-dcp')
+    if (entry.name !== 'dsh-dcp' || typeof entry.apply !== 'function' || !entry.Config) {
+      failures.push('built entry must expose name, apply, and Config')
+    }
+    // Compile as a consumer, independently of src/tests augmentations. A full
+    // project typecheck can hide missing producer kinds in the shipped d.ts.
+    execFileSync(
+      'pnpm',
+      [
+        'exec',
+        'tsc',
+        '--ignoreConfig',
+        '--noEmit',
+        '--target',
+        'es2023',
+        '--module',
+        'nodenext',
+        '--strict',
+        '--skipLibCheck',
+        'tests/fixtures/package-consumer.ts',
+      ],
+      { cwd: root, stdio: 'pipe' },
+    )
+  } catch (error) {
+    failures.push(`built entry/declarations: ${error.stdout?.toString() || error.message}`)
+  }
 }
 
 if (failures.length > 0) {

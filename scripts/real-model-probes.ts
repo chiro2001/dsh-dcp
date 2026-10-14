@@ -1,282 +1,192 @@
-/**
- * M6.2 real-model probes: natural / invalid-ref correction / nested compress
- * through the real dsh agent loop (opencode go / deepseek-v4-flash).
- * Reports schema-valid, committed, and prior-block preservation rates.
- * Not a CI gate; results are written to docs/real-model-probes-<scenario>.md.
- */
+/* oxlint-disable no-await-in-loop -- Paid trials settle sequentially so a failure stops further calls. */
+/** Repeat the invariant-checked real suite; record each run without overwriting evidence. */
+import { spawn, execFileSync } from 'node:child_process'
+import { createHash } from 'node:crypto'
+import { mkdir, readdir, readFile, writeFile } from 'node:fs/promises'
+import { basename, relative, resolve } from 'node:path'
+import { readRealModelConfig } from './real-model-config.js'
 
-import { writeFile } from 'node:fs/promises'
-import { Context, type Plugin } from '@deepseek-ai/cordis'
-import AgentLoop from '@deepseek-ai/dsh-agent-loop'
-import { mountAgentLoopTestDependencies } from '@deepseek-ai/dsh-agent-loop-testkit'
-import SessionProjectionRegistry from '@deepseek-ai/dsh-session-projection'
-import TokenMeter from '@deepseek-ai/dsh-token-meter'
-import CommandRuntime from '@deepseek-ai/dsh-commands'
-import { SessionId, type SessionEvent } from '@deepseek-ai/dsh-session'
-import { createUserMessage } from '@deepseek-ai/dsh-llm/message'
-import * as dcpPlugin from '../src/index.js'
-import { resolveConfig } from '../src/config.js'
-import { reduceDcpState } from '../src/protocol/replay.js'
-import { OpenCodeGoAdapter } from '../tests/e2e-real/opencode-go-adapter.js'
-
-const apiKey = process.env.OPENCODE_GO_API_KEY
-if (!apiKey) {
-  console.log('real-model-probes: OPENCODE_GO_API_KEY missing; skipping')
+const count = Number(process.env.DSH_DCP_PROBES ?? 3)
+if (!Number.isSafeInteger(count) || count < 1 || count > 10) {
+  throw new Error('DSH_DCP_PROBES must be an integer from 1 to 10')
+}
+const scenario = process.env.DSH_DCP_PROBE_SCENARIO ?? 'all'
+if (!['all', 'forced', 'correction', 'partial', 'nested', 'small'].includes(scenario)) {
+  throw new Error(
+    'DSH_DCP_PROBE_SCENARIO must be all, forced, correction, partial, nested, or small',
+  )
+}
+const config = readRealModelConfig()
+if (!config) {
+  console.log('real-model-probes: no configured credential; skipping')
   process.exit(0)
 }
-
-const count = Number(process.env.DSH_DCP_PROBES ?? 5)
-const baseUrl = process.env.DSH_DCP_LLM_BASE_URL ?? 'https://opencode.ai/zen/go/v1'
-const model = process.env.DSH_DCP_LLM_MODEL ?? 'deepseek-v4-flash'
-
-function waitForIdle(ctx: Context, agent: { id: string }): Promise<void> {
-  return new Promise((resolve) => {
-    const dispose = ctx.on(
-      'agent/status',
-      (payload: { agent: { id: string }; status: string }) => {
-        if (payload.agent.id === agent.id && payload.status === 'idle') {
-          dispose()
-          resolve()
-        }
-      },
-    )
-  })
+const root = resolve(import.meta.dirname, '..')
+const stamp = new Date().toISOString().replaceAll(':', '-').replaceAll('.', '-')
+const outputRoot = resolve(root, '.tmp-vitest', `real-model-${stamp}`)
+await mkdir(outputRoot, { recursive: true })
+const docsRoot = resolve(root, 'docs/real-model-validation')
+const evidenceRoot = resolve(docsRoot, stamp)
+await mkdir(evidenceRoot, { recursive: true })
+const sourceFiles = [
+  'package.json',
+  'pnpm-lock.yaml',
+  'pnpm-workspace.yaml',
+  'tsconfig.json',
+  'vitest.config.ts',
+  'cordis.patch.yml',
+]
+for (const directory of ['src', 'tests', 'scripts']) {
+  sourceFiles.push(
+    ...(await readdir(resolve(root, directory), { recursive: true, withFileTypes: true }))
+      .filter((entry) => entry.isFile())
+      .map((entry) => relative(root, resolve(entry.parentPath, entry.name))),
+  )
+}
+const sourceManifest = await Promise.all(
+  sourceFiles.toSorted().map(async (path) => ({
+    path,
+    sha256: createHash('sha256')
+      .update(await readFile(resolve(root, path)))
+      .digest('hex'),
+  })),
+)
+const manifestText = JSON.stringify(sourceManifest, null, 2) + '\n'
+const sourceFingerprint = createHash('sha256').update(manifestText).digest('hex')
+await writeFile(resolve(outputRoot, 'source-manifest.json'), manifestText, { flag: 'wx' })
+await writeFile(resolve(evidenceRoot, 'source-manifest.json'), manifestText, { flag: 'wx' })
+const secrets = Object.entries(process.env)
+  .filter(([name, value]) => /(?:key|token|secret)/i.test(name) && value && value.length >= 8)
+  .map(([, value]) => value!)
+function redact(value: string): string {
+  for (const secret of secrets) value = value.replaceAll(secret, '<redacted>')
+  return value
 }
 
-interface ProbeResult {
-  schemaValid: boolean
-  committed: boolean
-  errorText?: string
-  priorBlockPreserved?: boolean
+interface Assertion {
+  fullName: string
+  status: string
+  failureMessages?: string[]
 }
-
-function user(text: string) {
-  return createUserMessage({ content: [{ type: 'text', text }], source: { kind: 'user' } })
+interface Report {
+  testResults?: Array<{ name: string; assertionResults: Assertion[] }>
 }
-
-function summarizeProbe(events: readonly SessionEvent[]): ProbeResult {
-  const compressCalls = events.filter(
-    (event) => event.type === 'tool/call' && event.data.name === 'compress',
-  )
-  let schemaValid = false
-  const call = compressCalls[0]
-  if (call?.type === 'tool/call') {
-    try {
-      const parsed = JSON.parse(call.data.arguments) as {
-        topic?: string
-        content?: Array<{ startRef?: string; endRef?: string; summary?: string }>
-      }
-      schemaValid =
-        typeof parsed.topic === 'string' &&
-        Array.isArray(parsed.content) &&
-        parsed.content.length > 0 &&
-        parsed.content.every(
-          (entry) =>
-            typeof entry.startRef === 'string' &&
-            typeof entry.endRef === 'string' &&
-            typeof entry.summary === 'string',
-        )
-    } catch {
-      schemaValid = false
-    }
-  }
-  const committed = reduceDcpState(events).activeBlockRefs.length > 0
-  const errorResult = events.find(
-    (event) => event.type === 'tool/result' && event.data.message.content[0]?.isError,
-  )
-  return {
-    schemaValid,
-    committed,
-    ...(errorResult?.type === 'tool/result'
-      ? {
-          errorText: errorResult.data.message.content[0]?.content
-            .filter((block) => block.type === 'text')
-            .map((block) => (block.type === 'text' ? block.text : ''))
-            .join(' '),
-        }
-      : {}),
-  }
-}
-
-async function probeForced(ctx: Context, index: number): Promise<ProbeResult> {
-  const agent = ctx.agentLoop.create(SessionId(`probe-${index}-${Date.now()}`), {
-    provider: 'go',
-    model,
-    maxTokens: 1000,
-  })
-  agent.followup(user('First turn: say hello in one line.'))
-  await waitForIdle(ctx, agent)
-  agent.followup(
-    user(
-      'Second turn: boundary markers m0001 and m0002 are visible. Use the compress tool on range m0001..m0002 with a short summary, then confirm in one line.',
-    ),
-  )
-  await waitForIdle(ctx, agent)
-  return summarizeProbe(agent.session.snapshotEvents())
-}
-
-async function probeAutonomous(ctx: Context, index: number): Promise<ProbeResult> {
-  const agent = ctx.agentLoop.create(SessionId(`autonomous-${index}-${Date.now()}`), {
-    provider: 'go',
-    model,
-    maxTokens: 1000,
-  })
-  const paragraph =
-    'We are building a context management plugin for an agent harness. ' +
-    'It replaces closed conversation ranges with high-fidelity summaries, keeps protected ' +
-    'tool outputs verbatim, deduplicates repeated tool calls, and exposes recovery commands. ' +
-    'The boundary protocol logs markers per step so the model can reference closed ranges. ' +
-    'Nested compression preserves prior block summaries in an appendix. ' +
-    'Automatic strategies run before each request and remain idempotent across restarts.'
-  agent.followup(
-    user(`First turn: read and retain the following context for later work:\n\n${paragraph}`),
-  )
-  await waitForIdle(ctx, agent)
-  agent.followup(
-    user('Second turn: continue working on the retained context and reply briefly.'),
-  )
-  await waitForIdle(ctx, agent)
-  return summarizeProbe(agent.session.snapshotEvents())
-}
-
-async function probeCorrection(ctx: Context, index: number): Promise<ProbeResult> {
-  const agent = ctx.agentLoop.create(SessionId(`correction-${index}-${Date.now()}`), {
-    provider: 'go',
-    model,
-    maxTokens: 1000,
-  })
-  agent.followup(user('First turn: say hello in one line.'))
-  await waitForIdle(ctx, agent)
-  agent.followup(
-    user('Second turn: use the compress tool on range m0001..m9999 with a short summary.'),
-  )
-  await waitForIdle(ctx, agent)
-  agent.followup(
-    user(
-      'Third turn: the previous range was invalid. Retry with a valid closed range that can actually be compressed.',
-    ),
-  )
-  await waitForIdle(ctx, agent)
-  const events = agent.session.snapshotEvents()
-  const result = summarizeProbe(events)
-  const firstError = events.some(
-    (event, index) =>
-      event.type === 'tool/result' &&
-      event.data.message.content[0]?.isError &&
-      events
-        .slice(0, index)
-        .some(
-          (call) =>
-            call.type === 'tool/call' &&
-            String(call.data.callId) === String(event.data.message.source.callId),
-        ),
-  )
-  result.committed = result.committed && firstError
-  return result
-}
-
-async function probeNested(ctx: Context, index: number): Promise<ProbeResult> {
-  const agent = ctx.agentLoop.create(SessionId(`nested-${index}-${Date.now()}`), {
-    provider: 'go',
-    model,
-    maxTokens: 1000,
-  })
-  agent.followup(user('First turn: describe a small project in one sentence.'))
-  await waitForIdle(ctx, agent)
-  agent.followup(
-    user(
-      'Second turn: use the compress tool on range m0001..m0002 with summary "first block".',
-    ),
-  )
-  await waitForIdle(ctx, agent)
-  agent.followup(
-    user(
-      'Third turn: now compress the range b1..m0003 with summary "nested over prior". Keep prior block facts.',
-    ),
-  )
-  await waitForIdle(ctx, agent)
-  const events = agent.session.snapshotEvents()
-  const state = reduceDcpState(events)
-  const newBlocks = state.blocks.filter((block) => block.meta.kind === 'summary')
-  const nestedCommitted =
-    newBlocks.length >= 2 &&
-    newBlocks.at(-1)!.meta.consumedBlockRefs.includes('b1') &&
-    state.activeBlockRefs.includes(newBlocks.at(-1)!.ref)
-  const base = summarizeProbe(events)
-  const result: ProbeResult = {
-    schemaValid: base.schemaValid,
-    committed: nestedCommitted,
-  }
-  const text = agent.session
-    .deriveMessages()
-    .flatMap((message) => message.content)
-    .filter((block) => block.type === 'text')
-    .map((block) => (block.type === 'text' ? block.text : ''))
-    .join('\n')
-  result.priorBlockPreserved = text.includes('Included prior blocks')
-  return result
-}
-
-async function main(): Promise<void> {
-  const ctx = new Context()
-  await mountAgentLoopTestDependencies(ctx, {
-    systemPrompt: {
-      persona:
-        'You are a DCP probe agent. Follow tool instructions exactly; call compress with valid mNNNN refs.',
-    },
-  })
-  await ctx.plugin(SessionProjectionRegistry)
-  await ctx.plugin(TokenMeter)
-  await ctx.plugin(CommandRuntime)
-  await ctx.plugin(AgentLoop, { agents: [] })
-  ctx.llm.registerAdapter(
-    ['go'],
-    new OpenCodeGoAdapter({ baseUrl, apiKey: apiKey as string, model }),
-  )
-  await ctx.plugin(
-    dcpPlugin as unknown as Plugin,
-    resolveConfig({ compress: { retainRecentTurns: 1, minNetSavingsTokens: 1 } }),
-  )
-
-  const scenario = process.env.DSH_DCP_PROBE_SCENARIO ?? 'forced'
-  const runner =
-    scenario === 'correction'
-      ? probeCorrection
-      : scenario === 'nested'
-        ? probeNested
-        : scenario === 'autonomous'
-          ? probeAutonomous
-          : probeForced
-  const results: ProbeResult[] = []
-  for (let index = 0; index < count; index++) {
-    results.push(await runner(ctx, index))
-  }
-  await ctx.fiber.dispose()
-
-  const valid = results.filter((result) => result.schemaValid).length
-  const committed = results.filter((result) => result.committed).length
-  const errors = results
-    .filter((result) => result.errorText !== undefined)
-    .map((result) => result.errorText)
-  const prior = results.filter((result) => result.priorBlockPreserved).length
-  console.log(
-    `real-model-probes [${scenario}]: ${count} probes, schema-valid ${valid}/${count}, committed ${committed}/${count}` +
-      (scenario === 'nested' ? `, prior-block preserved ${prior}/${count}` : ''),
-  )
-  if (errors.length > 0) console.log(`real-model-probes errors:\n${errors.join('\n---\n')}`)
-
-  const lines = [
-    `# Real-model probes — ${scenario} (${new Date().toISOString()})`,
-    '',
-    `- count: ${count}`,
-    `- schema-valid: ${valid}/${count}`,
-    `- committed: ${committed}/${count}`,
-    ...(scenario === 'nested' ? [`- prior-block preserved: ${prior}/${count}`] : []),
-    '- results:',
-    ...results.map((result, index) => `  ${index + 1}. ${JSON.stringify(result)}`),
-    '',
+const runs: Array<{ run: number; exitCode: number; assertions: Assertion[] }> = []
+const metrics: string[] = []
+for (let index = 0; index < count; index++) {
+  const jsonFile = resolve(outputRoot, `run-${index + 1}.json`)
+  const args = [
+    'node_modules/vitest/vitest.mjs',
+    'run',
+    ...(scenario === 'forced' ? ['tests/e2e-real/agent.spec.ts'] : ['tests/e2e-real']),
+    '--reporter=default',
+    '--reporter=json',
   ]
-  await writeFile(`docs/real-model-probes-${scenario}.md`, lines.join('\n'), 'utf8')
+  if (scenario !== 'all' && scenario !== 'forced') {
+    args.push('--testNamePattern', scenario === 'correction' ? 'partial' : scenario)
+  }
+  let output = ''
+  const exitCode = await new Promise<number>((resolveExit, reject) => {
+    const child = spawn(process.execPath, args, {
+      cwd: root,
+      env: { ...process.env, DSH_DCP_REAL_MODEL: '1', TMPDIR: resolve(root, '.tmp-vitest') },
+      stdio: ['ignore', 'pipe', 'pipe'],
+    })
+    child.stdout.on('data', (chunk) => {
+      output += String(chunk)
+    })
+    child.stderr.on('data', (chunk) => {
+      output += String(chunk)
+    })
+    child.on('error', reject)
+    child.on('close', (code) => resolveExit(code ?? 1))
+  })
+  output = redact(output)
+  await writeFile(resolve(outputRoot, `run-${index + 1}.log`), output, { flag: 'wx' })
+  await writeFile(resolve(evidenceRoot, `run-${index + 1}.txt`), output, { flag: 'wx' })
+  const jsonLine = output
+    .split('\n')
+    .find((line) => line.trim().startsWith('{"numTotalTestSuites"'))
+  if (jsonLine === undefined)
+    throw new Error('Vitest did not produce its structured report; see the redacted run log')
+  const report = JSON.parse(jsonLine) as Report
+  await writeFile(jsonFile, jsonLine, { flag: 'wx' })
+  await writeFile(resolve(evidenceRoot, `run-${index + 1}.json`), jsonLine, { flag: 'wx' })
+  const plainOutput = output
+    .split('\n')
+    .filter((line) => line !== jsonLine)
+    .join('\n')
+  console.log(plainOutput)
+  const assertions = (report.testResults ?? [])
+    .filter((file) =>
+      ['agent.spec.ts', 'matrix.spec.ts', 'small-range.spec.ts'].includes(basename(file.name)),
+    )
+    .flatMap((file) => file.assertionResults)
+    .filter(
+      (test) =>
+        test.fullName.startsWith('real agent + configured real model') ||
+        test.fullName.startsWith('real provider quality matrix') ||
+        test.fullName.startsWith('real provider small-range quality'),
+    )
+  const selected =
+    scenario === 'all'
+      ? assertions
+      : assertions.filter((test) => test.status !== 'pending' && test.status !== 'skipped')
+  const effectiveExit =
+    exitCode === 0 && selected.length > 0 && selected.every((test) => test.status === 'passed')
+      ? 0
+      : 1
+  runs.push({ run: index + 1, exitCode: effectiveExit, assertions: selected })
+  console.log(
+    `Real run ${index + 1}: ${selected.filter((test) => test.status === 'passed').length}/${selected.length} real scenarios passed`,
+  )
+  metrics.push(...output.split('\n').filter((line) => line.includes('REAL_MODEL_METRICS')))
+  if (effectiveExit !== 0) break
 }
-
-await main()
+const commit = execFileSync('git', ['rev-parse', 'HEAD'], {
+  cwd: root,
+  encoding: 'utf8',
+}).trim()
+const lines = [
+  `# Real-model validation — ${stamp}`,
+  '',
+  `- Model: ${config.model}; provider: ${config.provider}; gateway: ${new URL(config.baseUrl).host}`,
+  `- Thinking: ${config.thinking ?? 'provider default'}; scenario: ${scenario}`,
+  `- Source commit: ${commit}; working-tree changes included in this run.`,
+  `- Source fingerprint (SHA-256): ${sourceFingerprint}; [file manifest](./${stamp}/source-manifest.json).`,
+  `- Requested repeats: ${count}; completed: ${runs.length}. Credentials are never part of the report.`,
+  '',
+  '| Run | Test | Result |',
+  '| --- | --- | --- |',
+  ...runs.flatMap((run) =>
+    run.assertions.map(
+      (test) => `| ${run.run} | ${test.fullName.replaceAll('|', '/')} | ${test.status} |`,
+    ),
+  ),
+  '',
+  '## Failures and run logs',
+  '',
+  ...runs.flatMap((run) => [
+    `- Run ${run.run}: [redacted log](./${stamp}/run-${run.run}.txt), [structured results](./${stamp}/run-${run.run}.json).`,
+    ...run.assertions
+      .filter((test) => test.status !== 'passed')
+      .map((test) => {
+        const reason = test.failureMessages?.[0]?.split('\n')[0]?.slice(0, 400)
+        return `  - ${test.fullName}: ${reason ?? test.status}`
+      }),
+  ]),
+  '',
+  '## Measured diagnostics',
+  '',
+  '```text',
+  ...metrics,
+  '```',
+  '',
+  'The partial case uses an explicitly declared transient commit fault with a real model; it is not an observed provider outage.',
+  'These results cover this model, gateway and fixture corpus; they do not establish behavior for all models.',
+  '',
+]
+const reportPath = resolve(docsRoot, `${stamp}.md`)
+await writeFile(reportPath, redact(lines.join('\n')), { flag: 'wx' })
+console.log(`real-model-probes: report ${reportPath}`)
+if (runs.some((run) => run.exitCode !== 0)) process.exitCode = 1

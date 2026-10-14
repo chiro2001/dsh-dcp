@@ -1,0 +1,58 @@
+{
+  "runId": "2026-10-14T13-30-33-997Z-single-ledger-prepare",
+  "taskId": "single-ledger-repair-v1",
+  "arm": "prepare",
+  "replicate": 1,
+  "model": "deepseek-flash",
+  "provider": "deepseek",
+  "startedAt": 1791984635828,
+  "version": 1,
+  "attempts": [
+    {
+      "attemptId": "2026-10-14T13-30-33-997Z-single-ledger-prepare:1",
+      "metadata": {
+        "agentId": "2026-10-14T13-30-33-997Z-single-ledger-prepare",
+        "sessionId": "2026-10-14T13-30-33-997Z-single-ledger-prepare",
+        "purpose": "conversation",
+        "startedAt": 1791984635896,
+        "requestHash": "4de81d95434f01e660b3224a7cab15a8dfb4e65dafd2c9fc4ba416e3c88f6823",
+        "turn": 4,
+        "step": 1
+      },
+      "prices": {
+        "currency": "USD",
+        "date": "2026-10-14",
+        "source": "https://api-docs.deepseek.com/quick_start/pricing",
+        "retrievedAt": "2026-10-14",
+        "model": "deepseek-flash",
+        "window": "off-peak",
+        "rates": {
+          "uncachedInputPerMillion": 0.15,
+          "cacheReadPerMillion": 0.003,
+          "outputPerMillion": 0.6
+        }
+      },
+      "status": "success",
+      "finishedAt": 1791984643960,
+      "usage": {
+        "uncachedInputTokens": 478056,
+        "cacheReadTokens": 0,
+        "outputTokens": 2
+      },
+      "cost": 0.07170959999999998
+    }
+  ],
+  "outcome": "failure",
+  "success": false,
+  "finishedAt": 1791984643963,
+  "externalCost": 0,
+  "usageComplete": true,
+  "usageTotals": {
+    "uncachedInputTokens": 478056,
+    "cacheReadTokens": 0,
+    "outputTokens": 2,
+    "reasoningTokens": 0
+  },
+  "knownCost": 0.07170959999999998,
+  "totalCost": 0.07170959999999998
+}

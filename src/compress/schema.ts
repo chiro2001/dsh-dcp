@@ -211,7 +211,7 @@ export function validateCompressArgs(args: unknown, maxRanges: number): string[]
       const summary = range.summary.trim()
       if (/^\[b\d+\]/.test(summary)) {
         errors.push(`content[${index}].summary must not start with a blockRef marker like [b1]`)
-      } else if (/^<dcp-inline-cleanup\b/i.test(summary)) {
+      } else if (/^<dcp-(?:inline-cleanup|cleanup|archived|rejected)\b/i.test(summary)) {
         errors.push(
           `content[${index}].summary must contain technical content, not a cleanup marker`,
         )

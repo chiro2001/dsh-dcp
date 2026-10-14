@@ -1,0 +1,1249 @@
+{
+  "generatedAt": "2026-10-14T06:25:00.730Z",
+  "sampleDesign": "up to 30 per logical header version; compressed-size tertiles crossed with creation-time quantiles; largest file forced into each version group",
+  "guardrails": {
+    "maximumCompressedBytesPerRead": 67108864,
+    "maximumUncompressedBytesPerRead": 268435456,
+    "skippedOrUnreadableSamples": 0,
+    "rawContentPersisted": false,
+    "modelCalls": 0,
+    "excludesExistingFrontendProjects": true
+  },
+  "discovery": {
+    "candidateFiles": 817,
+    "readableHeaders": 817,
+    "excludedProjectDirectories": 3,
+    "excludedByHeaderCwd": 0,
+    "headerFrameReadFailures": 0,
+    "malformedHeaders": 0,
+    "metadataStatFailures": 0
+  },
+  "summary": {
+    "physicalTraceFiles": 817,
+    "uniqueLogicalSessionIds": 816,
+    "uniqueSessionVersionPairs": 817,
+    "families": {
+      "base/v0": 502,
+      "v3/v3": 315
+    },
+    "sizeDistribution": {
+      "totalCompressedBytes": 721753292,
+      "over500KiB": 459,
+      "over1MiB": 242,
+      "over5MiB": 10
+    },
+    "byVersion": [
+      {
+        "headerVersion": 0,
+        "uniqueSessionVersions": 502,
+        "sampledSessions": 30,
+        "decodedSessions": 30,
+        "sizeBytes": {
+          "p50": 576673,
+          "p90": 1888522,
+          "max": 14834453
+        },
+        "createdAtMs": {
+          "min": 1786634325913,
+          "max": 1789059440533
+        },
+        "sampleContent": {
+          "events": 2026140,
+          "turns": 258,
+          "steps": 3640,
+          "userMessages": 3705,
+          "assistantMessages": 3645,
+          "toolResults": 4081,
+          "packedStorageRows": 68712,
+          "completeSessions": 30,
+          "meanTurnsPerSession": 8.6,
+          "uncompressedPersistedLogBytes": 80763855,
+          "serializedFinalMessageEventDataBytes": 24183545,
+          "serializedMessageDataToLogRatio": 0.29943524860223675,
+          "note": "serialized event-data bytes are not replayed request-surface bytes or a context-window estimate",
+          "messageDataBytesP50": 801,
+          "messageDataBytesP90": 5242
+        },
+        "detailedBehavior": {
+          "versionedSampleCopies": 30,
+          "distinctSampleSessionIds": 30,
+          "sessionLineage": {
+            "root": {
+              "samples": 12,
+              "distinctSessionIds": 12,
+              "stepTurns": {
+                "sessions": 12,
+                "distinctSessionIds": 12,
+                "turns": 227,
+                "stepCountPerTurn": {
+                  "p50": 5,
+                  "p90": 19,
+                  "max": 45,
+                  "zeroStepTurns": 0,
+                  "over20": {
+                    "count": 18,
+                    "share": 0.07929515418502203
+                  },
+                  "over50": {
+                    "count": 0,
+                    "share": 0
+                  },
+                  "over100": {
+                    "count": 0,
+                    "share": 0
+                  }
+                }
+              }
+            },
+            "child": {
+              "samples": 18,
+              "distinctSessionIds": 18,
+              "stepTurns": {
+                "sessions": 18,
+                "distinctSessionIds": 18,
+                "turns": 31,
+                "stepCountPerTurn": {
+                  "p50": 50,
+                  "p90": 116,
+                  "max": 176,
+                  "zeroStepTurns": 0,
+                  "over20": {
+                    "count": 26,
+                    "share": 0.8387096774193549
+                  },
+                  "over50": {
+                    "count": 15,
+                    "share": 0.4838709677419355
+                  },
+                  "over100": {
+                    "count": 6,
+                    "share": 0.1935483870967742
+                  }
+                }
+              }
+            },
+            "seedBacked": {
+              "samples": 0,
+              "distinctSessionIds": 0,
+              "stepTurns": {
+                "sessions": 0,
+                "distinctSessionIds": 0,
+                "turns": 0,
+                "stepCountPerTurn": {
+                  "p50": 0,
+                  "p90": 0,
+                  "max": 0,
+                  "zeroStepTurns": 0,
+                  "over20": {
+                    "count": 0,
+                    "share": 0
+                  },
+                  "over50": {
+                    "count": 0,
+                    "share": 0
+                  },
+                  "over100": {
+                    "count": 0,
+                    "share": 0
+                  }
+                }
+              },
+              "seedLength": {
+                "p50": 0,
+                "p90": 0,
+                "max": 0
+              }
+            },
+            "noNonzeroSeed": {
+              "samples": 30,
+              "distinctSessionIds": 30,
+              "stepTurns": {
+                "sessions": 30,
+                "distinctSessionIds": 30,
+                "turns": 258,
+                "stepCountPerTurn": {
+                  "p50": 6,
+                  "p90": 30,
+                  "max": 176,
+                  "zeroStepTurns": 0,
+                  "over20": {
+                    "count": 44,
+                    "share": 0.17054263565891473
+                  },
+                  "over50": {
+                    "count": 15,
+                    "share": 0.05813953488372093
+                  },
+                  "over100": {
+                    "count": 6,
+                    "share": 0.023255813953488372
+                  }
+                }
+              }
+            }
+          },
+          "stepTurns": {
+            "sessions": 30,
+            "distinctSessionIds": 30,
+            "turns": 258,
+            "stepCountPerTurn": {
+              "p50": 6,
+              "p90": 30,
+              "max": 176,
+              "zeroStepTurns": 0,
+              "over20": {
+                "count": 44,
+                "share": 0.17054263565891473
+              },
+              "over50": {
+                "count": 15,
+                "share": 0.05813953488372093
+              },
+              "over100": {
+                "count": 6,
+                "share": 0.023255813953488372
+              }
+            }
+          },
+          "contentCosts": {
+            "characterUnit": "Unicode code points",
+            "categories": {
+              "userBodyTextChars": {
+                "chars": 528551,
+                "share": 0.03092870313978261,
+                "lastTwoTurnChars": 140739,
+                "lastTwoTurnShareOfCategory": 0.26627326407480073
+              },
+              "assistantBodyTextChars": {
+                "chars": 345359,
+                "share": 0.020209035623151187,
+                "lastTwoTurnChars": 95368,
+                "lastTwoTurnShareOfCategory": 0.27614163812149095
+              },
+              "reasoningChars": {
+                "chars": 3805094,
+                "share": 0.22265897282375394,
+                "lastTwoTurnChars": 1687795,
+                "lastTwoTurnShareOfCategory": 0.4435619724506149
+              },
+              "toolCallArgumentChars": {
+                "chars": 2403002,
+                "share": 0.14061412333399026,
+                "lastTwoTurnChars": 1235469,
+                "lastTwoTurnShareOfCategory": 0.5141356519886375
+              },
+              "toolResultBodyTextChars": {
+                "chars": 10007330,
+                "share": 0.585589165079322,
+                "lastTwoTurnChars": 5004697,
+                "lastTwoTurnShareOfCategory": 0.5001031244098076
+              }
+            },
+            "totalTextAndArgumentsChars": 17089336,
+            "nonTextBlocks": {
+              "total": 4081,
+              "toolResultWrappers": 4081,
+              "otherTaggedNonTextBlocks": 0,
+              "inUserMessages": 0,
+              "inAssistantMessages": 0,
+              "inToolResults": 4081
+            },
+            "allCategoryLastTwoTurnShare": 0.47772880116582644,
+            "perSessionLastTwoTurnShare": {
+              "p50": 1,
+              "p90": 1,
+              "max": 1,
+              "sessionsWithText": 27
+            },
+            "missingMessageContentEvents": 0,
+            "method": "final user/message data.content, assistant/message data.message.content, tool/result data.message.content; recursive text/reasoning/tool-call.arguments only; excludes stream, assistant/chunk, and event JSON wrappers; non-text count includes tool-result wrappers, reported separately",
+            "interpretation": "last-two-turn share is append-only message-body concentration, not final replay surface or request token cost"
+          }
+        },
+        "sampleStrata": {
+          "small": 9,
+          "medium": 10,
+          "large": 10,
+          "largest": 1
+        }
+      },
+      {
+        "headerVersion": 3,
+        "uniqueSessionVersions": 315,
+        "sampledSessions": 30,
+        "decodedSessions": 30,
+        "sizeBytes": {
+          "p50": 783142,
+          "p90": 1700740,
+          "max": 17079231
+        },
+        "createdAtMs": {
+          "min": 1789036527526,
+          "max": 1790443038307
+        },
+        "sampleContent": {
+          "events": 42989,
+          "turns": 360,
+          "steps": 7791,
+          "userMessages": 644,
+          "assistantMessages": 7788,
+          "toolResults": 8259,
+          "packedStorageRows": 0,
+          "completeSessions": 30,
+          "meanTurnsPerSession": 12,
+          "uncompressedPersistedLogBytes": 152769666,
+          "serializedFinalMessageEventDataBytes": 135279563,
+          "serializedMessageDataToLogRatio": 0.8855132471128137,
+          "note": "serialized event-data bytes are not replayed request-surface bytes or a context-window estimate",
+          "messageDataBytesP50": 3486,
+          "messageDataBytesP90": 18981
+        },
+        "detailedBehavior": {
+          "versionedSampleCopies": 30,
+          "distinctSampleSessionIds": 30,
+          "sessionLineage": {
+            "root": {
+              "samples": 5,
+              "distinctSessionIds": 5,
+              "stepTurns": {
+                "sessions": 5,
+                "distinctSessionIds": 5,
+                "turns": 325,
+                "stepCountPerTurn": {
+                  "p50": 5,
+                  "p90": 14,
+                  "max": 255,
+                  "zeroStepTurns": 1,
+                  "over20": {
+                    "count": 18,
+                    "share": 0.055384615384615386
+                  },
+                  "over50": {
+                    "count": 5,
+                    "share": 0.015384615384615385
+                  },
+                  "over100": {
+                    "count": 3,
+                    "share": 0.009230769230769232
+                  }
+                }
+              }
+            },
+            "child": {
+              "samples": 25,
+              "distinctSessionIds": 25,
+              "stepTurns": {
+                "sessions": 25,
+                "distinctSessionIds": 25,
+                "turns": 35,
+                "stepCountPerTurn": {
+                  "p50": 120,
+                  "p90": 312,
+                  "max": 463,
+                  "zeroStepTurns": 0,
+                  "over20": {
+                    "count": 33,
+                    "share": 0.9428571428571428
+                  },
+                  "over50": {
+                    "count": 26,
+                    "share": 0.7428571428571429
+                  },
+                  "over100": {
+                    "count": 22,
+                    "share": 0.6285714285714286
+                  }
+                }
+              }
+            },
+            "seedBacked": {
+              "samples": 0,
+              "distinctSessionIds": 0,
+              "stepTurns": {
+                "sessions": 0,
+                "distinctSessionIds": 0,
+                "turns": 0,
+                "stepCountPerTurn": {
+                  "p50": 0,
+                  "p90": 0,
+                  "max": 0,
+                  "zeroStepTurns": 0,
+                  "over20": {
+                    "count": 0,
+                    "share": 0
+                  },
+                  "over50": {
+                    "count": 0,
+                    "share": 0
+                  },
+                  "over100": {
+                    "count": 0,
+                    "share": 0
+                  }
+                }
+              },
+              "seedLength": {
+                "p50": 0,
+                "p90": 0,
+                "max": 0
+              }
+            },
+            "noNonzeroSeed": {
+              "samples": 30,
+              "distinctSessionIds": 30,
+              "stepTurns": {
+                "sessions": 30,
+                "distinctSessionIds": 30,
+                "turns": 360,
+                "stepCountPerTurn": {
+                  "p50": 5,
+                  "p90": 44,
+                  "max": 463,
+                  "zeroStepTurns": 1,
+                  "over20": {
+                    "count": 51,
+                    "share": 0.14166666666666666
+                  },
+                  "over50": {
+                    "count": 31,
+                    "share": 0.08611111111111111
+                  },
+                  "over100": {
+                    "count": 25,
+                    "share": 0.06944444444444445
+                  }
+                }
+              }
+            }
+          },
+          "stepTurns": {
+            "sessions": 30,
+            "distinctSessionIds": 30,
+            "turns": 360,
+            "stepCountPerTurn": {
+              "p50": 5,
+              "p90": 44,
+              "max": 463,
+              "zeroStepTurns": 1,
+              "over20": {
+                "count": 51,
+                "share": 0.14166666666666666
+              },
+              "over50": {
+                "count": 31,
+                "share": 0.08611111111111111
+              },
+              "over100": {
+                "count": 25,
+                "share": 0.06944444444444445
+              }
+            }
+          },
+          "contentCosts": {
+            "characterUnit": "Unicode code points",
+            "categories": {
+              "userBodyTextChars": {
+                "chars": 1382359,
+                "share": 0.03904954917252133,
+                "lastTwoTurnChars": 158958,
+                "lastTwoTurnShareOfCategory": 0.1149903896165902
+              },
+              "assistantBodyTextChars": {
+                "chars": 701745,
+                "share": 0.01982323396749396,
+                "lastTwoTurnChars": 153515,
+                "lastTwoTurnShareOfCategory": 0.21876180093908756
+              },
+              "reasoningChars": {
+                "chars": 11968770,
+                "share": 0.33809963450131125,
+                "lastTwoTurnChars": 7090681,
+                "lastTwoTurnShareOfCategory": 0.5924318873200839
+              },
+              "toolCallArgumentChars": {
+                "chars": 8107051,
+                "share": 0.22901191851656352,
+                "lastTwoTurnChars": 4695073,
+                "lastTwoTurnShareOfCategory": 0.5791345089601632
+              },
+              "toolResultBodyTextChars": {
+                "chars": 13240202,
+                "share": 0.37401566384210994,
+                "lastTwoTurnChars": 9498835,
+                "lastTwoTurnShareOfCategory": 0.7174237220852069
+              }
+            },
+            "totalTextAndArgumentsChars": 35400127,
+            "nonTextBlocks": {
+              "total": 8259,
+              "toolResultWrappers": 8259,
+              "otherTaggedNonTextBlocks": 0,
+              "inUserMessages": 0,
+              "inAssistantMessages": 0,
+              "inToolResults": 8259
+            },
+            "allCategoryLastTwoTurnShare": 0.6100843084545996,
+            "perSessionLastTwoTurnShare": {
+              "p50": 1,
+              "p90": 1,
+              "max": 1,
+              "sessionsWithText": 30
+            },
+            "missingMessageContentEvents": 0,
+            "method": "final user/message data.content, assistant/message data.message.content, tool/result data.message.content; recursive text/reasoning/tool-call.arguments only; excludes stream, assistant/chunk, and event JSON wrappers; non-text count includes tool-result wrappers, reported separately",
+            "interpretation": "last-two-turn share is append-only message-body concentration, not final replay surface or request token cost"
+          }
+        },
+        "sampleStrata": {
+          "small": 9,
+          "medium": 10,
+          "large": 10,
+          "largest": 1
+        }
+      }
+    ],
+    "detailedBehavior": {
+      "versionedSampleCopies": 60,
+      "distinctSampleSessionIds": 60,
+      "repeatedSessionCopiesAcrossVersions": 0,
+      "distinctSessionAnalysis": {
+        "versionedSampleCopies": 60,
+        "distinctSampleSessionIds": 60,
+        "sessionLineage": {
+          "root": {
+            "samples": 17,
+            "distinctSessionIds": 17,
+            "stepTurns": {
+              "sessions": 17,
+              "distinctSessionIds": 17,
+              "turns": 552,
+              "stepCountPerTurn": {
+                "p50": 5,
+                "p90": 16,
+                "max": 255,
+                "zeroStepTurns": 1,
+                "over20": {
+                  "count": 36,
+                  "share": 0.06521739130434782
+                },
+                "over50": {
+                  "count": 5,
+                  "share": 0.009057971014492754
+                },
+                "over100": {
+                  "count": 3,
+                  "share": 0.005434782608695652
+                }
+              }
+            }
+          },
+          "child": {
+            "samples": 43,
+            "distinctSessionIds": 43,
+            "stepTurns": {
+              "sessions": 43,
+              "distinctSessionIds": 43,
+              "turns": 66,
+              "stepCountPerTurn": {
+                "p50": 79,
+                "p90": 223,
+                "max": 463,
+                "zeroStepTurns": 0,
+                "over20": {
+                  "count": 59,
+                  "share": 0.8939393939393939
+                },
+                "over50": {
+                  "count": 41,
+                  "share": 0.6212121212121212
+                },
+                "over100": {
+                  "count": 28,
+                  "share": 0.42424242424242425
+                }
+              }
+            }
+          },
+          "seedBacked": {
+            "samples": 0,
+            "distinctSessionIds": 0,
+            "stepTurns": {
+              "sessions": 0,
+              "distinctSessionIds": 0,
+              "turns": 0,
+              "stepCountPerTurn": {
+                "p50": 0,
+                "p90": 0,
+                "max": 0,
+                "zeroStepTurns": 0,
+                "over20": {
+                  "count": 0,
+                  "share": 0
+                },
+                "over50": {
+                  "count": 0,
+                  "share": 0
+                },
+                "over100": {
+                  "count": 0,
+                  "share": 0
+                }
+              }
+            },
+            "seedLength": {
+              "p50": 0,
+              "p90": 0,
+              "max": 0
+            }
+          },
+          "noNonzeroSeed": {
+            "samples": 60,
+            "distinctSessionIds": 60,
+            "stepTurns": {
+              "sessions": 60,
+              "distinctSessionIds": 60,
+              "turns": 618,
+              "stepCountPerTurn": {
+                "p50": 5,
+                "p90": 36,
+                "max": 463,
+                "zeroStepTurns": 1,
+                "over20": {
+                  "count": 95,
+                  "share": 0.15372168284789645
+                },
+                "over50": {
+                  "count": 46,
+                  "share": 0.0744336569579288
+                },
+                "over100": {
+                  "count": 31,
+                  "share": 0.05016181229773463
+                }
+              }
+            }
+          }
+        },
+        "stepTurns": {
+          "sessions": 60,
+          "distinctSessionIds": 60,
+          "turns": 618,
+          "stepCountPerTurn": {
+            "p50": 5,
+            "p90": 36,
+            "max": 463,
+            "zeroStepTurns": 1,
+            "over20": {
+              "count": 95,
+              "share": 0.15372168284789645
+            },
+            "over50": {
+              "count": 46,
+              "share": 0.0744336569579288
+            },
+            "over100": {
+              "count": 31,
+              "share": 0.05016181229773463
+            }
+          }
+        },
+        "contentCosts": {
+          "characterUnit": "Unicode code points",
+          "categories": {
+            "userBodyTextChars": {
+              "chars": 1910910,
+              "share": 0.03640559249005843,
+              "lastTwoTurnChars": 299697,
+              "lastTwoTurnShareOfCategory": 0.15683470179129316
+            },
+            "assistantBodyTextChars": {
+              "chars": 1047104,
+              "share": 0.01994884192280649,
+              "lastTwoTurnChars": 248883,
+              "lastTwoTurnShareOfCategory": 0.2376869919320335
+            },
+            "reasoningChars": {
+              "chars": 15773864,
+              "share": 0.3005148671458117,
+              "lastTwoTurnChars": 8778476,
+              "lastTwoTurnShareOfCategory": 0.55652033008526
+            },
+            "toolCallArgumentChars": {
+              "chars": 10510053,
+              "share": 0.200231673164574,
+              "lastTwoTurnChars": 5930542,
+              "lastTwoTurnShareOfCategory": 0.5642732724563806
+            },
+            "toolResultBodyTextChars": {
+              "chars": 23247532,
+              "share": 0.44289902527674935,
+              "lastTwoTurnChars": 14503532,
+              "lastTwoTurnShareOfCategory": 0.6238740525230807
+            }
+          },
+          "totalTextAndArgumentsChars": 52489463,
+          "nonTextBlocks": {
+            "total": 12340,
+            "toolResultWrappers": 12340,
+            "otherTaggedNonTextBlocks": 0,
+            "inUserMessages": 0,
+            "inAssistantMessages": 0,
+            "inToolResults": 12340
+          },
+          "allCategoryLastTwoTurnShare": 0.566992464754307,
+          "perSessionLastTwoTurnShare": {
+            "p50": 1,
+            "p90": 1,
+            "max": 1,
+            "sessionsWithText": 57
+          },
+          "missingMessageContentEvents": 0,
+          "method": "final user/message data.content, assistant/message data.message.content, tool/result data.message.content; recursive text/reasoning/tool-call.arguments only; excludes stream, assistant/chunk, and event JSON wrappers; non-text count includes tool-result wrappers, reported separately",
+          "interpretation": "last-two-turn share is append-only message-body concentration, not final replay surface or request token cost"
+        }
+      }
+    }
+  },
+  "sampleManifest": [
+    {
+      "sessionHash": "022601346cb531dce5d5",
+      "headerVersion": 0,
+      "createdAt": 1786806177216,
+      "compressedBytes": 13082,
+      "fileFamily": "base",
+      "stratum": "v0:small:age-2-of-10",
+      "decoded": true
+    },
+    {
+      "sessionHash": "9ff2cf9dac67959cc147",
+      "headerVersion": 0,
+      "createdAt": 1786983487609,
+      "compressedBytes": 12183,
+      "fileFamily": "base",
+      "stratum": "v0:small:age-3-of-10",
+      "decoded": true
+    },
+    {
+      "sessionHash": "b01f5e5b65632cc48a2e",
+      "headerVersion": 0,
+      "createdAt": 1787011839939,
+      "compressedBytes": 38314,
+      "fileFamily": "base",
+      "stratum": "v0:small:age-4-of-10",
+      "decoded": true
+    },
+    {
+      "sessionHash": "715fd85694ac1a9f9e49",
+      "headerVersion": 0,
+      "createdAt": 1787925951039,
+      "compressedBytes": 336,
+      "fileFamily": "base",
+      "stratum": "v0:small:age-5-of-10",
+      "decoded": true
+    },
+    {
+      "sessionHash": "a6b8962b815106dce157",
+      "headerVersion": 0,
+      "createdAt": 1788307963343,
+      "compressedBytes": 323,
+      "fileFamily": "base",
+      "stratum": "v0:small:age-6-of-10",
+      "decoded": true
+    },
+    {
+      "sessionHash": "226351093f8d8b718c4f",
+      "headerVersion": 0,
+      "createdAt": 1788601050313,
+      "compressedBytes": 27843,
+      "fileFamily": "base",
+      "stratum": "v0:small:age-7-of-10",
+      "decoded": true
+    },
+    {
+      "sessionHash": "d187a10a2770178b67c5",
+      "headerVersion": 0,
+      "createdAt": 1788825844207,
+      "compressedBytes": 390,
+      "fileFamily": "base",
+      "stratum": "v0:small:age-8-of-10",
+      "decoded": true
+    },
+    {
+      "sessionHash": "cf0b88c57dd68d3a3c62",
+      "headerVersion": 0,
+      "createdAt": 1788838118254,
+      "compressedBytes": 8632,
+      "fileFamily": "base",
+      "stratum": "v0:small:age-9-of-10",
+      "decoded": true
+    },
+    {
+      "sessionHash": "193b121e199e5e444445",
+      "headerVersion": 0,
+      "createdAt": 1788861531270,
+      "compressedBytes": 29373,
+      "fileFamily": "base",
+      "stratum": "v0:small:age-10-of-10",
+      "decoded": true
+    },
+    {
+      "sessionHash": "0a0a3d105767512dc05d",
+      "headerVersion": 0,
+      "createdAt": 1787074172527,
+      "compressedBytes": 125376,
+      "fileFamily": "base",
+      "stratum": "v0:medium:age-1-of-10",
+      "decoded": true
+    },
+    {
+      "sessionHash": "f4167e942e28ebf485d0",
+      "headerVersion": 0,
+      "createdAt": 1787933027655,
+      "compressedBytes": 92604,
+      "fileFamily": "base",
+      "stratum": "v0:medium:age-2-of-10",
+      "decoded": true
+    },
+    {
+      "sessionHash": "1ccf53782f331aaa2b41",
+      "headerVersion": 0,
+      "createdAt": 1787970609109,
+      "compressedBytes": 177956,
+      "fileFamily": "base",
+      "stratum": "v0:medium:age-3-of-10",
+      "decoded": true
+    },
+    {
+      "sessionHash": "f64fca1ef4df094b0bf9",
+      "headerVersion": 0,
+      "createdAt": 1788023939603,
+      "compressedBytes": 810477,
+      "fileFamily": "base",
+      "stratum": "v0:medium:age-4-of-10",
+      "decoded": true
+    },
+    {
+      "sessionHash": "21f69a60229f76de592b",
+      "headerVersion": 0,
+      "createdAt": 1788044702774,
+      "compressedBytes": 411455,
+      "fileFamily": "base",
+      "stratum": "v0:medium:age-5-of-10",
+      "decoded": true
+    },
+    {
+      "sessionHash": "6537995ca9aede6de738",
+      "headerVersion": 0,
+      "createdAt": 1788367975378,
+      "compressedBytes": 605193,
+      "fileFamily": "base",
+      "stratum": "v0:medium:age-6-of-10",
+      "decoded": true
+    },
+    {
+      "sessionHash": "483c8c498f409a5fb7d6",
+      "headerVersion": 0,
+      "createdAt": 1788856622469,
+      "compressedBytes": 129597,
+      "fileFamily": "base",
+      "stratum": "v0:medium:age-7-of-10",
+      "decoded": true
+    },
+    {
+      "sessionHash": "000c76486e68153106ad",
+      "headerVersion": 0,
+      "createdAt": 1788931793038,
+      "compressedBytes": 560291,
+      "fileFamily": "base",
+      "stratum": "v0:medium:age-8-of-10",
+      "decoded": true
+    },
+    {
+      "sessionHash": "6f8a58350ed973adb6b3",
+      "headerVersion": 0,
+      "createdAt": 1788934457650,
+      "compressedBytes": 752928,
+      "fileFamily": "base",
+      "stratum": "v0:medium:age-9-of-10",
+      "decoded": true
+    },
+    {
+      "sessionHash": "84eaa4450ca7c5ee1deb",
+      "headerVersion": 0,
+      "createdAt": 1789027473483,
+      "compressedBytes": 558400,
+      "fileFamily": "base",
+      "stratum": "v0:medium:age-10-of-10",
+      "decoded": true
+    },
+    {
+      "sessionHash": "397bf59e9d712e2924a6",
+      "headerVersion": 0,
+      "createdAt": 1787930877598,
+      "compressedBytes": 1069972,
+      "fileFamily": "base",
+      "stratum": "v0:large:age-1-of-10",
+      "decoded": true
+    },
+    {
+      "sessionHash": "9b44a097fda16785afcc",
+      "headerVersion": 0,
+      "createdAt": 1787962116400,
+      "compressedBytes": 3638076,
+      "fileFamily": "base",
+      "stratum": "v0:large:age-2-of-10",
+      "decoded": true
+    },
+    {
+      "sessionHash": "9001af218e2a086abed5",
+      "headerVersion": 0,
+      "createdAt": 1787981627504,
+      "compressedBytes": 983424,
+      "fileFamily": "base",
+      "stratum": "v0:large:age-3-of-10",
+      "decoded": true
+    },
+    {
+      "sessionHash": "07226c4f29597b3ad309",
+      "headerVersion": 0,
+      "createdAt": 1788025799706,
+      "compressedBytes": 1106228,
+      "fileFamily": "base",
+      "stratum": "v0:large:age-4-of-10",
+      "decoded": true
+    },
+    {
+      "sessionHash": "d179d7b29024552801f1",
+      "headerVersion": 0,
+      "createdAt": 1788048778232,
+      "compressedBytes": 961988,
+      "fileFamily": "base",
+      "stratum": "v0:large:age-5-of-10",
+      "decoded": true
+    },
+    {
+      "sessionHash": "62a9043308d31020a06b",
+      "headerVersion": 0,
+      "createdAt": 1788283790469,
+      "compressedBytes": 1681557,
+      "fileFamily": "base",
+      "stratum": "v0:large:age-6-of-10",
+      "decoded": true
+    },
+    {
+      "sessionHash": "e6fd62eb2058cb54f7a9",
+      "headerVersion": 0,
+      "createdAt": 1788396658822,
+      "compressedBytes": 1193223,
+      "fileFamily": "base",
+      "stratum": "v0:large:age-7-of-10",
+      "decoded": true
+    },
+    {
+      "sessionHash": "4e18e830e44bda52bfb6",
+      "headerVersion": 0,
+      "createdAt": 1788468957137,
+      "compressedBytes": 999334,
+      "fileFamily": "base",
+      "stratum": "v0:large:age-8-of-10",
+      "decoded": true
+    },
+    {
+      "sessionHash": "d689c84b1d4689e21929",
+      "headerVersion": 0,
+      "createdAt": 1789027436303,
+      "compressedBytes": 1503724,
+      "fileFamily": "base",
+      "stratum": "v0:large:age-9-of-10",
+      "decoded": true
+    },
+    {
+      "sessionHash": "a061f62a84534ec6eb71",
+      "headerVersion": 0,
+      "createdAt": 1789045607984,
+      "compressedBytes": 2058696,
+      "fileFamily": "base",
+      "stratum": "v0:large:age-10-of-10",
+      "decoded": true
+    },
+    {
+      "sessionHash": "70d4482364d015e8b5d6",
+      "headerVersion": 0,
+      "createdAt": 1787928819665,
+      "compressedBytes": 14834453,
+      "fileFamily": "base",
+      "stratum": "v0:largest",
+      "decoded": true
+    },
+    {
+      "sessionHash": "cb10bd2b51e938d364ab",
+      "headerVersion": 3,
+      "createdAt": 1789067809830,
+      "compressedBytes": 115205,
+      "fileFamily": "v3",
+      "stratum": "v3:small:age-2-of-10",
+      "decoded": true
+    },
+    {
+      "sessionHash": "1edc6d8f4fbddadb251e",
+      "headerVersion": 3,
+      "createdAt": 1789204183808,
+      "compressedBytes": 35530,
+      "fileFamily": "v3",
+      "stratum": "v3:small:age-3-of-10",
+      "decoded": true
+    },
+    {
+      "sessionHash": "978d4f91bf6ec7255101",
+      "headerVersion": 3,
+      "createdAt": 1789234372755,
+      "compressedBytes": 118817,
+      "fileFamily": "v3",
+      "stratum": "v3:small:age-4-of-10",
+      "decoded": true
+    },
+    {
+      "sessionHash": "980e9d4bdb85b2f69fef",
+      "headerVersion": 3,
+      "createdAt": 1789298001103,
+      "compressedBytes": 406139,
+      "fileFamily": "v3",
+      "stratum": "v3:small:age-5-of-10",
+      "decoded": true
+    },
+    {
+      "sessionHash": "46b6f11923da4cfff774",
+      "headerVersion": 3,
+      "createdAt": 1789318373263,
+      "compressedBytes": 20276,
+      "fileFamily": "v3",
+      "stratum": "v3:small:age-6-of-10",
+      "decoded": true
+    },
+    {
+      "sessionHash": "6e995c0e4a1df67f9db7",
+      "headerVersion": 3,
+      "createdAt": 1789454799846,
+      "compressedBytes": 65727,
+      "fileFamily": "v3",
+      "stratum": "v3:small:age-7-of-10",
+      "decoded": true
+    },
+    {
+      "sessionHash": "ec91d9fcd94e3be34afa",
+      "headerVersion": 3,
+      "createdAt": 1789663906202,
+      "compressedBytes": 223485,
+      "fileFamily": "v3",
+      "stratum": "v3:small:age-8-of-10",
+      "decoded": true
+    },
+    {
+      "sessionHash": "e69ff0049f8e5fbb872a",
+      "headerVersion": 3,
+      "createdAt": 1790435385554,
+      "compressedBytes": 66207,
+      "fileFamily": "v3",
+      "stratum": "v3:small:age-9-of-10",
+      "decoded": true
+    },
+    {
+      "sessionHash": "761b98bd1ff06f160a51",
+      "headerVersion": 3,
+      "createdAt": 1790437232408,
+      "compressedBytes": 12677,
+      "fileFamily": "v3",
+      "stratum": "v3:small:age-10-of-10",
+      "decoded": true
+    },
+    {
+      "sessionHash": "8108b558df874f58146b",
+      "headerVersion": 3,
+      "createdAt": 1789071159114,
+      "compressedBytes": 861448,
+      "fileFamily": "v3",
+      "stratum": "v3:medium:age-1-of-10",
+      "decoded": true
+    },
+    {
+      "sessionHash": "0a826356c345ae86387a",
+      "headerVersion": 3,
+      "createdAt": 1789128319495,
+      "compressedBytes": 554536,
+      "fileFamily": "v3",
+      "stratum": "v3:medium:age-2-of-10",
+      "decoded": true
+    },
+    {
+      "sessionHash": "6b4ffd19567eed2a2f65",
+      "headerVersion": 3,
+      "createdAt": 1789144299322,
+      "compressedBytes": 531271,
+      "fileFamily": "v3",
+      "stratum": "v3:medium:age-3-of-10",
+      "decoded": true
+    },
+    {
+      "sessionHash": "4e8a361d95c7192c46e3",
+      "headerVersion": 3,
+      "createdAt": 1789150625755,
+      "compressedBytes": 560096,
+      "fileFamily": "v3",
+      "stratum": "v3:medium:age-4-of-10",
+      "decoded": true
+    },
+    {
+      "sessionHash": "ef0f2637090db8d9c709",
+      "headerVersion": 3,
+      "createdAt": 1789204114123,
+      "compressedBytes": 808412,
+      "fileFamily": "v3",
+      "stratum": "v3:medium:age-5-of-10",
+      "decoded": true
+    },
+    {
+      "sessionHash": "abe2abea3300b57facf0",
+      "headerVersion": 3,
+      "createdAt": 1789222900474,
+      "compressedBytes": 886817,
+      "fileFamily": "v3",
+      "stratum": "v3:medium:age-6-of-10",
+      "decoded": true
+    },
+    {
+      "sessionHash": "795296165d3025ef5fc5",
+      "headerVersion": 3,
+      "createdAt": 1789245855505,
+      "compressedBytes": 966865,
+      "fileFamily": "v3",
+      "stratum": "v3:medium:age-7-of-10",
+      "decoded": true
+    },
+    {
+      "sessionHash": "8ef99b1ff0aba35bd9d5",
+      "headerVersion": 3,
+      "createdAt": 1789283524012,
+      "compressedBytes": 639421,
+      "fileFamily": "v3",
+      "stratum": "v3:medium:age-8-of-10",
+      "decoded": true
+    },
+    {
+      "sessionHash": "a5d2180ea9dabcb6bcee",
+      "headerVersion": 3,
+      "createdAt": 1789303480850,
+      "compressedBytes": 592493,
+      "fileFamily": "v3",
+      "stratum": "v3:medium:age-9-of-10",
+      "decoded": true
+    },
+    {
+      "sessionHash": "8c606be8af5a402559e4",
+      "headerVersion": 3,
+      "createdAt": 1789615320335,
+      "compressedBytes": 508554,
+      "fileFamily": "v3",
+      "stratum": "v3:medium:age-10-of-10",
+      "decoded": true
+    },
+    {
+      "sessionHash": "475f7b9b95f8cfa1206a",
+      "headerVersion": 3,
+      "createdAt": 1789068573708,
+      "compressedBytes": 1884060,
+      "fileFamily": "v3",
+      "stratum": "v3:large:age-1-of-10",
+      "decoded": true
+    },
+    {
+      "sessionHash": "d93a9c823fa791fe6785",
+      "headerVersion": 3,
+      "createdAt": 1789127224154,
+      "compressedBytes": 1184192,
+      "fileFamily": "v3",
+      "stratum": "v3:large:age-2-of-10",
+      "decoded": true
+    },
+    {
+      "sessionHash": "6ca94fc4df1905e34696",
+      "headerVersion": 3,
+      "createdAt": 1789143721986,
+      "compressedBytes": 1849673,
+      "fileFamily": "v3",
+      "stratum": "v3:large:age-3-of-10",
+      "decoded": true
+    },
+    {
+      "sessionHash": "563adad614328caf5dac",
+      "headerVersion": 3,
+      "createdAt": 1789151615140,
+      "compressedBytes": 1187656,
+      "fileFamily": "v3",
+      "stratum": "v3:large:age-4-of-10",
+      "decoded": true
+    },
+    {
+      "sessionHash": "91d749932c5ae5a7c031",
+      "headerVersion": 3,
+      "createdAt": 1789175399643,
+      "compressedBytes": 1657855,
+      "fileFamily": "v3",
+      "stratum": "v3:large:age-5-of-10",
+      "decoded": true
+    },
+    {
+      "sessionHash": "ce76fcf5f11350afe3fe",
+      "headerVersion": 3,
+      "createdAt": 1789221047283,
+      "compressedBytes": 1828152,
+      "fileFamily": "v3",
+      "stratum": "v3:large:age-6-of-10",
+      "decoded": true
+    },
+    {
+      "sessionHash": "11874bfc4b24c5214446",
+      "headerVersion": 3,
+      "createdAt": 1789236066934,
+      "compressedBytes": 1937012,
+      "fileFamily": "v3",
+      "stratum": "v3:large:age-7-of-10",
+      "decoded": true
+    },
+    {
+      "sessionHash": "79adcf47e845a3f59600",
+      "headerVersion": 3,
+      "createdAt": 1789274735442,
+      "compressedBytes": 1510176,
+      "fileFamily": "v3",
+      "stratum": "v3:large:age-8-of-10",
+      "decoded": true
+    },
+    {
+      "sessionHash": "b2feb57d131bd48e59a5",
+      "headerVersion": 3,
+      "createdAt": 1789319996844,
+      "compressedBytes": 1380299,
+      "fileFamily": "v3",
+      "stratum": "v3:large:age-9-of-10",
+      "decoded": true
+    },
+    {
+      "sessionHash": "7200d7e73a77a1b22c36",
+      "headerVersion": 3,
+      "createdAt": 1789824309143,
+      "compressedBytes": 3347109,
+      "fileFamily": "v3",
+      "stratum": "v3:large:age-10-of-10",
+      "decoded": true
+    },
+    {
+      "sessionHash": "2a9d9ffa9a0ef72e91d3",
+      "headerVersion": 3,
+      "createdAt": 1789062136242,
+      "compressedBytes": 17079231,
+      "fileFamily": "v3",
+      "stratum": "v3:largest",
+      "decoded": true
+    }
+  ]
+}

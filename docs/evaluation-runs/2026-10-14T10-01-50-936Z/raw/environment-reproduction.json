@@ -1,0 +1,203 @@
+{
+  "schemaVersion": 1,
+  "snapshotId": "environment-reproduction-20261014T103320Z",
+  "createdAt": "2026-10-14T10:33:20.353198Z",
+  "scope": "Read-only environment inventory. No Harbor job, model API call, or task execution was started while producing this record.",
+  "runtime": {
+    "python": {
+      "version": "3.14.6",
+      "implementation": "CPython",
+      "pipVersion": "26.1.2",
+      "venvPath": ".venv"
+    },
+    "node": {
+      "version": "v26.5.1"
+    },
+    "pnpm": {
+      "version": "11.9.0"
+    },
+    "docker": {
+      "clientVersion": "29.7.1",
+      "serverVersion": "29.7.1",
+      "composeVersion": "5.4.0"
+    },
+    "podmanVersion": "6.0.2",
+    "uvCli": {
+      "available": false,
+      "version": null
+    },
+    "harbor": {
+      "installedDistributionVersion": "0.24.0",
+      "sourcePyprojectVersion": "0.24.0",
+      "installSource": "PyPI wheel, pinned as harbor==0.24.0",
+      "sourceRepositoryCommit": "b53b8134e1241686dca7759af188f987ecc48e8b"
+    }
+  },
+  "repositories": {
+    "terminalBench": {
+      "repository": "https://github.com/harbor-framework/terminal-bench-2",
+      "commit": "2fd12b88aafdd04a52c298e3940bcb189f9766d6",
+      "workingTreeClean": true,
+      "sourceArchive": {
+        "format": "tar",
+        "generatedInMemory": true,
+        "sha256": "58c62c504835d9a9370f7b1c70f9a48f29fb460c914db891a543441b84c00284",
+        "bytes": 47155200
+      }
+    },
+    "harbor": {
+      "repository": "https://github.com/harbor-framework/harbor",
+      "releaseTag": "v0.24.0",
+      "commit": "b53b8134e1241686dca7759af188f987ecc48e8b",
+      "packageVersion": "0.24.0",
+      "workingTreeClean": true,
+      "sourceArchive": {
+        "format": "tar",
+        "generatedInMemory": true,
+        "sha256": "a77cca06d889b5791c0357300c4e7c6a5a344ec6fd7097990b882c4ca93d3f22",
+        "bytes": 92262400
+      },
+      "rootUvLock": {
+        "path": "harbor-source/uv.lock",
+        "sha256": "cb66cdeba0d70cbaa3b89ef490820003973b4044bb39c0fd9986040f5502ccba",
+        "usedForInstalledVenv": false
+      }
+    }
+  },
+  "venv": {
+    "path": ".venv",
+    "lockFiles": [],
+    "pyvenvCfg": {
+      "path": ".venv/pyvenv.cfg",
+      "sha256": "174c1ef5d973df7f472836f78944ac3c037e44fd450bcda1fac25478d0bcb91d"
+    },
+    "pipFreeze": [
+      "aiohappyeyeballs==2.7.1",
+      "aiohttp==3.14.5",
+      "aiosignal==1.4.0",
+      "annotated-doc==0.0.5",
+      "annotated-types==0.8.0",
+      "anyio==4.15.1",
+      "attrs==26.1.0",
+      "boto3==1.43.113",
+      "botocore==1.43.113",
+      "certifi==2026.7.22",
+      "cffi==2.1.1",
+      "charset-normalizer==3.5.2",
+      "click==8.5.0",
+      "cryptography==50.0.2",
+      "deprecation==2.1.0",
+      "dirhash==0.5.0",
+      "distro==1.9.0",
+      "fastapi==0.143.0",
+      "fastuuid==0.14.0",
+      "filelock==3.32.7",
+      "frozenlist==1.8.0",
+      "fsspec==2026.9.0",
+      "h11==0.16.0",
+      "h2==4.4.1",
+      "harbor==0.24.0",
+      "hf-xet==1.7.0",
+      "hpack==4.2.0",
+      "httpcore==1.0.9",
+      "httpx==0.28.1",
+      "huggingface_hub==1.33.0",
+      "hyperframe==6.1.0",
+      "idna==3.20",
+      "importlib_metadata==8.9.0",
+      "Jinja2==3.1.6",
+      "jiter==0.17.0",
+      "jmespath==1.1.0",
+      "jsonschema-specifications==2025.9.1",
+      "jsonschema==4.26.0",
+      "litellm==1.105.1",
+      "markdown-it-py==4.2.0",
+      "MarkupSafe==3.0.4",
+      "mdurl==0.1.2",
+      "multidict==7.1.0",
+      "openai==2.54.0",
+      "opentelemetry-api==1.45.1",
+      "packaging==26.3",
+      "pathspec==1.1.1",
+      "pip==26.1.2",
+      "platformdirs==4.13.0",
+      "postgrest==2.32.0",
+      "propcache==0.5.4",
+      "pycparser==3.11",
+      "pydantic-settings==2.15.0",
+      "pydantic==2.14.1",
+      "pydantic_core==2.50.1",
+      "Pygments==2.21.0",
+      "PyJWT==2.15.1",
+      "python-dateutil==2.9.0.post0",
+      "python-dotenv==1.2.4",
+      "PyYAML==6.0.3",
+      "realtime==2.32.0",
+      "referencing==0.37.0",
+      "regex==2026.9.29",
+      "requests==2.34.2",
+      "rich==15.0.0",
+      "rpds-py==2026.9.1",
+      "s3transfer==0.19.2",
+      "scantree==0.0.4",
+      "semver==3.1.0",
+      "shellingham==1.5.4",
+      "shortuuid==1.0.13",
+      "six==1.17.0",
+      "sniffio==1.3.1",
+      "starlette==1.8.0",
+      "storage3==2.32.0",
+      "StrEnum==0.4.15",
+      "supabase-auth==2.32.0",
+      "supabase-functions==2.32.0",
+      "supabase==2.32.0",
+      "tenacity==9.2.1",
+      "tiktoken==0.14.0",
+      "tokenizers==0.23.3",
+      "toml==0.10.2",
+      "tqdm==4.70.1",
+      "typer==0.27.3",
+      "typing-inspection==0.4.4",
+      "typing_extensions==4.16.0",
+      "urllib3==2.8.0",
+      "uv-build==0.8.24",
+      "uvicorn==0.54.0",
+      "websockets==15.0.1",
+      "yarl==1.25.1",
+      "zipp==4.1.1"
+    ],
+    "pipFreezePackageCount": 93,
+    "pipFreezeNonNameVersionLinesOmitted": 0,
+    "pipFreezeCanonicalSha256": "23e1e3582e69dba9dcbaa9c8fe9448f48f4b0f225b4ca89072169bf87090d75c",
+    "note": "No requirements/lock file was used to create this venv. pipFreeze contains only normalized PackageName==Version entries; no URLs or environment variables."
+  },
+  "datasetReferences": {
+    "pinnedLocalSnapshot": "terminal-bench-2 at the recorded commit; use --path for exact replay.",
+    "officialHarborRegistryAlias": "terminal-bench@2.0",
+    "registryAliasNote": "The alias is the official Harbor dataset invocation documented by Terminal-Bench; the local Git checkout is the immutable snapshot used for this evaluation."
+  },
+  "commands": {
+    "clonePinnedDataset": [
+      "git clone https://github.com/harbor-framework/terminal-bench-2.git terminal-bench-2",
+      "git -C terminal-bench-2 checkout --detach 2fd12b88aafdd04a52c298e3940bcb189f9766d6"
+    ],
+    "clonePinnedHarborSourceForAudit": [
+      "git clone https://github.com/harbor-framework/harbor.git harbor-source",
+      "git -C harbor-source checkout --detach b53b8134e1241686dca7759af188f987ecc48e8b"
+    ],
+    "createAndInstallRuntime": [
+      "python3.14 -m venv .venv",
+      ".venv/bin/python -m pip install --index-url https://pypi.org/simple harbor==0.24.0"
+    ],
+    "runPinnedLocalTaskTemplate": [
+      ".venv/bin/harbor run --path ./terminal-bench-2/<task-id> --agent oracle --env docker --n-concurrent 1 --n-attempts 1"
+    ],
+    "officialHarborRegistryDatasetAlias": [
+      ".venv/bin/harbor run --dataset terminal-bench@2.0 --agent oracle --n-concurrent 1"
+    ]
+  },
+  "securityNotes": [
+    "No environment variables, credentials, package index configuration, or private URLs are included.",
+    "Only public official GitHub repository URLs and the public PyPI index appear in command suggestions."
+  ]
+}

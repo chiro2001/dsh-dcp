@@ -59,12 +59,13 @@ describe('property/fuzz (M5)', () => {
         {
           turn,
           step: 1,
+          stream: [],
           message: createAssistantMessage({
             content: [{ type: 'text', text: `assistant ${index}` }],
             source: { provider: 'mock', model: 'mock' },
           }),
         },
-        { surfaceOp: 'append', sourceEventSeqs: [] },
+        { surfaceOp: 'append' },
       )
       session.append('step/end', { turn, step: 1 })
       session.append('turn/end', { turn, reason: { kind: 'completed' } })
@@ -93,7 +94,7 @@ describe('property/fuzz (M5)', () => {
             source: encodeDcpCheckpointSource(compactionId, meta(blockRef)),
           }),
           {
-            surfaceOp: { op: 'replace', start: first!, end: second! },
+            surfaceOp: { op: 'replace', startSeq: first!, endSeq: second! },
             sourceEventSeqs: [first!, second!],
           },
         )

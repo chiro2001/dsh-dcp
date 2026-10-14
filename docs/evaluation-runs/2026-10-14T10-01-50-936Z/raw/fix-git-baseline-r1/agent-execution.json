@@ -1,0 +1,401 @@
+{
+  "ledger": {
+    "runId": "fix-git-baseline-r1-fix-git__cF259S2__agent",
+    "taskId": "fix-git",
+    "arm": "baseline",
+    "replicate": 1,
+    "model": "deepseek-flash",
+    "provider": "deepseek",
+    "startedAt": 1791976546214,
+    "version": 1,
+    "attempts": [
+      {
+        "attemptId": "fix-git-baseline-r1-fix-git__cF259S2__agent:1",
+        "metadata": {
+          "agentId": "fix-git-baseline-r1-fix-git__cF259S2__agent",
+          "sessionId": "fix-git-baseline-r1-fix-git__cF259S2__agent",
+          "purpose": "conversation",
+          "startedAt": 1791976546422,
+          "requestHash": "63fd031b8551c8c6a08bf66f80cf42aa67b6255b90d3a081cc58842cdbe4d462",
+          "turn": 1,
+          "step": 1
+        },
+        "prices": {
+          "currency": "USD",
+          "date": "2026-10-14",
+          "source": "https://api-docs.deepseek.com/quick_start/pricing",
+          "retrievedAt": "2026-10-14",
+          "model": "deepseek-flash",
+          "window": "off-peak",
+          "rates": {
+            "uncachedInputPerMillion": 0.15,
+            "cacheReadPerMillion": 0.003,
+            "outputPerMillion": 0.6
+          }
+        },
+        "status": "success",
+        "finishedAt": 1791976547385,
+        "usage": {
+          "uncachedInputTokens": 150,
+          "cacheReadTokens": 256,
+          "outputTokens": 127
+        },
+        "cost": 9.9468e-05
+      },
+      {
+        "attemptId": "fix-git-baseline-r1-fix-git__cF259S2__agent:2",
+        "metadata": {
+          "agentId": "fix-git-baseline-r1-fix-git__cF259S2__agent",
+          "sessionId": "fix-git-baseline-r1-fix-git__cF259S2__agent",
+          "purpose": "conversation",
+          "startedAt": 1791976547646,
+          "requestHash": "0978402e44a766db43fd7d8f762780c87184a30bf0c9885a12cc0d080ea7d113",
+          "turn": 1,
+          "step": 2
+        },
+        "prices": {
+          "currency": "USD",
+          "date": "2026-10-14",
+          "source": "https://api-docs.deepseek.com/quick_start/pricing",
+          "retrievedAt": "2026-10-14",
+          "model": "deepseek-flash",
+          "window": "off-peak",
+          "rates": {
+            "uncachedInputPerMillion": 0.15,
+            "cacheReadPerMillion": 0.003,
+            "outputPerMillion": 0.6
+          }
+        },
+        "status": "success",
+        "finishedAt": 1791976549175,
+        "usage": {
+          "uncachedInputTokens": 564,
+          "cacheReadTokens": 512,
+          "outputTokens": 186
+        },
+        "cost": 0.00019773599999999998
+      },
+      {
+        "attemptId": "fix-git-baseline-r1-fix-git__cF259S2__agent:3",
+        "metadata": {
+          "agentId": "fix-git-baseline-r1-fix-git__cF259S2__agent",
+          "sessionId": "fix-git-baseline-r1-fix-git__cF259S2__agent",
+          "purpose": "conversation",
+          "startedAt": 1791976549328,
+          "requestHash": "d22f768e43cb37da736631a639b42fc7d42bdde496a9eac102e1feabd40d7f80",
+          "turn": 1,
+          "step": 3
+        },
+        "prices": {
+          "currency": "USD",
+          "date": "2026-10-14",
+          "source": "https://api-docs.deepseek.com/quick_start/pricing",
+          "retrievedAt": "2026-10-14",
+          "model": "deepseek-flash",
+          "window": "off-peak",
+          "rates": {
+            "uncachedInputPerMillion": 0.15,
+            "cacheReadPerMillion": 0.003,
+            "outputPerMillion": 0.6
+          }
+        },
+        "status": "success",
+        "finishedAt": 1791976550831,
+        "usage": {
+          "uncachedInputTokens": 363,
+          "cacheReadTokens": 1152,
+          "outputTokens": 176
+        },
+        "cost": 0.000163506
+      },
+      {
+        "attemptId": "fix-git-baseline-r1-fix-git__cF259S2__agent:4",
+        "metadata": {
+          "agentId": "fix-git-baseline-r1-fix-git__cF259S2__agent",
+          "sessionId": "fix-git-baseline-r1-fix-git__cF259S2__agent",
+          "purpose": "conversation",
+          "startedAt": 1791976550983,
+          "requestHash": "5d8e2c5c3eec5b6d58b0189ce1731bd822eaa06bcbe407e3a75449d7f4c5da5b",
+          "turn": 1,
+          "step": 4
+        },
+        "prices": {
+          "currency": "USD",
+          "date": "2026-10-14",
+          "source": "https://api-docs.deepseek.com/quick_start/pricing",
+          "retrievedAt": "2026-10-14",
+          "model": "deepseek-flash",
+          "window": "off-peak",
+          "rates": {
+            "uncachedInputPerMillion": 0.15,
+            "cacheReadPerMillion": 0.003,
+            "outputPerMillion": 0.6
+          }
+        },
+        "status": "success",
+        "finishedAt": 1791976552432,
+        "usage": {
+          "uncachedInputTokens": 2108,
+          "cacheReadTokens": 1664,
+          "outputTokens": 220
+        },
+        "cost": 0.000453192
+      },
+      {
+        "attemptId": "fix-git-baseline-r1-fix-git__cF259S2__agent:5",
+        "metadata": {
+          "agentId": "fix-git-baseline-r1-fix-git__cF259S2__agent",
+          "sessionId": "fix-git-baseline-r1-fix-git__cF259S2__agent",
+          "purpose": "conversation",
+          "startedAt": 1791976552525,
+          "requestHash": "75bde71e484cff9faad7a759d4a950162a8aa2f1281c832537496960a07d2f75",
+          "turn": 1,
+          "step": 5
+        },
+        "prices": {
+          "currency": "USD",
+          "date": "2026-10-14",
+          "source": "https://api-docs.deepseek.com/quick_start/pricing",
+          "retrievedAt": "2026-10-14",
+          "model": "deepseek-flash",
+          "window": "off-peak",
+          "rates": {
+            "uncachedInputPerMillion": 0.15,
+            "cacheReadPerMillion": 0.003,
+            "outputPerMillion": 0.6
+          }
+        },
+        "status": "success",
+        "finishedAt": 1791976553477,
+        "usage": {
+          "uncachedInputTokens": 219,
+          "cacheReadTokens": 3840,
+          "outputTokens": 69
+        },
+        "cost": 8.577000000000001e-05
+      },
+      {
+        "attemptId": "fix-git-baseline-r1-fix-git__cF259S2__agent:6",
+        "metadata": {
+          "agentId": "fix-git-baseline-r1-fix-git__cF259S2__agent",
+          "sessionId": "fix-git-baseline-r1-fix-git__cF259S2__agent",
+          "purpose": "conversation",
+          "startedAt": 1791976553559,
+          "requestHash": "f320f97f387c9a138ed7a1f0dc0ae836bb137f0cc0b1b5587ccee32bf29bde97",
+          "turn": 1,
+          "step": 6
+        },
+        "prices": {
+          "currency": "USD",
+          "date": "2026-10-14",
+          "source": "https://api-docs.deepseek.com/quick_start/pricing",
+          "retrievedAt": "2026-10-14",
+          "model": "deepseek-flash",
+          "window": "off-peak",
+          "rates": {
+            "uncachedInputPerMillion": 0.15,
+            "cacheReadPerMillion": 0.003,
+            "outputPerMillion": 0.6
+          }
+        },
+        "status": "success",
+        "finishedAt": 1791976555105,
+        "usage": {
+          "uncachedInputTokens": 456,
+          "cacheReadTokens": 4096,
+          "outputTokens": 260
+        },
+        "cost": 0.00023668799999999998
+      },
+      {
+        "attemptId": "fix-git-baseline-r1-fix-git__cF259S2__agent:7",
+        "metadata": {
+          "agentId": "fix-git-baseline-r1-fix-git__cF259S2__agent",
+          "sessionId": "fix-git-baseline-r1-fix-git__cF259S2__agent",
+          "purpose": "conversation",
+          "startedAt": 1791976555184,
+          "requestHash": "fe993fa4ea28c3c4a3393f928a54c3704f8dc9fa2c076fc9a772639f6d01d6d4",
+          "turn": 1,
+          "step": 7
+        },
+        "prices": {
+          "currency": "USD",
+          "date": "2026-10-14",
+          "source": "https://api-docs.deepseek.com/quick_start/pricing",
+          "retrievedAt": "2026-10-14",
+          "model": "deepseek-flash",
+          "window": "off-peak",
+          "rates": {
+            "uncachedInputPerMillion": 0.15,
+            "cacheReadPerMillion": 0.003,
+            "outputPerMillion": 0.6
+          }
+        },
+        "status": "success",
+        "finishedAt": 1791976556899,
+        "usage": {
+          "uncachedInputTokens": 197,
+          "cacheReadTokens": 4736,
+          "outputTokens": 168
+        },
+        "cost": 0.00014455799999999998
+      },
+      {
+        "attemptId": "fix-git-baseline-r1-fix-git__cF259S2__agent:8",
+        "metadata": {
+          "agentId": "fix-git-baseline-r1-fix-git__cF259S2__agent",
+          "sessionId": "fix-git-baseline-r1-fix-git__cF259S2__agent",
+          "purpose": "conversation",
+          "startedAt": 1791976557054,
+          "requestHash": "b9ea7aa03e318fe6ab90451ff5bfcf9ce38cbb1df17d5e4199d66cd7bd2e1055",
+          "turn": 1,
+          "step": 8
+        },
+        "prices": {
+          "currency": "USD",
+          "date": "2026-10-14",
+          "source": "https://api-docs.deepseek.com/quick_start/pricing",
+          "retrievedAt": "2026-10-14",
+          "model": "deepseek-flash",
+          "window": "off-peak",
+          "rates": {
+            "uncachedInputPerMillion": 0.15,
+            "cacheReadPerMillion": 0.003,
+            "outputPerMillion": 0.6
+          }
+        },
+        "status": "success",
+        "finishedAt": 1791976558059,
+        "usage": {
+          "uncachedInputTokens": 422,
+          "cacheReadTokens": 4992,
+          "outputTokens": 138
+        },
+        "cost": 0.000161076
+      },
+      {
+        "attemptId": "fix-git-baseline-r1-fix-git__cF259S2__agent:9",
+        "metadata": {
+          "agentId": "fix-git-baseline-r1-fix-git__cF259S2__agent",
+          "sessionId": "fix-git-baseline-r1-fix-git__cF259S2__agent",
+          "purpose": "conversation",
+          "startedAt": 1791976558136,
+          "requestHash": "39f3afae3ea25e16ae5cdbc8b222b852869871120fbf874d7e691be8c0b79f0d",
+          "turn": 1,
+          "step": 9
+        },
+        "prices": {
+          "currency": "USD",
+          "date": "2026-10-14",
+          "source": "https://api-docs.deepseek.com/quick_start/pricing",
+          "retrievedAt": "2026-10-14",
+          "model": "deepseek-flash",
+          "window": "off-peak",
+          "rates": {
+            "uncachedInputPerMillion": 0.15,
+            "cacheReadPerMillion": 0.003,
+            "outputPerMillion": 0.6
+          }
+        },
+        "status": "success",
+        "finishedAt": 1791976559033,
+        "usage": {
+          "uncachedInputTokens": 139,
+          "cacheReadTokens": 5504,
+          "outputTokens": 67
+        },
+        "cost": 7.756199999999999e-05
+      },
+      {
+        "attemptId": "fix-git-baseline-r1-fix-git__cF259S2__agent:10",
+        "metadata": {
+          "agentId": "fix-git-baseline-r1-fix-git__cF259S2__agent",
+          "sessionId": "fix-git-baseline-r1-fix-git__cF259S2__agent",
+          "purpose": "conversation",
+          "startedAt": 1791976559131,
+          "requestHash": "d31d6f24f31c85a357495dd99fcf02689fb50eccac95d2905d2aa8e2f1bdb5e9",
+          "turn": 1,
+          "step": 10
+        },
+        "prices": {
+          "currency": "USD",
+          "date": "2026-10-14",
+          "source": "https://api-docs.deepseek.com/quick_start/pricing",
+          "retrievedAt": "2026-10-14",
+          "model": "deepseek-flash",
+          "window": "off-peak",
+          "rates": {
+            "uncachedInputPerMillion": 0.15,
+            "cacheReadPerMillion": 0.003,
+            "outputPerMillion": 0.6
+          }
+        },
+        "status": "success",
+        "finishedAt": 1791976561257,
+        "usage": {
+          "uncachedInputTokens": 135,
+          "cacheReadTokens": 5632,
+          "outputTokens": 388
+        },
+        "cost": 0.00026994599999999997
+      },
+      {
+        "attemptId": "fix-git-baseline-r1-fix-git__cF259S2__agent:11",
+        "metadata": {
+          "agentId": "fix-git-baseline-r1-fix-git__cF259S2__agent",
+          "sessionId": "fix-git-baseline-r1-fix-git__cF259S2__agent",
+          "purpose": "conversation",
+          "startedAt": 1791976561423,
+          "requestHash": "02ff2c711aa8d24157fd2e46f518c2a47e2c8405f8a4aa304ca099d1bd400cd0",
+          "turn": 1,
+          "step": 11
+        },
+        "prices": {
+          "currency": "USD",
+          "date": "2026-10-14",
+          "source": "https://api-docs.deepseek.com/quick_start/pricing",
+          "retrievedAt": "2026-10-14",
+          "model": "deepseek-flash",
+          "window": "off-peak",
+          "rates": {
+            "uncachedInputPerMillion": 0.15,
+            "cacheReadPerMillion": 0.003,
+            "outputPerMillion": 0.6
+          }
+        },
+        "status": "success",
+        "finishedAt": 1791976565262,
+        "usage": {
+          "uncachedInputTokens": 297,
+          "cacheReadTokens": 6144,
+          "outputTokens": 650
+        },
+        "cost": 0.000452982
+      }
+    ],
+    "outcome": "failure",
+    "success": false,
+    "finishedAt": 1791976565264,
+    "externalCost": 0,
+    "usageComplete": true,
+    "usageTotals": {
+      "uncachedInputTokens": 5050,
+      "cacheReadTokens": 38528,
+      "outputTokens": 2449,
+      "reasoningTokens": 0
+    },
+    "knownCost": 0.0023424839999999997,
+    "totalCost": 0.0023424839999999997
+  },
+  "execution": {
+    "status": "completed",
+    "requestCount": 11,
+    "reason": null
+  },
+  "verification": "pending",
+  "nativeCompaction": {
+    "enabled": true,
+    "auto": true,
+    "contextWindow": 1000000
+  }
+}

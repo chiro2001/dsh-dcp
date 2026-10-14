@@ -119,16 +119,13 @@ export function applyDeduplication(
       ...event.data.message,
       content: [
         {
-          ...event.data.message.content[0],
-          content: [
-            {
-              type: 'text',
-              text: `[duplicate ${target.tool} output removed; a newer identical call supersedes it]`,
-            },
-          ],
+          type: 'text',
+          text: `[duplicate ${target.tool} output removed; a newer identical call supersedes it]`,
         },
       ],
-    } as never)
+    })
+    const replacementTokens = tokenMeter.estimateMessage(pruned)
+    if (replacementTokens >= tokens) continue
     session.append('compaction/prune', {
       shadowedRange: { start: target.seq, end: target.seq },
       shadowedSeqs: [target.seq],
@@ -148,12 +145,12 @@ export function applyDeduplication(
         message: pruned,
       },
       {
-        surfaceOp: { op: 'replace', start: target.seq, end: target.seq },
+        surfaceOp: { op: 'replace', startSeq: target.seq, endSeq: target.seq },
         sourceEventSeqs: [target.seq],
       },
     )
     replaced++
-    tokensSaved += tokens
+    tokensSaved += tokens - replacementTokens
   }
   return { replaced, tokensSaved }
 }

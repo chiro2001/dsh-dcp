@@ -5,7 +5,6 @@ import { join } from 'node:path'
 import { Context, type Plugin } from '@deepseek-ai/cordis'
 import AgentLoop from '@deepseek-ai/dsh-agent-loop'
 import { mountAgentLoopTestDependencies } from '@deepseek-ai/dsh-agent-loop-testkit'
-import SessionProjectionRegistry from '@deepseek-ai/dsh-session-projection'
 import TokenMeter from '@deepseek-ai/dsh-token-meter'
 import CommandRuntime from '@deepseek-ai/dsh-commands'
 import Storage from '@deepseek-ai/dsh-storage'
@@ -23,9 +22,8 @@ let root: string | undefined
 async function mount(): Promise<Context> {
   const next = new Context()
   await mountAgentLoopTestDependencies(next, {
-    systemPrompt: { persona: 'You are a DCP stats topology test agent.' },
+    systemPrompt: { personaPrefix: 'You are a DCP stats topology test agent.' },
   })
-  await next.plugin(SessionProjectionRegistry)
   await next.plugin(TokenMeter)
   await next.plugin(CommandRuntime)
   await next.plugin(AgentLoop, { agents: [] })
@@ -69,7 +67,7 @@ describe('M7.0: production topology for /dcp stats', () => {
 
   it('turns unavailable into current when storage is provided late, via the real plugin path', async () => {
     if (!ctx || !root) throw new Error('harness missing')
-    const agent = ctx.agentLoop.create(SessionId('topology-stats'), {
+    const agent = await ctx.agentLoop.create(SessionId('topology-stats'), {
       provider: 'scripted',
       model: 'scripted',
     })

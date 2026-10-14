@@ -1,0 +1,14 @@
+{
+  "runId": "2026-10-14T10-01-50-936Z",
+  "archive": "docs/evaluation-runs/2026-10-14T10-01-50-936Z/raw/frozen-runtime-source.tar.gz",
+  "archiveSha256": "47cd3def91105b5c4c52a3a3a012368b6124867cf6216f09b2040a0434382c03",
+  "sidecarSha256": "47cd3def91105b5c4c52a3a3a012368b6124867cf6216f09b2040a0434382c03",
+  "archiveHashMatchesSidecar": true,
+  "sidecarFileCount": 54,
+  "manifestFileCount": 54,
+  "archiveRegularFileCount": 54,
+  "archivePathsMatchManifest": true,
+  "contentHashMismatchCount": 0,
+  "contentHashMismatches": [],
+  "allMatch": true
+}

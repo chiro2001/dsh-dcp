@@ -8,6 +8,7 @@ import type { Session } from '@deepseek-ai/dsh-session'
 import type { SessionSeq } from '@deepseek-ai/dsh-session'
 import type { TokenMeasurement } from '@deepseek-ai/dsh-token-meter'
 import type { DcpConfig } from '../config.js'
+import { isDcpSource } from '../protocol/source.js'
 import { decodeDcpMeta } from '../protocol/metadata.js'
 
 export interface NudgeResult {
@@ -35,8 +36,8 @@ export function computeNudge(
   measure: TokenMeasurement,
   config: DcpConfig,
 ): NudgeResult {
-  let markerCount = 0
-  let lastNudgeMarker = 0
+  let stepCount = 0
+  let lastNudgeStep = 0
   let lastNudgeSeq: SessionSeq | -1 = -1
   let lastCompressionSeq: SessionSeq | -1 = -1
   let lastCompressCallId: string | undefined
@@ -44,6 +45,10 @@ export function computeNudge(
   let lastCompressOutcomeRejected = false
 
   for (const event of session.snapshotEvents()) {
+    if (event.type === 'step/start') {
+      stepCount++
+      continue
+    }
     if (event.type === 'tool/call' && event.data.name === 'compress') {
       lastCompressCallId = String(event.data.callId)
       continue
@@ -55,12 +60,11 @@ export function computeNudge(
     ) {
       lastCompressOutcomeSeq = event.seq
       const resultText = event.data.message.content
-        .flatMap((block) => (block.type === 'tool-result' ? block.content : []))
         .filter((block) => block.type === 'text')
         .map((block) => (block.type === 'text' ? block.text : ''))
         .join('\n')
       lastCompressOutcomeRejected = isRejectedCompressOutcome(
-        event.data.message.content[0]?.isError === true,
+        event.data.message.isError === true,
         resultText,
       )
       continue
@@ -70,17 +74,16 @@ export function computeNudge(
       .filter((block) => block.type === 'text')
       .map((block) => (block.type === 'text' ? block.text : ''))
       .join('\n')
-    if (text.includes('<dcp-boundary')) markerCount++
-    if (text.includes('DCP compression recommended')) {
-      lastNudgeMarker = markerCount
+    if (isDcpSource(event.data.source) && text.includes('DCP compression recommended')) {
+      lastNudgeStep = stepCount
       lastNudgeSeq = event.seq
     }
     if (decodeDcpMeta(event.data.source).ok) lastCompressionSeq = event.seq
   }
 
-  let stepsSinceNudge = markerCount - lastNudgeMarker
+  let stepsSinceNudge = stepCount - lastNudgeStep
   const armedByCompression =
-    lastNudgeMarker === 0 ? markerCount > 0 : lastCompressionSeq > lastNudgeSeq
+    lastNudgeStep === 0 ? stepCount > 0 : lastCompressionSeq > lastNudgeSeq
   const rejectedAfterNudge =
     lastNudgeSeq !== -1 && lastCompressOutcomeRejected && lastCompressOutcomeSeq > lastNudgeSeq
   const armed = armedByCompression && !rejectedAfterNudge

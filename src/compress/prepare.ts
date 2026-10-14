@@ -207,12 +207,15 @@ export function prepareRange(
     }
   }
 
-  // Hard-protected instruction/snapshot forms may never be shadowed.
+  // System and tool-declaration updates are durable surface nodes in dsh 0.2.
+  // Never summarize them into user-role content or remove their authority.
   for (const [offset, seq] of shadowedSeqs.entries()) {
     const event = session.eventAt(seq)
     if (
-      event?.type === 'user/message' &&
-      hardProtectedForm((event.data.source as { form?: unknown }).form)
+      event?.type === 'system/message' ||
+      event?.type === 'developer/message' ||
+      (event?.type === 'user/message' &&
+        hardProtectedForm((event.data.source as { form?: unknown }).form))
     ) {
       const protectedPosition = resolved.startPosition + offset
       const nextBoundary = nextActiveBoundaryRef(
@@ -224,7 +227,7 @@ export function prepareRange(
       return {
         ok: false,
         errors: [
-          `range ${entry.startRef}..${entry.endRef} contains a hard-protected instruction/snapshot node; ${nextBoundary === undefined ? 'skip this range; no active boundary remains after the protected node' : `retry with startRef at or after ${nextBoundary}`} [nextActiveBoundary=${nextBoundary ?? 'none'}]`,
+          `range ${entry.startRef}..${entry.endRef} contains a hard-protected system/developer/instruction/snapshot node; ${nextBoundary === undefined ? 'skip this range; no active boundary remains after the protected node' : `retry with startRef at or after ${nextBoundary}`} [nextActiveBoundary=${nextBoundary ?? 'none'}]`,
         ],
       }
     }
@@ -257,7 +260,7 @@ export function prepareRange(
   const checkpointText = buildCheckpointText(blockRef, entry.summary, appendix.text)
   const checkpointMessage = createUserMessage({
     content: [{ type: 'text', text: checkpointText }],
-    source: { kind: 'plugin', plugin: 'dsh-dcp' },
+    source: { kind: 'dsh-dcp' },
   })
   const tokensOut = tokenMeter.estimateMessage(checkpointMessage)
   if (tokensIn - tokensOut < config.compress.minNetSavingsTokens) {

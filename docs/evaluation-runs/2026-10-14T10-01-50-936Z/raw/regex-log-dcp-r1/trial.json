@@ -1,0 +1,130 @@
+{
+    "id": "39e6a8c2-16b5-4e10-965a-72c39468482f",
+    "task_name": "terminal-bench/regex-log",
+    "trial_name": "regex-log__shVC4wK",
+    "trial_uri": "file:///home/chiro/projects/dsh-dynamic-context-pruning/dsh-dynamic-context-pruning/.tmp-vitest/evaluation-setup/jobs/dsh-pilot-2026-10-14T10-01-50-936Z-regex-log-dcp-r1/regex-log__shVC4wK",
+    "task_id": {
+        "path": "/home/chiro/projects/dsh-dynamic-context-pruning/dsh-dynamic-context-pruning/.tmp-vitest/evaluation-setup/frozen-task-inputs/2026-10-14T10-01-50-936Z/regex-log"
+    },
+    "source": null,
+    "task_checksum": "313115474fe44077660f516e89c0c06831a05ded1f84cb33bf4672d6028bd3f9",
+    "config": {
+        "task": {
+            "path": "/home/chiro/projects/dsh-dynamic-context-pruning/dsh-dynamic-context-pruning/.tmp-vitest/evaluation-setup/frozen-task-inputs/2026-10-14T10-01-50-936Z/regex-log",
+            "git_url": null,
+            "git_commit_id": null,
+            "name": null,
+            "ref": null,
+            "overwrite": false,
+            "download_dir": null,
+            "source": null
+        },
+        "trial_name": "regex-log__shVC4wK",
+        "trials_dir": "/home/chiro/projects/dsh-dynamic-context-pruning/dsh-dynamic-context-pruning/.tmp-vitest/evaluation-setup/jobs/dsh-pilot-2026-10-14T10-01-50-936Z-regex-log-dcp-r1",
+        "install_only": false,
+        "timeout_multiplier": 1.0,
+        "agent_timeout_multiplier": null,
+        "verifier_timeout_multiplier": null,
+        "agent_setup_timeout_multiplier": null,
+        "environment_build_timeout_multiplier": null,
+        "agent": {
+            "name": "scripts.evaluation.harbor_agent:DSHAgent",
+            "import_path": null,
+            "model_name": "deepseek/deepseek-flash",
+            "n_concurrent": null,
+            "concurrency_group": null,
+            "skills": [],
+            "override_timeout_sec": null,
+            "override_setup_timeout_sec": null,
+            "max_timeout_sec": null,
+            "resume_trajectory": false,
+            "load_trajectory": null,
+            "extra_allowed_hosts": [],
+            "kwargs": {
+                "arm": "dcp",
+                "task_id": "regex-log",
+                "replicate": 1,
+                "max_requests": 80,
+                "max_seconds": 300,
+                "max_cost_usd": 1
+            },
+            "mcp_servers": []
+        },
+        "user_agent": null,
+        "environment": {
+            "type": "docker",
+            "import_path": null,
+            "force_build": false,
+            "delete": true,
+            "stream": false,
+            "cpu_enforcement_policy": "auto",
+            "memory_enforcement_policy": "auto",
+            "override_cpus": null,
+            "override_memory_mb": null,
+            "override_storage_mb": null,
+            "override_gpus": null,
+            "override_tpu": null,
+            "mounts": null,
+            "extra_docker_compose": [],
+            "kwargs": {},
+            "extra_allowed_hosts": []
+        },
+        "verifier": {
+            "override_timeout_sec": null,
+            "max_timeout_sec": null,
+            "disable": false
+        },
+        "artifacts": [],
+        "extra_instruction_paths": [],
+        "extra_instructions": [],
+        "job_id": "a567ab17-94bb-4642-8823-4e8e1ee01e5f",
+        "source_trial": null
+    },
+    "agent_info": {
+        "name": "dsh-dcp-evaluation",
+        "version": "0.2.0-rc.2/dcp-0.1.0-rc.9",
+        "model_info": {
+            "name": "deepseek-flash",
+            "provider": "deepseek"
+        }
+    },
+    "agent_result": {
+        "n_input_tokens": 99133,
+        "n_cache_tokens": 94208,
+        "n_output_tokens": 8051,
+        "cost_usd": 0.005851974,
+        "model_usage": null,
+        "rollout_details": null,
+        "metadata": {
+            "execution_status": "completed",
+            "verification": "pending",
+            "ledger_path": "/home/chiro/projects/dsh-dynamic-context-pruning/dsh-dynamic-context-pruning/.tmp-vitest/evaluation-setup/jobs/dsh-pilot-2026-10-14T10-01-50-936Z-regex-log-dcp-r1/regex-log__shVC4wK/agent/ledger.json"
+        }
+    },
+    "verifier_result": {
+        "rewards": {
+            "reward": 1.0
+        }
+    },
+    "verifier_environment_mode": "shared",
+    "exception_info": null,
+    "started_at": "2026-10-14T10:16:13.349128Z",
+    "finished_at": "2026-10-14T10:17:35.732099Z",
+    "environment_setup": {
+        "started_at": "2026-10-14T10:16:13.374020Z",
+        "finished_at": "2026-10-14T10:16:14.428347Z"
+    },
+    "agent_setup": {
+        "started_at": "2026-10-14T10:16:14.428412Z",
+        "finished_at": "2026-10-14T10:16:14.502320Z"
+    },
+    "agent_execution": {
+        "started_at": "2026-10-14T10:16:14.502439Z",
+        "finished_at": "2026-10-14T10:16:55.766578Z"
+    },
+    "verifier": {
+        "started_at": "2026-10-14T10:16:56.015106Z",
+        "finished_at": "2026-10-14T10:17:24.743220Z"
+    },
+    "step_results": null
+}

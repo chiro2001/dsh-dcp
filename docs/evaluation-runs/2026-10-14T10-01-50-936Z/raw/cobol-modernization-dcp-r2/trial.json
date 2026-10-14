@@ -1,0 +1,130 @@
+{
+    "id": "d24d69c3-addc-4ed4-bd51-4acd768aab9e",
+    "task_name": "terminal-bench/cobol-modernization",
+    "trial_name": "cobol-modernization__Juq6fb4",
+    "trial_uri": "file:///home/chiro/projects/dsh-dynamic-context-pruning/dsh-dynamic-context-pruning/.tmp-vitest/evaluation-setup/jobs/dsh-pilot-2026-10-14T10-01-50-936Z-cobol-modernization-dcp-r2/cobol-modernization__Juq6fb4",
+    "task_id": {
+        "path": "/home/chiro/projects/dsh-dynamic-context-pruning/dsh-dynamic-context-pruning/.tmp-vitest/evaluation-setup/frozen-task-inputs/2026-10-14T10-01-50-936Z/cobol-modernization"
+    },
+    "source": null,
+    "task_checksum": "1825bef00e905996a1cf7a76e87296d119ef9e0920cb4542089495e101ccd555",
+    "config": {
+        "task": {
+            "path": "/home/chiro/projects/dsh-dynamic-context-pruning/dsh-dynamic-context-pruning/.tmp-vitest/evaluation-setup/frozen-task-inputs/2026-10-14T10-01-50-936Z/cobol-modernization",
+            "git_url": null,
+            "git_commit_id": null,
+            "name": null,
+            "ref": null,
+            "overwrite": false,
+            "download_dir": null,
+            "source": null
+        },
+        "trial_name": "cobol-modernization__Juq6fb4",
+        "trials_dir": "/home/chiro/projects/dsh-dynamic-context-pruning/dsh-dynamic-context-pruning/.tmp-vitest/evaluation-setup/jobs/dsh-pilot-2026-10-14T10-01-50-936Z-cobol-modernization-dcp-r2",
+        "install_only": false,
+        "timeout_multiplier": 1.0,
+        "agent_timeout_multiplier": null,
+        "verifier_timeout_multiplier": null,
+        "agent_setup_timeout_multiplier": null,
+        "environment_build_timeout_multiplier": null,
+        "agent": {
+            "name": "scripts.evaluation.harbor_agent:DSHAgent",
+            "import_path": null,
+            "model_name": "deepseek/deepseek-flash",
+            "n_concurrent": null,
+            "concurrency_group": null,
+            "skills": [],
+            "override_timeout_sec": null,
+            "override_setup_timeout_sec": null,
+            "max_timeout_sec": null,
+            "resume_trajectory": false,
+            "load_trajectory": null,
+            "extra_allowed_hosts": [],
+            "kwargs": {
+                "arm": "dcp",
+                "task_id": "cobol-modernization",
+                "replicate": 2,
+                "max_requests": 80,
+                "max_seconds": 300,
+                "max_cost_usd": 1
+            },
+            "mcp_servers": []
+        },
+        "user_agent": null,
+        "environment": {
+            "type": "docker",
+            "import_path": null,
+            "force_build": false,
+            "delete": true,
+            "stream": false,
+            "cpu_enforcement_policy": "auto",
+            "memory_enforcement_policy": "auto",
+            "override_cpus": null,
+            "override_memory_mb": null,
+            "override_storage_mb": null,
+            "override_gpus": null,
+            "override_tpu": null,
+            "mounts": null,
+            "extra_docker_compose": [],
+            "kwargs": {},
+            "extra_allowed_hosts": []
+        },
+        "verifier": {
+            "override_timeout_sec": null,
+            "max_timeout_sec": null,
+            "disable": false
+        },
+        "artifacts": [],
+        "extra_instruction_paths": [],
+        "extra_instructions": [],
+        "job_id": "e26e26d4-92be-41d1-858f-6f550020b460",
+        "source_trial": null
+    },
+    "agent_info": {
+        "name": "dsh-dcp-evaluation",
+        "version": "0.2.0-rc.2/dcp-0.1.0-rc.9",
+        "model_info": {
+            "name": "deepseek-flash",
+            "provider": "deepseek"
+        }
+    },
+    "agent_result": {
+        "n_input_tokens": 1908153,
+        "n_cache_tokens": 1879808,
+        "n_output_tokens": 21609,
+        "cost_usd": 0.022856573999999984,
+        "model_usage": null,
+        "rollout_details": null,
+        "metadata": {
+            "execution_status": "budget_exceeded",
+            "verification": "pending",
+            "ledger_path": "/home/chiro/projects/dsh-dynamic-context-pruning/dsh-dynamic-context-pruning/.tmp-vitest/evaluation-setup/jobs/dsh-pilot-2026-10-14T10-01-50-936Z-cobol-modernization-dcp-r2/cobol-modernization__Juq6fb4/agent/ledger.json"
+        }
+    },
+    "verifier_result": {
+        "rewards": {
+            "reward": 0.0
+        }
+    },
+    "verifier_environment_mode": "shared",
+    "exception_info": null,
+    "started_at": "2026-10-14T10:55:11.694023Z",
+    "finished_at": "2026-10-14T10:57:56.560151Z",
+    "environment_setup": {
+        "started_at": "2026-10-14T10:55:11.717236Z",
+        "finished_at": "2026-10-14T10:55:12.782814Z"
+    },
+    "agent_setup": {
+        "started_at": "2026-10-14T10:55:12.782870Z",
+        "finished_at": "2026-10-14T10:55:12.852289Z"
+    },
+    "agent_execution": {
+        "started_at": "2026-10-14T10:55:12.852413Z",
+        "finished_at": "2026-10-14T10:57:34.774040Z"
+    },
+    "verifier": {
+        "started_at": "2026-10-14T10:57:35.035498Z",
+        "finished_at": "2026-10-14T10:57:45.911249Z"
+    },
+    "step_results": null
+}

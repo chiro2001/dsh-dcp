@@ -14,54 +14,61 @@ describe('formatCompressResult (inline-cleanup clarity)', () => {
     const text = formatCompressResult({
       blocks: [block('b1'), block('b2')],
       failed: [],
-      cleanupWarning: undefined,
     })
     expect(text).toContain('Compressed 12 message(s) into b1, b2.')
     expect(text).toContain('status=success')
     expect(text).toContain('committed=b1,b2')
     expect(text).toContain('rejected=none')
     expect(text).toContain('correction=STOP')
-    expect(text).toContain('plugin rewrote the historical tool call after commit')
+    expect(text).toContain('cleanup=deferred')
+    expect(text).toContain('eligible completed calls may be archived when this saves tokens')
+    expect(text).not.toContain('will replace this compress call')
+    expect(text).not.toContain('the next step will')
+    expect(text).toContain('do not retry committed ranges')
+    expect(text).toContain('checkpoints contain the full summaries')
     expect(text).not.toContain('[stored in bN]')
   })
 
-  it('does not add the clarity note when cleanup was not performed cleanly', () => {
+  it('reports deferred cleanup for partial commits as well', () => {
     const text = formatCompressResult({
+      status: 'partial',
+      blocks: [block('b1')],
+      failed: [{ startRef: 'm0003', endRef: 'm0004', error: 'range failed' }],
+    })
+    expect(text).toContain('status=partial')
+    expect(text).toContain('committed=b1')
+    expect(text).toContain('cleanup=deferred')
+    expect(text).toContain('eligible completed calls may be archived when this saves tokens')
+    expect(text).not.toContain('will replace this compress call')
+    expect(text).not.toContain('the next step will')
+  })
+
+  it('snapshots conditional cleanup wording for successful and partial outcomes', () => {
+    const success = formatCompressResult({
+      status: 'success',
       blocks: [block('b1')],
       failed: [],
-      cleanupWarning: 'no inline summary argument found to clean',
     })
-    expect(text).toContain('Compressed 6 message(s) into b1.')
-    expect(text).toContain('status=success')
-    expect(text).toContain('cleanup warning')
-    expect(text).toContain('cleanup=not-confirmed')
-    expect(text).not.toContain('plugin rewrote the historical tool call after commit')
+    const partial = formatCompressResult({
+      status: 'partial',
+      blocks: [block('b1')],
+      failed: [{ startRef: 'm0003', endRef: 'm0004', error: 'range failed' }],
+    })
+
+    expect(success).toMatchSnapshot('success cleanup may save tokens')
+    expect(partial).toMatchSnapshot('partial cleanup may save tokens')
   })
 
   it('still reports failed ranges alongside successful blocks', () => {
     const text = formatCompressResult({
       blocks: [block('b1')],
       failed: [{ startRef: 'm0003', endRef: 'm0004', error: 'range enters last turn(s)' }],
-      cleanupWarning: undefined,
     })
     expect(text).toContain('Compressed 6 message(s) into b1.')
     expect(text).toContain('status=partial')
     expect(text).toContain('committed=b1')
     expect(text).toContain('rejected=m0003..m0004[RECENT_RANGE]')
     expect(text).toContain('correction=HANDLE ONLY the rejected ranges as directed')
-  })
-
-  it('does not claim partial cleanup succeeded when it has a warning', () => {
-    const text = formatCompressResult({
-      status: 'partial',
-      blocks: [block('b1')],
-      failed: [{ startRef: 'm0003', endRef: 'm0004', error: 'range failed' }],
-      cleanupWarning: 'inline cleanup failed: append unavailable',
-    })
-    expect(text).toContain('status=partial')
-    expect(text).toContain('committed=b1')
-    expect(text).toContain('cleanup=not-confirmed')
-    expect(text).not.toContain('plugin rewrote the historical tool call after commit')
   })
 
   it('keeps partial results neutral when a failed range should be skipped', () => {

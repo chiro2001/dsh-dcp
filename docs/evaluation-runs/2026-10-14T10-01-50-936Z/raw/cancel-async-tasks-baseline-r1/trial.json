@@ -1,0 +1,130 @@
+{
+    "id": "a245626e-3b4e-4a66-959c-44f15dc966eb",
+    "task_name": "terminal-bench/cancel-async-tasks",
+    "trial_name": "cancel-async-tasks__bY6nGWi",
+    "trial_uri": "file:///home/chiro/projects/dsh-dynamic-context-pruning/dsh-dynamic-context-pruning/.tmp-vitest/evaluation-setup/jobs/dsh-pilot-2026-10-14T10-01-50-936Z-cancel-async-tasks-baseline-r1/cancel-async-tasks__bY6nGWi",
+    "task_id": {
+        "path": "/home/chiro/projects/dsh-dynamic-context-pruning/dsh-dynamic-context-pruning/.tmp-vitest/evaluation-setup/frozen-task-inputs/2026-10-14T10-01-50-936Z/cancel-async-tasks"
+    },
+    "source": null,
+    "task_checksum": "4e8f447a4100601644bb39b1718bb28e763222500645b9ca5b9709e0745245fb",
+    "config": {
+        "task": {
+            "path": "/home/chiro/projects/dsh-dynamic-context-pruning/dsh-dynamic-context-pruning/.tmp-vitest/evaluation-setup/frozen-task-inputs/2026-10-14T10-01-50-936Z/cancel-async-tasks",
+            "git_url": null,
+            "git_commit_id": null,
+            "name": null,
+            "ref": null,
+            "overwrite": false,
+            "download_dir": null,
+            "source": null
+        },
+        "trial_name": "cancel-async-tasks__bY6nGWi",
+        "trials_dir": "/home/chiro/projects/dsh-dynamic-context-pruning/dsh-dynamic-context-pruning/.tmp-vitest/evaluation-setup/jobs/dsh-pilot-2026-10-14T10-01-50-936Z-cancel-async-tasks-baseline-r1",
+        "install_only": false,
+        "timeout_multiplier": 1.0,
+        "agent_timeout_multiplier": null,
+        "verifier_timeout_multiplier": null,
+        "agent_setup_timeout_multiplier": null,
+        "environment_build_timeout_multiplier": null,
+        "agent": {
+            "name": "scripts.evaluation.harbor_agent:DSHAgent",
+            "import_path": null,
+            "model_name": "deepseek/deepseek-flash",
+            "n_concurrent": null,
+            "concurrency_group": null,
+            "skills": [],
+            "override_timeout_sec": null,
+            "override_setup_timeout_sec": null,
+            "max_timeout_sec": null,
+            "resume_trajectory": false,
+            "load_trajectory": null,
+            "extra_allowed_hosts": [],
+            "kwargs": {
+                "arm": "baseline",
+                "task_id": "cancel-async-tasks",
+                "replicate": 1,
+                "max_requests": 80,
+                "max_seconds": 300,
+                "max_cost_usd": 1
+            },
+            "mcp_servers": []
+        },
+        "user_agent": null,
+        "environment": {
+            "type": "docker",
+            "import_path": null,
+            "force_build": false,
+            "delete": true,
+            "stream": false,
+            "cpu_enforcement_policy": "auto",
+            "memory_enforcement_policy": "auto",
+            "override_cpus": null,
+            "override_memory_mb": null,
+            "override_storage_mb": null,
+            "override_gpus": null,
+            "override_tpu": null,
+            "mounts": null,
+            "extra_docker_compose": [],
+            "kwargs": {},
+            "extra_allowed_hosts": []
+        },
+        "verifier": {
+            "override_timeout_sec": null,
+            "max_timeout_sec": null,
+            "disable": false
+        },
+        "artifacts": [],
+        "extra_instruction_paths": [],
+        "extra_instructions": [],
+        "job_id": "cdeed5b4-a78d-4979-99f7-f3a05cfd6f67",
+        "source_trial": null
+    },
+    "agent_info": {
+        "name": "dsh-dcp-evaluation",
+        "version": "0.2.0-rc.2/dcp-0.1.0-rc.9",
+        "model_info": {
+            "name": "deepseek-flash",
+            "provider": "deepseek"
+        }
+    },
+    "agent_result": {
+        "n_input_tokens": 695335,
+        "n_cache_tokens": 671232,
+        "n_output_tokens": 16721,
+        "cost_usd": 0.015661746,
+        "model_usage": null,
+        "rollout_details": null,
+        "metadata": {
+            "execution_status": "completed",
+            "verification": "pending",
+            "ledger_path": "/home/chiro/projects/dsh-dynamic-context-pruning/dsh-dynamic-context-pruning/.tmp-vitest/evaluation-setup/jobs/dsh-pilot-2026-10-14T10-01-50-936Z-cancel-async-tasks-baseline-r1/cancel-async-tasks__bY6nGWi/agent/ledger.json"
+        }
+    },
+    "verifier_result": {
+        "rewards": {
+            "reward": 0.0
+        }
+    },
+    "verifier_environment_mode": "shared",
+    "exception_info": null,
+    "started_at": "2026-10-14T11:04:58.069635Z",
+    "finished_at": "2026-10-14T11:09:24.431291Z",
+    "environment_setup": {
+        "started_at": "2026-10-14T11:04:58.098455Z",
+        "finished_at": "2026-10-14T11:04:59.162871Z"
+    },
+    "agent_setup": {
+        "started_at": "2026-10-14T11:04:59.162919Z",
+        "finished_at": "2026-10-14T11:04:59.235228Z"
+    },
+    "agent_execution": {
+        "started_at": "2026-10-14T11:04:59.235369Z",
+        "finished_at": "2026-10-14T11:08:49.795404Z"
+    },
+    "verifier": {
+        "started_at": "2026-10-14T11:08:50.049778Z",
+        "finished_at": "2026-10-14T11:09:13.676204Z"
+    },
+    "step_results": null
+}

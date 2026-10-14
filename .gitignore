@@ -7,3 +7,5 @@ coverage/
 pnpm-debug.log*
 .dsh/
 .tmp-vitest/
+__pycache__/
+*.pyc

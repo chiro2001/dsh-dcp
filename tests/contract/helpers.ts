@@ -47,12 +47,13 @@ export function buildHistorySession(ctx: Context): BuiltHistory {
     {
       turn: 1,
       step: 1,
+      stream: [],
       message: createAssistantMessage({
         content: [{ type: 'text', text: 'first assistant message' }],
         source: { provider: 'mock', model: 'mock' },
       }),
     },
-    { surfaceOp: 'append', sourceEventSeqs: [] },
+    { surfaceOp: 'append' },
   )
   session.append('step/end', { turn: 1, step: 1 })
   session.append('turn/end', { turn: 1, reason: { kind: 'completed' } })
@@ -72,12 +73,13 @@ export function buildHistorySession(ctx: Context): BuiltHistory {
     {
       turn: 2,
       step: 1,
+      stream: [],
       message: createAssistantMessage({
         content: [{ type: 'text', text: 'second assistant message' }],
         source: { provider: 'mock', model: 'mock' },
       }),
     },
-    { surfaceOp: 'append', sourceEventSeqs: [] },
+    { surfaceOp: 'append' },
   )
   const call = session.append('tool/call', {
     turn: 2,

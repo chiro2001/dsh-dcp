@@ -1,0 +1,166 @@
+{
+  "runId": "2026-10-14T10-01-50-936Z",
+  "outcomesObserved": 36,
+  "plannedRuns": 36,
+  "fullCohort": true,
+  "identityMismatchCount": 0,
+  "duplicateOutcomeIdentityCount": 0,
+  "missingPlanIdentityCount": 0,
+  "arms": {
+    "baseline": {
+      "runCount": 18,
+      "requests": 449,
+      "officialRewardOne": 12,
+      "officialRewardUnknown": 1,
+      "strictSuccess": 12,
+      "usageCompleteRuns": 18,
+      "knownUsage": {
+        "uncachedInputTokens": 192679,
+        "cacheReadTokens": 7093248,
+        "outputTokens": 197309
+      },
+      "budgetFailureReasons": {
+        "deadline": 1
+      },
+      "maxTokensErrors": 2,
+      "executionErrorsByReason": {
+        "max-tokens": 2
+      },
+      "verifierExceptionTypes": {
+        "ConnectionResetError": 1
+      },
+      "verifierExceptions": 1,
+      "exceptionMetadataUnavailable": 0,
+      "officialRewardOutcomeMismatches": 0,
+      "successInvariantViolations": 0,
+      "sessionsChecked": 18,
+      "sessionsMissing": 0,
+      "malformedSessionLines": 0,
+      "eventTypes": {
+        "agent/inbox/spliced": 36,
+        "turn/start": 18,
+        "step/start": 449,
+        "system/message": 18,
+        "user/message": 18,
+        "request/header": 18,
+        "request/context": 18,
+        "assistant/message": 449,
+        "tool/call": 491,
+        "tool/result": 491,
+        "step/end": 449,
+        "turn/end": 18
+      },
+      "sourceKinds": {
+        "system-prompt": 18,
+        "user": 18,
+        "model": 449,
+        "tool": 491
+      },
+      "dcpCheckpointKinds": {},
+      "dcpCheckpointModes": {},
+      "surfaceOps": {
+        "append": 18
+      },
+      "dcpUserMessageSourceAppends": 0,
+      "compactionPruneEvents": 0,
+      "compactionSummaryEvents": 0,
+      "otherCompactionEvents": {},
+      "compressToolCalls": 0,
+      "knownOnlyWeightedCacheHitRate": 0.9735546348460532,
+      "elapsedSecondsP95NearestRank": 314.033,
+      "elapsedP95IncludesFailures": true
+    },
+    "dcp": {
+      "runCount": 18,
+      "requests": 577,
+      "officialRewardOne": 15,
+      "officialRewardUnknown": 1,
+      "strictSuccess": 13,
+      "usageCompleteRuns": 17,
+      "knownUsage": {
+        "uncachedInputTokens": 231127,
+        "cacheReadTokens": 10489728,
+        "outputTokens": 240411
+      },
+      "budgetFailureReasons": {
+        "request_count": 2,
+        "deadline": 2
+      },
+      "maxTokensErrors": 1,
+      "executionErrorsByReason": {
+        "max-tokens": 1
+      },
+      "verifierExceptionTypes": {
+        "ConnectionResetError": 1
+      },
+      "verifierExceptions": 1,
+      "exceptionMetadataUnavailable": 0,
+      "officialRewardOutcomeMismatches": 0,
+      "successInvariantViolations": 0,
+      "sessionsChecked": 18,
+      "sessionsMissing": 0,
+      "malformedSessionLines": 0,
+      "eventTypes": {
+        "agent/inbox/spliced": 36,
+        "turn/start": 18,
+        "step/start": 579,
+        "system/message": 18,
+        "user/message": 36,
+        "request/header": 18,
+        "request/context": 18,
+        "assistant/message": 576,
+        "tool/call": 609,
+        "tool/result": 609,
+        "step/end": 579,
+        "turn/end": 18,
+        "assistant/attempt": 3
+      },
+      "sourceKinds": {
+        "system-prompt": 18,
+        "dsh-dcp": 18,
+        "user": 18,
+        "model": 576,
+        "tool": 609
+      },
+      "dcpCheckpointKinds": {},
+      "dcpCheckpointModes": {},
+      "surfaceOps": {
+        "append": 36
+      },
+      "dcpUserMessageSourceAppends": 18,
+      "compactionPruneEvents": 0,
+      "compactionSummaryEvents": 0,
+      "otherCompactionEvents": {},
+      "compressToolCalls": 0,
+      "knownOnlyWeightedCacheHitRate": 0.9784413649844159,
+      "elapsedSecondsP95NearestRank": 324.098,
+      "elapsedP95IncludesFailures": true
+    }
+  },
+  "sourceHash": {
+    "matchesProtocol": true,
+    "expected": "580bd39818dd63c2f014ed8a95829db17569965dbb1b369a6186200e62ee52c0",
+    "actual": "580bd39818dd63c2f014ed8a95829db17569965dbb1b369a6186200e62ee52c0",
+    "recordedManifestMatchesProtocol": true,
+    "recordedSourceFileCount": 54,
+    "currentSourceFileCount": 54,
+    "sourceFileHashMismatchCount": 0,
+    "sourceFileHashMismatches": []
+  },
+  "frozenInputs": {
+    "expectedTaskCount": 9,
+    "checkedTaskCount": 9,
+    "allMatch": true,
+    "taskMatches": {
+      "break-filter-js-from-html": true,
+      "cancel-async-tasks": true,
+      "cobol-modernization": true,
+      "extract-elf": true,
+      "fix-git": true,
+      "multi-source-data-merger": true,
+      "nginx-request-logging": true,
+      "regex-log": true,
+      "sqlite-db-truncate": true
+    }
+  }
+}

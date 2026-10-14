@@ -22,13 +22,8 @@ describe('M3 host contract: surface replacements inside an open turn without ste
     if (resultEvent?.type !== 'tool/result') throw new Error('result missing')
     const pruned = freezeMessage({
       ...resultEvent.data.message,
-      content: [
-        {
-          ...resultEvent.data.message.content[0],
-          content: [{ type: 'text', text: '[deduplicated]' }],
-        },
-      ],
-    } as never)
+      content: [{ type: 'text', text: '[deduplicated]' }],
+    })
 
     expect(() => {
       session.append('compaction/prune', {
@@ -44,7 +39,7 @@ describe('M3 host contract: surface replacements inside an open turn without ste
           message: pruned,
         },
         {
-          surfaceOp: { op: 'replace', start: seqs.result, end: seqs.result },
+          surfaceOp: { op: 'replace', startSeq: seqs.result, endSeq: seqs.result },
           sourceEventSeqs: [seqs.result],
         },
       )
@@ -54,7 +49,6 @@ describe('M3 host contract: surface replacements inside an open turn without ste
     const text = session
       .deriveMessages()
       .flatMap((message) => message.content)
-      .flatMap((block) => (block.type === 'tool-result' ? block.content : []))
       .filter((block) => block.type === 'text')
       .map((block) => (block.type === 'text' ? block.text : ''))
       .join('\n')

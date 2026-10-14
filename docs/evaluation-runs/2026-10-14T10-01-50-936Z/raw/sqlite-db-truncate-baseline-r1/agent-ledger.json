@@ -1,0 +1,1939 @@
+{
+  "runId": "sqlite-db-truncate-baseline-r1-sqlite-db-truncate__xa4TRoD__agent",
+  "taskId": "sqlite-db-truncate",
+  "arm": "baseline",
+  "replicate": 1,
+  "model": "deepseek-flash",
+  "provider": "deepseek",
+  "startedAt": 1791973820684,
+  "version": 1,
+  "attempts": [
+    {
+      "attemptId": "sqlite-db-truncate-baseline-r1-sqlite-db-truncate__xa4TRoD__agent:1",
+      "metadata": {
+        "agentId": "sqlite-db-truncate-baseline-r1-sqlite-db-truncate__xa4TRoD__agent",
+        "sessionId": "sqlite-db-truncate-baseline-r1-sqlite-db-truncate__xa4TRoD__agent",
+        "purpose": "conversation",
+        "startedAt": 1791973820879,
+        "requestHash": "bcf63e42644acd9c82d458650ca5194a08d09fa0120eb8955bd4c642b72608c3",
+        "turn": 1,
+        "step": 1
+      },
+      "prices": {
+        "currency": "USD",
+        "date": "2026-10-14",
+        "source": "https://api-docs.deepseek.com/quick_start/pricing",
+        "retrievedAt": "2026-10-14",
+        "model": "deepseek-flash",
+        "window": "off-peak",
+        "rates": {
+          "uncachedInputPerMillion": 0.15,
+          "cacheReadPerMillion": 0.003,
+          "outputPerMillion": 0.6
+        }
+      },
+      "status": "success",
+      "finishedAt": 1791973822154,
+      "usage": {
+        "uncachedInputTokens": 318,
+        "cacheReadTokens": 128,
+        "outputTokens": 128
+      },
+      "cost": 0.000124884
+    },
+    {
+      "attemptId": "sqlite-db-truncate-baseline-r1-sqlite-db-truncate__xa4TRoD__agent:2",
+      "metadata": {
+        "agentId": "sqlite-db-truncate-baseline-r1-sqlite-db-truncate__xa4TRoD__agent",
+        "sessionId": "sqlite-db-truncate-baseline-r1-sqlite-db-truncate__xa4TRoD__agent",
+        "purpose": "conversation",
+        "startedAt": 1791973822346,
+        "requestHash": "00bbf0bf47b20dab8a4885328b864b06ca7a8307f2a382e5162a4145a7d99ecd",
+        "turn": 1,
+        "step": 2
+      },
+      "prices": {
+        "currency": "USD",
+        "date": "2026-10-14",
+        "source": "https://api-docs.deepseek.com/quick_start/pricing",
+        "retrievedAt": "2026-10-14",
+        "model": "deepseek-flash",
+        "window": "off-peak",
+        "rates": {
+          "uncachedInputPerMillion": 0.15,
+          "cacheReadPerMillion": 0.003,
+          "outputPerMillion": 0.6
+        }
+      },
+      "status": "success",
+      "finishedAt": 1791973823312,
+      "usage": {
+        "uncachedInputTokens": 372,
+        "cacheReadTokens": 512,
+        "outputTokens": 85
+      },
+      "cost": 0.000108336
+    },
+    {
+      "attemptId": "sqlite-db-truncate-baseline-r1-sqlite-db-truncate__xa4TRoD__agent:3",
+      "metadata": {
+        "agentId": "sqlite-db-truncate-baseline-r1-sqlite-db-truncate__xa4TRoD__agent",
+        "sessionId": "sqlite-db-truncate-baseline-r1-sqlite-db-truncate__xa4TRoD__agent",
+        "purpose": "conversation",
+        "startedAt": 1791973823462,
+        "requestHash": "6dbde16d6ad7d21217227da79132f1b786ff52f98673e88756938772b9cfb3c8",
+        "turn": 1,
+        "step": 3
+      },
+      "prices": {
+        "currency": "USD",
+        "date": "2026-10-14",
+        "source": "https://api-docs.deepseek.com/quick_start/pricing",
+        "retrievedAt": "2026-10-14",
+        "model": "deepseek-flash",
+        "window": "off-peak",
+        "rates": {
+          "uncachedInputPerMillion": 0.15,
+          "cacheReadPerMillion": 0.003,
+          "outputPerMillion": 0.6
+        }
+      },
+      "status": "success",
+      "finishedAt": 1791973824378,
+      "usage": {
+        "uncachedInputTokens": 145,
+        "cacheReadTokens": 896,
+        "outputTokens": 99
+      },
+      "cost": 8.383799999999999e-05
+    },
+    {
+      "attemptId": "sqlite-db-truncate-baseline-r1-sqlite-db-truncate__xa4TRoD__agent:4",
+      "metadata": {
+        "agentId": "sqlite-db-truncate-baseline-r1-sqlite-db-truncate__xa4TRoD__agent",
+        "sessionId": "sqlite-db-truncate-baseline-r1-sqlite-db-truncate__xa4TRoD__agent",
+        "purpose": "conversation",
+        "startedAt": 1791973824528,
+        "requestHash": "d05020cd502ad9de988ed18fdd8f8d56828d87a3ecc89c62abd4bf334ca9c5c4",
+        "turn": 1,
+        "step": 4
+      },
+      "prices": {
+        "currency": "USD",
+        "date": "2026-10-14",
+        "source": "https://api-docs.deepseek.com/quick_start/pricing",
+        "retrievedAt": "2026-10-14",
+        "model": "deepseek-flash",
+        "window": "off-peak",
+        "rates": {
+          "uncachedInputPerMillion": 0.15,
+          "cacheReadPerMillion": 0.003,
+          "outputPerMillion": 0.6
+        }
+      },
+      "status": "success",
+      "finishedAt": 1791973826279,
+      "usage": {
+        "uncachedInputTokens": 1574,
+        "cacheReadTokens": 1024,
+        "outputTokens": 328
+      },
+      "cost": 0.00043597199999999997
+    },
+    {
+      "attemptId": "sqlite-db-truncate-baseline-r1-sqlite-db-truncate__xa4TRoD__agent:5",
+      "metadata": {
+        "agentId": "sqlite-db-truncate-baseline-r1-sqlite-db-truncate__xa4TRoD__agent",
+        "sessionId": "sqlite-db-truncate-baseline-r1-sqlite-db-truncate__xa4TRoD__agent",
+        "purpose": "conversation",
+        "startedAt": 1791973826454,
+        "requestHash": "aebdb549d89e07b4983aae5405a338ed17bb2e6ae861dbb11903f67f3f40c1d3",
+        "turn": 1,
+        "step": 5
+      },
+      "prices": {
+        "currency": "USD",
+        "date": "2026-10-14",
+        "source": "https://api-docs.deepseek.com/quick_start/pricing",
+        "retrievedAt": "2026-10-14",
+        "model": "deepseek-flash",
+        "window": "off-peak",
+        "rates": {
+          "uncachedInputPerMillion": 0.15,
+          "cacheReadPerMillion": 0.003,
+          "outputPerMillion": 0.6
+        }
+      },
+      "status": "success",
+      "finishedAt": 1791973827742,
+      "usage": {
+        "uncachedInputTokens": 235,
+        "cacheReadTokens": 2816,
+        "outputTokens": 195
+      },
+      "cost": 0.000160698
+    },
+    {
+      "attemptId": "sqlite-db-truncate-baseline-r1-sqlite-db-truncate__xa4TRoD__agent:6",
+      "metadata": {
+        "agentId": "sqlite-db-truncate-baseline-r1-sqlite-db-truncate__xa4TRoD__agent",
+        "sessionId": "sqlite-db-truncate-baseline-r1-sqlite-db-truncate__xa4TRoD__agent",
+        "purpose": "conversation",
+        "startedAt": 1791973827905,
+        "requestHash": "5571c86e8432e7095a52e6163ebe4d9487622993f862150bc3bd58a52666d502",
+        "turn": 1,
+        "step": 6
+      },
+      "prices": {
+        "currency": "USD",
+        "date": "2026-10-14",
+        "source": "https://api-docs.deepseek.com/quick_start/pricing",
+        "retrievedAt": "2026-10-14",
+        "model": "deepseek-flash",
+        "window": "off-peak",
+        "rates": {
+          "uncachedInputPerMillion": 0.15,
+          "cacheReadPerMillion": 0.003,
+          "outputPerMillion": 0.6
+        }
+      },
+      "status": "success",
+      "finishedAt": 1791973829846,
+      "usage": {
+        "uncachedInputTokens": 669,
+        "cacheReadTokens": 3200,
+        "outputTokens": 252
+      },
+      "cost": 0.00026115
+    },
+    {
+      "attemptId": "sqlite-db-truncate-baseline-r1-sqlite-db-truncate__xa4TRoD__agent:7",
+      "metadata": {
+        "agentId": "sqlite-db-truncate-baseline-r1-sqlite-db-truncate__xa4TRoD__agent",
+        "sessionId": "sqlite-db-truncate-baseline-r1-sqlite-db-truncate__xa4TRoD__agent",
+        "purpose": "conversation",
+        "startedAt": 1791973829959,
+        "requestHash": "60667cbd2cb65d1e79c3be9c87ae011346741a6308c048f01efaae544b422c47",
+        "turn": 1,
+        "step": 7
+      },
+      "prices": {
+        "currency": "USD",
+        "date": "2026-10-14",
+        "source": "https://api-docs.deepseek.com/quick_start/pricing",
+        "retrievedAt": "2026-10-14",
+        "model": "deepseek-flash",
+        "window": "off-peak",
+        "rates": {
+          "uncachedInputPerMillion": 0.15,
+          "cacheReadPerMillion": 0.003,
+          "outputPerMillion": 0.6
+        }
+      },
+      "status": "success",
+      "finishedAt": 1791973833089,
+      "usage": {
+        "uncachedInputTokens": 178,
+        "cacheReadTokens": 4096,
+        "outputTokens": 472
+      },
+      "cost": 0.000322188
+    },
+    {
+      "attemptId": "sqlite-db-truncate-baseline-r1-sqlite-db-truncate__xa4TRoD__agent:8",
+      "metadata": {
+        "agentId": "sqlite-db-truncate-baseline-r1-sqlite-db-truncate__xa4TRoD__agent",
+        "sessionId": "sqlite-db-truncate-baseline-r1-sqlite-db-truncate__xa4TRoD__agent",
+        "purpose": "conversation",
+        "startedAt": 1791973833174,
+        "requestHash": "940ba038d1b6a26933934bc591360f91ca188d4e68ff2f88e356a538c3352aa0",
+        "turn": 1,
+        "step": 8
+      },
+      "prices": {
+        "currency": "USD",
+        "date": "2026-10-14",
+        "source": "https://api-docs.deepseek.com/quick_start/pricing",
+        "retrievedAt": "2026-10-14",
+        "model": "deepseek-flash",
+        "window": "off-peak",
+        "rates": {
+          "uncachedInputPerMillion": 0.15,
+          "cacheReadPerMillion": 0.003,
+          "outputPerMillion": 0.6
+        }
+      },
+      "status": "success",
+      "finishedAt": 1791973834367,
+      "usage": {
+        "uncachedInputTokens": 142,
+        "cacheReadTokens": 4736,
+        "outputTokens": 139
+      },
+      "cost": 0.00011890799999999998
+    },
+    {
+      "attemptId": "sqlite-db-truncate-baseline-r1-sqlite-db-truncate__xa4TRoD__agent:9",
+      "metadata": {
+        "agentId": "sqlite-db-truncate-baseline-r1-sqlite-db-truncate__xa4TRoD__agent",
+        "sessionId": "sqlite-db-truncate-baseline-r1-sqlite-db-truncate__xa4TRoD__agent",
+        "purpose": "conversation",
+        "startedAt": 1791973834457,
+        "requestHash": "51934b4a4f6faefb5be93e890f253d807b6658d63cbd6ba5cdc0d0ed264a9e1a",
+        "turn": 1,
+        "step": 9
+      },
+      "prices": {
+        "currency": "USD",
+        "date": "2026-10-14",
+        "source": "https://api-docs.deepseek.com/quick_start/pricing",
+        "retrievedAt": "2026-10-14",
+        "model": "deepseek-flash",
+        "window": "off-peak",
+        "rates": {
+          "uncachedInputPerMillion": 0.15,
+          "cacheReadPerMillion": 0.003,
+          "outputPerMillion": 0.6
+        }
+      },
+      "status": "success",
+      "finishedAt": 1791973837262,
+      "usage": {
+        "uncachedInputTokens": 670,
+        "cacheReadTokens": 4992,
+        "outputTokens": 504
+      },
+      "cost": 0.00041787599999999997
+    },
+    {
+      "attemptId": "sqlite-db-truncate-baseline-r1-sqlite-db-truncate__xa4TRoD__agent:10",
+      "metadata": {
+        "agentId": "sqlite-db-truncate-baseline-r1-sqlite-db-truncate__xa4TRoD__agent",
+        "sessionId": "sqlite-db-truncate-baseline-r1-sqlite-db-truncate__xa4TRoD__agent",
+        "purpose": "conversation",
+        "startedAt": 1791973837348,
+        "requestHash": "921ae2773d3f9217f72d91eab68b3a2f159a99a7a7153d1ad8beb974b0b06a0a",
+        "turn": 1,
+        "step": 10
+      },
+      "prices": {
+        "currency": "USD",
+        "date": "2026-10-14",
+        "source": "https://api-docs.deepseek.com/quick_start/pricing",
+        "retrievedAt": "2026-10-14",
+        "model": "deepseek-flash",
+        "window": "off-peak",
+        "rates": {
+          "uncachedInputPerMillion": 0.15,
+          "cacheReadPerMillion": 0.003,
+          "outputPerMillion": 0.6
+        }
+      },
+      "status": "success",
+      "finishedAt": 1791973839565,
+      "usage": {
+        "uncachedInputTokens": 259,
+        "cacheReadTokens": 6144,
+        "outputTokens": 291
+      },
+      "cost": 0.00023188200000000001
+    },
+    {
+      "attemptId": "sqlite-db-truncate-baseline-r1-sqlite-db-truncate__xa4TRoD__agent:11",
+      "metadata": {
+        "agentId": "sqlite-db-truncate-baseline-r1-sqlite-db-truncate__xa4TRoD__agent",
+        "sessionId": "sqlite-db-truncate-baseline-r1-sqlite-db-truncate__xa4TRoD__agent",
+        "purpose": "conversation",
+        "startedAt": 1791973839655,
+        "requestHash": "389a3dc1f4b55ebf22849986a70664f3967ca8377bfc46eb28ff140978c97671",
+        "turn": 1,
+        "step": 11
+      },
+      "prices": {
+        "currency": "USD",
+        "date": "2026-10-14",
+        "source": "https://api-docs.deepseek.com/quick_start/pricing",
+        "retrievedAt": "2026-10-14",
+        "model": "deepseek-flash",
+        "window": "off-peak",
+        "rates": {
+          "uncachedInputPerMillion": 0.15,
+          "cacheReadPerMillion": 0.003,
+          "outputPerMillion": 0.6
+        }
+      },
+      "status": "success",
+      "finishedAt": 1791973841341,
+      "usage": {
+        "uncachedInputTokens": 184,
+        "cacheReadTokens": 6656,
+        "outputTokens": 395
+      },
+      "cost": 0.00028456799999999996
+    },
+    {
+      "attemptId": "sqlite-db-truncate-baseline-r1-sqlite-db-truncate__xa4TRoD__agent:12",
+      "metadata": {
+        "agentId": "sqlite-db-truncate-baseline-r1-sqlite-db-truncate__xa4TRoD__agent",
+        "sessionId": "sqlite-db-truncate-baseline-r1-sqlite-db-truncate__xa4TRoD__agent",
+        "purpose": "conversation",
+        "startedAt": 1791973841427,
+        "requestHash": "fa2e62153d9bb475521298883555e4d14cead9e664ab8f08808a3cb4e8eea11a",
+        "turn": 1,
+        "step": 12
+      },
+      "prices": {
+        "currency": "USD",
+        "date": "2026-10-14",
+        "source": "https://api-docs.deepseek.com/quick_start/pricing",
+        "retrievedAt": "2026-10-14",
+        "model": "deepseek-flash",
+        "window": "off-peak",
+        "rates": {
+          "uncachedInputPerMillion": 0.15,
+          "cacheReadPerMillion": 0.003,
+          "outputPerMillion": 0.6
+        }
+      },
+      "status": "success",
+      "finishedAt": 1791973843921,
+      "usage": {
+        "uncachedInputTokens": 169,
+        "cacheReadTokens": 7168,
+        "outputTokens": 408
+      },
+      "cost": 0.00029165399999999997
+    },
+    {
+      "attemptId": "sqlite-db-truncate-baseline-r1-sqlite-db-truncate__xa4TRoD__agent:13",
+      "metadata": {
+        "agentId": "sqlite-db-truncate-baseline-r1-sqlite-db-truncate__xa4TRoD__agent",
+        "sessionId": "sqlite-db-truncate-baseline-r1-sqlite-db-truncate__xa4TRoD__agent",
+        "purpose": "conversation",
+        "startedAt": 1791973844007,
+        "requestHash": "8da7b10c00e78a9f36b9169fa13d3625cf542b526516eb8f7fd2861091ef70ae",
+        "turn": 1,
+        "step": 13
+      },
+      "prices": {
+        "currency": "USD",
+        "date": "2026-10-14",
+        "source": "https://api-docs.deepseek.com/quick_start/pricing",
+        "retrievedAt": "2026-10-14",
+        "model": "deepseek-flash",
+        "window": "off-peak",
+        "rates": {
+          "uncachedInputPerMillion": 0.15,
+          "cacheReadPerMillion": 0.003,
+          "outputPerMillion": 0.6
+        }
+      },
+      "status": "success",
+      "finishedAt": 1791973846851,
+      "usage": {
+        "uncachedInputTokens": 258,
+        "cacheReadTokens": 7552,
+        "outputTokens": 488
+      },
+      "cost": 0.000354156
+    },
+    {
+      "attemptId": "sqlite-db-truncate-baseline-r1-sqlite-db-truncate__xa4TRoD__agent:14",
+      "metadata": {
+        "agentId": "sqlite-db-truncate-baseline-r1-sqlite-db-truncate__xa4TRoD__agent",
+        "sessionId": "sqlite-db-truncate-baseline-r1-sqlite-db-truncate__xa4TRoD__agent",
+        "purpose": "conversation",
+        "startedAt": 1791973846939,
+        "requestHash": "035c9f5c423e9abc8684ee1c84dcbc32d40f3c1ac5a8093c4e04f7fe463c16e7",
+        "turn": 1,
+        "step": 14
+      },
+      "prices": {
+        "currency": "USD",
+        "date": "2026-10-14",
+        "source": "https://api-docs.deepseek.com/quick_start/pricing",
+        "retrievedAt": "2026-10-14",
+        "model": "deepseek-flash",
+        "window": "off-peak",
+        "rates": {
+          "uncachedInputPerMillion": 0.15,
+          "cacheReadPerMillion": 0.003,
+          "outputPerMillion": 0.6
+        }
+      },
+      "status": "success",
+      "finishedAt": 1791973849688,
+      "usage": {
+        "uncachedInputTokens": 727,
+        "cacheReadTokens": 8192,
+        "outputTokens": 613
+      },
+      "cost": 0.000501426
+    },
+    {
+      "attemptId": "sqlite-db-truncate-baseline-r1-sqlite-db-truncate__xa4TRoD__agent:15",
+      "metadata": {
+        "agentId": "sqlite-db-truncate-baseline-r1-sqlite-db-truncate__xa4TRoD__agent",
+        "sessionId": "sqlite-db-truncate-baseline-r1-sqlite-db-truncate__xa4TRoD__agent",
+        "purpose": "conversation",
+        "startedAt": 1791973849779,
+        "requestHash": "f12fa131de3cd0b9e89a711d630af80da973ce93b1359825972da7f9d28aa4fd",
+        "turn": 1,
+        "step": 15
+      },
+      "prices": {
+        "currency": "USD",
+        "date": "2026-10-14",
+        "source": "https://api-docs.deepseek.com/quick_start/pricing",
+        "retrievedAt": "2026-10-14",
+        "model": "deepseek-flash",
+        "window": "off-peak",
+        "rates": {
+          "uncachedInputPerMillion": 0.15,
+          "cacheReadPerMillion": 0.003,
+          "outputPerMillion": 0.6
+        }
+      },
+      "status": "success",
+      "finishedAt": 1791973851511,
+      "usage": {
+        "uncachedInputTokens": 427,
+        "cacheReadTokens": 9472,
+        "outputTokens": 264
+      },
+      "cost": 0.000250866
+    },
+    {
+      "attemptId": "sqlite-db-truncate-baseline-r1-sqlite-db-truncate__xa4TRoD__agent:16",
+      "metadata": {
+        "agentId": "sqlite-db-truncate-baseline-r1-sqlite-db-truncate__xa4TRoD__agent",
+        "sessionId": "sqlite-db-truncate-baseline-r1-sqlite-db-truncate__xa4TRoD__agent",
+        "purpose": "conversation",
+        "startedAt": 1791973851599,
+        "requestHash": "15fb6df4e2214428735f92ec60174939118e2aabff5fd0728b1e0aab69c3d313",
+        "turn": 1,
+        "step": 16
+      },
+      "prices": {
+        "currency": "USD",
+        "date": "2026-10-14",
+        "source": "https://api-docs.deepseek.com/quick_start/pricing",
+        "retrievedAt": "2026-10-14",
+        "model": "deepseek-flash",
+        "window": "off-peak",
+        "rates": {
+          "uncachedInputPerMillion": 0.15,
+          "cacheReadPerMillion": 0.003,
+          "outputPerMillion": 0.6
+        }
+      },
+      "status": "success",
+      "finishedAt": 1791973853804,
+      "usage": {
+        "uncachedInputTokens": 232,
+        "cacheReadTokens": 9984,
+        "outputTokens": 310
+      },
+      "cost": 0.00025075200000000003
+    },
+    {
+      "attemptId": "sqlite-db-truncate-baseline-r1-sqlite-db-truncate__xa4TRoD__agent:17",
+      "metadata": {
+        "agentId": "sqlite-db-truncate-baseline-r1-sqlite-db-truncate__xa4TRoD__agent",
+        "sessionId": "sqlite-db-truncate-baseline-r1-sqlite-db-truncate__xa4TRoD__agent",
+        "purpose": "conversation",
+        "startedAt": 1791973853889,
+        "requestHash": "4b5dc7470478ce09ebc6394b1e582f39750c5c4093f63a82cb81bb900c21b4da",
+        "turn": 1,
+        "step": 17
+      },
+      "prices": {
+        "currency": "USD",
+        "date": "2026-10-14",
+        "source": "https://api-docs.deepseek.com/quick_start/pricing",
+        "retrievedAt": "2026-10-14",
+        "model": "deepseek-flash",
+        "window": "off-peak",
+        "rates": {
+          "uncachedInputPerMillion": 0.15,
+          "cacheReadPerMillion": 0.003,
+          "outputPerMillion": 0.6
+        }
+      },
+      "status": "success",
+      "finishedAt": 1791973855945,
+      "usage": {
+        "uncachedInputTokens": 241,
+        "cacheReadTokens": 10368,
+        "outputTokens": 387
+      },
+      "cost": 0.00029945399999999994
+    },
+    {
+      "attemptId": "sqlite-db-truncate-baseline-r1-sqlite-db-truncate__xa4TRoD__agent:18",
+      "metadata": {
+        "agentId": "sqlite-db-truncate-baseline-r1-sqlite-db-truncate__xa4TRoD__agent",
+        "sessionId": "sqlite-db-truncate-baseline-r1-sqlite-db-truncate__xa4TRoD__agent",
+        "purpose": "conversation",
+        "startedAt": 1791973856037,
+        "requestHash": "667562f44e1062812d9c803d4628e84e7b623233dac3ba55f16ed55861bda342",
+        "turn": 1,
+        "step": 18
+      },
+      "prices": {
+        "currency": "USD",
+        "date": "2026-10-14",
+        "source": "https://api-docs.deepseek.com/quick_start/pricing",
+        "retrievedAt": "2026-10-14",
+        "model": "deepseek-flash",
+        "window": "off-peak",
+        "rates": {
+          "uncachedInputPerMillion": 0.15,
+          "cacheReadPerMillion": 0.003,
+          "outputPerMillion": 0.6
+        }
+      },
+      "status": "success",
+      "finishedAt": 1791973859453,
+      "usage": {
+        "uncachedInputTokens": 587,
+        "cacheReadTokens": 10880,
+        "outputTokens": 603
+      },
+      "cost": 0.00048249
+    },
+    {
+      "attemptId": "sqlite-db-truncate-baseline-r1-sqlite-db-truncate__xa4TRoD__agent:19",
+      "metadata": {
+        "agentId": "sqlite-db-truncate-baseline-r1-sqlite-db-truncate__xa4TRoD__agent",
+        "sessionId": "sqlite-db-truncate-baseline-r1-sqlite-db-truncate__xa4TRoD__agent",
+        "purpose": "conversation",
+        "startedAt": 1791973859543,
+        "requestHash": "110e79771768e47c852e9281ab76ae29d340275630e8e3d5b91d4f5cddab872b",
+        "turn": 1,
+        "step": 19
+      },
+      "prices": {
+        "currency": "USD",
+        "date": "2026-10-14",
+        "source": "https://api-docs.deepseek.com/quick_start/pricing",
+        "retrievedAt": "2026-10-14",
+        "model": "deepseek-flash",
+        "window": "off-peak",
+        "rates": {
+          "uncachedInputPerMillion": 0.15,
+          "cacheReadPerMillion": 0.003,
+          "outputPerMillion": 0.6
+        }
+      },
+      "status": "success",
+      "finishedAt": 1791973863614,
+      "usage": {
+        "uncachedInputTokens": 203,
+        "cacheReadTokens": 12032,
+        "outputTokens": 749
+      },
+      "cost": 0.000515946
+    },
+    {
+      "attemptId": "sqlite-db-truncate-baseline-r1-sqlite-db-truncate__xa4TRoD__agent:20",
+      "metadata": {
+        "agentId": "sqlite-db-truncate-baseline-r1-sqlite-db-truncate__xa4TRoD__agent",
+        "sessionId": "sqlite-db-truncate-baseline-r1-sqlite-db-truncate__xa4TRoD__agent",
+        "purpose": "conversation",
+        "startedAt": 1791973863748,
+        "requestHash": "548a1cc9c781a86eb96186b702779eb3ccae8cf6e9c2e45ff0aaf6c8883d8153",
+        "turn": 1,
+        "step": 20
+      },
+      "prices": {
+        "currency": "USD",
+        "date": "2026-10-14",
+        "source": "https://api-docs.deepseek.com/quick_start/pricing",
+        "retrievedAt": "2026-10-14",
+        "model": "deepseek-flash",
+        "window": "off-peak",
+        "rates": {
+          "uncachedInputPerMillion": 0.15,
+          "cacheReadPerMillion": 0.003,
+          "outputPerMillion": 0.6
+        }
+      },
+      "status": "success",
+      "finishedAt": 1791973867693,
+      "usage": {
+        "uncachedInputTokens": 147,
+        "cacheReadTokens": 12928,
+        "outputTokens": 835
+      },
+      "cost": 0.0005618340000000001
+    },
+    {
+      "attemptId": "sqlite-db-truncate-baseline-r1-sqlite-db-truncate__xa4TRoD__agent:21",
+      "metadata": {
+        "agentId": "sqlite-db-truncate-baseline-r1-sqlite-db-truncate__xa4TRoD__agent",
+        "sessionId": "sqlite-db-truncate-baseline-r1-sqlite-db-truncate__xa4TRoD__agent",
+        "purpose": "conversation",
+        "startedAt": 1791973867813,
+        "requestHash": "e76c37f28e41c40102dea0f2bfb7e8e0c7436d065dce85a873997345413c1d56",
+        "turn": 1,
+        "step": 21
+      },
+      "prices": {
+        "currency": "USD",
+        "date": "2026-10-14",
+        "source": "https://api-docs.deepseek.com/quick_start/pricing",
+        "retrievedAt": "2026-10-14",
+        "model": "deepseek-flash",
+        "window": "off-peak",
+        "rates": {
+          "uncachedInputPerMillion": 0.15,
+          "cacheReadPerMillion": 0.003,
+          "outputPerMillion": 0.6
+        }
+      },
+      "status": "success",
+      "finishedAt": 1791973870660,
+      "usage": {
+        "uncachedInputTokens": 180,
+        "cacheReadTokens": 13824,
+        "outputTokens": 700
+      },
+      "cost": 0.000488472
+    },
+    {
+      "attemptId": "sqlite-db-truncate-baseline-r1-sqlite-db-truncate__xa4TRoD__agent:22",
+      "metadata": {
+        "agentId": "sqlite-db-truncate-baseline-r1-sqlite-db-truncate__xa4TRoD__agent",
+        "sessionId": "sqlite-db-truncate-baseline-r1-sqlite-db-truncate__xa4TRoD__agent",
+        "purpose": "conversation",
+        "startedAt": 1791973870767,
+        "requestHash": "1619d68736b02661a1721845efed30ef0ebde002a6ae900e41dd1d49158b77e2",
+        "turn": 1,
+        "step": 22
+      },
+      "prices": {
+        "currency": "USD",
+        "date": "2026-10-14",
+        "source": "https://api-docs.deepseek.com/quick_start/pricing",
+        "retrievedAt": "2026-10-14",
+        "model": "deepseek-flash",
+        "window": "off-peak",
+        "rates": {
+          "uncachedInputPerMillion": 0.15,
+          "cacheReadPerMillion": 0.003,
+          "outputPerMillion": 0.6
+        }
+      },
+      "status": "success",
+      "finishedAt": 1791973872321,
+      "usage": {
+        "uncachedInputTokens": 201,
+        "cacheReadTokens": 14592,
+        "outputTokens": 206
+      },
+      "cost": 0.000197526
+    },
+    {
+      "attemptId": "sqlite-db-truncate-baseline-r1-sqlite-db-truncate__xa4TRoD__agent:23",
+      "metadata": {
+        "agentId": "sqlite-db-truncate-baseline-r1-sqlite-db-truncate__xa4TRoD__agent",
+        "sessionId": "sqlite-db-truncate-baseline-r1-sqlite-db-truncate__xa4TRoD__agent",
+        "purpose": "conversation",
+        "startedAt": 1791973872438,
+        "requestHash": "2036512d8163c1fd39bab73a39fc26cef87de56bd1ae43307a4b5cd6215f563f",
+        "turn": 1,
+        "step": 23
+      },
+      "prices": {
+        "currency": "USD",
+        "date": "2026-10-14",
+        "source": "https://api-docs.deepseek.com/quick_start/pricing",
+        "retrievedAt": "2026-10-14",
+        "model": "deepseek-flash",
+        "window": "off-peak",
+        "rates": {
+          "uncachedInputPerMillion": 0.15,
+          "cacheReadPerMillion": 0.003,
+          "outputPerMillion": 0.6
+        }
+      },
+      "status": "success",
+      "finishedAt": 1791973873899,
+      "usage": {
+        "uncachedInputTokens": 154,
+        "cacheReadTokens": 14976,
+        "outputTokens": 189
+      },
+      "cost": 0.000181428
+    },
+    {
+      "attemptId": "sqlite-db-truncate-baseline-r1-sqlite-db-truncate__xa4TRoD__agent:24",
+      "metadata": {
+        "agentId": "sqlite-db-truncate-baseline-r1-sqlite-db-truncate__xa4TRoD__agent",
+        "sessionId": "sqlite-db-truncate-baseline-r1-sqlite-db-truncate__xa4TRoD__agent",
+        "purpose": "conversation",
+        "startedAt": 1791973873983,
+        "requestHash": "766e07ff6a56e8c945a03d18148c1a419eba75a63a79a485bfe27899a57bbac2",
+        "turn": 1,
+        "step": 24
+      },
+      "prices": {
+        "currency": "USD",
+        "date": "2026-10-14",
+        "source": "https://api-docs.deepseek.com/quick_start/pricing",
+        "retrievedAt": "2026-10-14",
+        "model": "deepseek-flash",
+        "window": "off-peak",
+        "rates": {
+          "uncachedInputPerMillion": 0.15,
+          "cacheReadPerMillion": 0.003,
+          "outputPerMillion": 0.6
+        }
+      },
+      "status": "success",
+      "finishedAt": 1791973875003,
+      "usage": {
+        "uncachedInputTokens": 299,
+        "cacheReadTokens": 15232,
+        "outputTokens": 89
+      },
+      "cost": 0.000143946
+    },
+    {
+      "attemptId": "sqlite-db-truncate-baseline-r1-sqlite-db-truncate__xa4TRoD__agent:25",
+      "metadata": {
+        "agentId": "sqlite-db-truncate-baseline-r1-sqlite-db-truncate__xa4TRoD__agent",
+        "sessionId": "sqlite-db-truncate-baseline-r1-sqlite-db-truncate__xa4TRoD__agent",
+        "purpose": "conversation",
+        "startedAt": 1791973875092,
+        "requestHash": "85d2159fe947e7aaec47fec0249d5a813fd4e3dbcae17542db3b92e416c5ca7e",
+        "turn": 1,
+        "step": 25
+      },
+      "prices": {
+        "currency": "USD",
+        "date": "2026-10-14",
+        "source": "https://api-docs.deepseek.com/quick_start/pricing",
+        "retrievedAt": "2026-10-14",
+        "model": "deepseek-flash",
+        "window": "off-peak",
+        "rates": {
+          "uncachedInputPerMillion": 0.15,
+          "cacheReadPerMillion": 0.003,
+          "outputPerMillion": 0.6
+        }
+      },
+      "status": "success",
+      "finishedAt": 1791973876462,
+      "usage": {
+        "uncachedInputTokens": 210,
+        "cacheReadTokens": 15616,
+        "outputTokens": 132
+      },
+      "cost": 0.000157548
+    },
+    {
+      "attemptId": "sqlite-db-truncate-baseline-r1-sqlite-db-truncate__xa4TRoD__agent:26",
+      "metadata": {
+        "agentId": "sqlite-db-truncate-baseline-r1-sqlite-db-truncate__xa4TRoD__agent",
+        "sessionId": "sqlite-db-truncate-baseline-r1-sqlite-db-truncate__xa4TRoD__agent",
+        "purpose": "conversation",
+        "startedAt": 1791973876549,
+        "requestHash": "06865e37bd4eb57018222158905fff6367e692f0a2d105788047edf9bb0f3d8e",
+        "turn": 1,
+        "step": 26
+      },
+      "prices": {
+        "currency": "USD",
+        "date": "2026-10-14",
+        "source": "https://api-docs.deepseek.com/quick_start/pricing",
+        "retrievedAt": "2026-10-14",
+        "model": "deepseek-flash",
+        "window": "off-peak",
+        "rates": {
+          "uncachedInputPerMillion": 0.15,
+          "cacheReadPerMillion": 0.003,
+          "outputPerMillion": 0.6
+        }
+      },
+      "status": "success",
+      "finishedAt": 1791973877685,
+      "usage": {
+        "uncachedInputTokens": 153,
+        "cacheReadTokens": 15872,
+        "outputTokens": 163
+      },
+      "cost": 0.00016836599999999998
+    },
+    {
+      "attemptId": "sqlite-db-truncate-baseline-r1-sqlite-db-truncate__xa4TRoD__agent:27",
+      "metadata": {
+        "agentId": "sqlite-db-truncate-baseline-r1-sqlite-db-truncate__xa4TRoD__agent",
+        "sessionId": "sqlite-db-truncate-baseline-r1-sqlite-db-truncate__xa4TRoD__agent",
+        "purpose": "conversation",
+        "startedAt": 1791973877770,
+        "requestHash": "626a845e2324b98bc993ad7a089824b5d70e0c3341544bfccef8a85ce6e8a271",
+        "turn": 1,
+        "step": 27
+      },
+      "prices": {
+        "currency": "USD",
+        "date": "2026-10-14",
+        "source": "https://api-docs.deepseek.com/quick_start/pricing",
+        "retrievedAt": "2026-10-14",
+        "model": "deepseek-flash",
+        "window": "off-peak",
+        "rates": {
+          "uncachedInputPerMillion": 0.15,
+          "cacheReadPerMillion": 0.003,
+          "outputPerMillion": 0.6
+        }
+      },
+      "status": "success",
+      "finishedAt": 1791973879144,
+      "usage": {
+        "uncachedInputTokens": 405,
+        "cacheReadTokens": 16128,
+        "outputTokens": 198
+      },
+      "cost": 0.000227934
+    },
+    {
+      "attemptId": "sqlite-db-truncate-baseline-r1-sqlite-db-truncate__xa4TRoD__agent:28",
+      "metadata": {
+        "agentId": "sqlite-db-truncate-baseline-r1-sqlite-db-truncate__xa4TRoD__agent",
+        "sessionId": "sqlite-db-truncate-baseline-r1-sqlite-db-truncate__xa4TRoD__agent",
+        "purpose": "conversation",
+        "startedAt": 1791973879250,
+        "requestHash": "c89a9add56ebce9c9c3ba2cae5955758f56cfd35e3e1c808fa5651c5487f4955",
+        "turn": 1,
+        "step": 28
+      },
+      "prices": {
+        "currency": "USD",
+        "date": "2026-10-14",
+        "source": "https://api-docs.deepseek.com/quick_start/pricing",
+        "retrievedAt": "2026-10-14",
+        "model": "deepseek-flash",
+        "window": "off-peak",
+        "rates": {
+          "uncachedInputPerMillion": 0.15,
+          "cacheReadPerMillion": 0.003,
+          "outputPerMillion": 0.6
+        }
+      },
+      "status": "success",
+      "finishedAt": 1791973880953,
+      "usage": {
+        "uncachedInputTokens": 260,
+        "cacheReadTokens": 16640,
+        "outputTokens": 322
+      },
+      "cost": 0.00028212
+    },
+    {
+      "attemptId": "sqlite-db-truncate-baseline-r1-sqlite-db-truncate__xa4TRoD__agent:29",
+      "metadata": {
+        "agentId": "sqlite-db-truncate-baseline-r1-sqlite-db-truncate__xa4TRoD__agent",
+        "sessionId": "sqlite-db-truncate-baseline-r1-sqlite-db-truncate__xa4TRoD__agent",
+        "purpose": "conversation",
+        "startedAt": 1791973881038,
+        "requestHash": "6f99f0850146b0cc51da26747627c065f2c16284002f38f6ffc8bb64aa635feb",
+        "turn": 1,
+        "step": 29
+      },
+      "prices": {
+        "currency": "USD",
+        "date": "2026-10-14",
+        "source": "https://api-docs.deepseek.com/quick_start/pricing",
+        "retrievedAt": "2026-10-14",
+        "model": "deepseek-flash",
+        "window": "off-peak",
+        "rates": {
+          "uncachedInputPerMillion": 0.15,
+          "cacheReadPerMillion": 0.003,
+          "outputPerMillion": 0.6
+        }
+      },
+      "status": "success",
+      "finishedAt": 1791973883677,
+      "usage": {
+        "uncachedInputTokens": 240,
+        "cacheReadTokens": 17152,
+        "outputTokens": 402
+      },
+      "cost": 0.00032865600000000003
+    },
+    {
+      "attemptId": "sqlite-db-truncate-baseline-r1-sqlite-db-truncate__xa4TRoD__agent:30",
+      "metadata": {
+        "agentId": "sqlite-db-truncate-baseline-r1-sqlite-db-truncate__xa4TRoD__agent",
+        "sessionId": "sqlite-db-truncate-baseline-r1-sqlite-db-truncate__xa4TRoD__agent",
+        "purpose": "conversation",
+        "startedAt": 1791973883772,
+        "requestHash": "bf53272ee3191d5c8700dee9f5064669510ababf95af77a68826ddadd2edb23b",
+        "turn": 1,
+        "step": 30
+      },
+      "prices": {
+        "currency": "USD",
+        "date": "2026-10-14",
+        "source": "https://api-docs.deepseek.com/quick_start/pricing",
+        "retrievedAt": "2026-10-14",
+        "model": "deepseek-flash",
+        "window": "off-peak",
+        "rates": {
+          "uncachedInputPerMillion": 0.15,
+          "cacheReadPerMillion": 0.003,
+          "outputPerMillion": 0.6
+        }
+      },
+      "status": "success",
+      "finishedAt": 1791973885723,
+      "usage": {
+        "uncachedInputTokens": 244,
+        "cacheReadTokens": 17664,
+        "outputTokens": 257
+      },
+      "cost": 0.000243792
+    },
+    {
+      "attemptId": "sqlite-db-truncate-baseline-r1-sqlite-db-truncate__xa4TRoD__agent:31",
+      "metadata": {
+        "agentId": "sqlite-db-truncate-baseline-r1-sqlite-db-truncate__xa4TRoD__agent",
+        "sessionId": "sqlite-db-truncate-baseline-r1-sqlite-db-truncate__xa4TRoD__agent",
+        "purpose": "conversation",
+        "startedAt": 1791973885814,
+        "requestHash": "68efece679e1d2790a9837116c592c60ce4c36370fea3fdb8b5ed4dcbba761db",
+        "turn": 1,
+        "step": 31
+      },
+      "prices": {
+        "currency": "USD",
+        "date": "2026-10-14",
+        "source": "https://api-docs.deepseek.com/quick_start/pricing",
+        "retrievedAt": "2026-10-14",
+        "model": "deepseek-flash",
+        "window": "off-peak",
+        "rates": {
+          "uncachedInputPerMillion": 0.15,
+          "cacheReadPerMillion": 0.003,
+          "outputPerMillion": 0.6
+        }
+      },
+      "status": "success",
+      "finishedAt": 1791973887359,
+      "usage": {
+        "uncachedInputTokens": 169,
+        "cacheReadTokens": 18048,
+        "outputTokens": 232
+      },
+      "cost": 0.000218694
+    },
+    {
+      "attemptId": "sqlite-db-truncate-baseline-r1-sqlite-db-truncate__xa4TRoD__agent:32",
+      "metadata": {
+        "agentId": "sqlite-db-truncate-baseline-r1-sqlite-db-truncate__xa4TRoD__agent",
+        "sessionId": "sqlite-db-truncate-baseline-r1-sqlite-db-truncate__xa4TRoD__agent",
+        "purpose": "conversation",
+        "startedAt": 1791973887446,
+        "requestHash": "e6d3e085905503815a0fe7038bee9657d8aae57177d48fc48d04eca23501a9e2",
+        "turn": 1,
+        "step": 32
+      },
+      "prices": {
+        "currency": "USD",
+        "date": "2026-10-14",
+        "source": "https://api-docs.deepseek.com/quick_start/pricing",
+        "retrievedAt": "2026-10-14",
+        "model": "deepseek-flash",
+        "window": "off-peak",
+        "rates": {
+          "uncachedInputPerMillion": 0.15,
+          "cacheReadPerMillion": 0.003,
+          "outputPerMillion": 0.6
+        }
+      },
+      "status": "success",
+      "finishedAt": 1791973889048,
+      "usage": {
+        "uncachedInputTokens": 255,
+        "cacheReadTokens": 18304,
+        "outputTokens": 283
+      },
+      "cost": 0.000262962
+    },
+    {
+      "attemptId": "sqlite-db-truncate-baseline-r1-sqlite-db-truncate__xa4TRoD__agent:33",
+      "metadata": {
+        "agentId": "sqlite-db-truncate-baseline-r1-sqlite-db-truncate__xa4TRoD__agent",
+        "sessionId": "sqlite-db-truncate-baseline-r1-sqlite-db-truncate__xa4TRoD__agent",
+        "purpose": "conversation",
+        "startedAt": 1791973889137,
+        "requestHash": "15a727c8a4368913e85f78609b06d57cb9194c3482736903c26d03beed0b5e50",
+        "turn": 1,
+        "step": 33
+      },
+      "prices": {
+        "currency": "USD",
+        "date": "2026-10-14",
+        "source": "https://api-docs.deepseek.com/quick_start/pricing",
+        "retrievedAt": "2026-10-14",
+        "model": "deepseek-flash",
+        "window": "off-peak",
+        "rates": {
+          "uncachedInputPerMillion": 0.15,
+          "cacheReadPerMillion": 0.003,
+          "outputPerMillion": 0.6
+        }
+      },
+      "status": "success",
+      "finishedAt": 1791973893844,
+      "usage": {
+        "uncachedInputTokens": 344,
+        "cacheReadTokens": 18816,
+        "outputTokens": 984
+      },
+      "cost": 0.000698448
+    },
+    {
+      "attemptId": "sqlite-db-truncate-baseline-r1-sqlite-db-truncate__xa4TRoD__agent:34",
+      "metadata": {
+        "agentId": "sqlite-db-truncate-baseline-r1-sqlite-db-truncate__xa4TRoD__agent",
+        "sessionId": "sqlite-db-truncate-baseline-r1-sqlite-db-truncate__xa4TRoD__agent",
+        "purpose": "conversation",
+        "startedAt": 1791973893954,
+        "requestHash": "f7323c92a2a1b17c5564e14c5bed4873387202a3b8b90c124a7a9f0cb6a84e90",
+        "turn": 1,
+        "step": 34
+      },
+      "prices": {
+        "currency": "USD",
+        "date": "2026-10-14",
+        "source": "https://api-docs.deepseek.com/quick_start/pricing",
+        "retrievedAt": "2026-10-14",
+        "model": "deepseek-flash",
+        "window": "off-peak",
+        "rates": {
+          "uncachedInputPerMillion": 0.15,
+          "cacheReadPerMillion": 0.003,
+          "outputPerMillion": 0.6
+        }
+      },
+      "status": "success",
+      "finishedAt": 1791973894902,
+      "usage": {
+        "uncachedInputTokens": 139,
+        "cacheReadTokens": 20096,
+        "outputTokens": 122
+      },
+      "cost": 0.000154338
+    },
+    {
+      "attemptId": "sqlite-db-truncate-baseline-r1-sqlite-db-truncate__xa4TRoD__agent:35",
+      "metadata": {
+        "agentId": "sqlite-db-truncate-baseline-r1-sqlite-db-truncate__xa4TRoD__agent",
+        "sessionId": "sqlite-db-truncate-baseline-r1-sqlite-db-truncate__xa4TRoD__agent",
+        "purpose": "conversation",
+        "startedAt": 1791973894997,
+        "requestHash": "0e46c85bf318d0dcbe4b76c47bc845c85c14ceb5ad2f7f2c3e867642919a661e",
+        "turn": 1,
+        "step": 35
+      },
+      "prices": {
+        "currency": "USD",
+        "date": "2026-10-14",
+        "source": "https://api-docs.deepseek.com/quick_start/pricing",
+        "retrievedAt": "2026-10-14",
+        "model": "deepseek-flash",
+        "window": "off-peak",
+        "rates": {
+          "uncachedInputPerMillion": 0.15,
+          "cacheReadPerMillion": 0.003,
+          "outputPerMillion": 0.6
+        }
+      },
+      "status": "success",
+      "finishedAt": 1791973896254,
+      "usage": {
+        "uncachedInputTokens": 199,
+        "cacheReadTokens": 20224,
+        "outputTokens": 161
+      },
+      "cost": 0.00018712200000000002
+    },
+    {
+      "attemptId": "sqlite-db-truncate-baseline-r1-sqlite-db-truncate__xa4TRoD__agent:36",
+      "metadata": {
+        "agentId": "sqlite-db-truncate-baseline-r1-sqlite-db-truncate__xa4TRoD__agent",
+        "sessionId": "sqlite-db-truncate-baseline-r1-sqlite-db-truncate__xa4TRoD__agent",
+        "purpose": "conversation",
+        "startedAt": 1791973896341,
+        "requestHash": "b4e5ee865ab59ac8d5caa5d6c92b3e2e1c6cf6ad1438647eb238b8ebc093fb93",
+        "turn": 1,
+        "step": 36
+      },
+      "prices": {
+        "currency": "USD",
+        "date": "2026-10-14",
+        "source": "https://api-docs.deepseek.com/quick_start/pricing",
+        "retrievedAt": "2026-10-14",
+        "model": "deepseek-flash",
+        "window": "off-peak",
+        "rates": {
+          "uncachedInputPerMillion": 0.15,
+          "cacheReadPerMillion": 0.003,
+          "outputPerMillion": 0.6
+        }
+      },
+      "status": "success",
+      "finishedAt": 1791973898365,
+      "usage": {
+        "uncachedInputTokens": 342,
+        "cacheReadTokens": 20480,
+        "outputTokens": 328
+      },
+      "cost": 0.00030953999999999997
+    },
+    {
+      "attemptId": "sqlite-db-truncate-baseline-r1-sqlite-db-truncate__xa4TRoD__agent:37",
+      "metadata": {
+        "agentId": "sqlite-db-truncate-baseline-r1-sqlite-db-truncate__xa4TRoD__agent",
+        "sessionId": "sqlite-db-truncate-baseline-r1-sqlite-db-truncate__xa4TRoD__agent",
+        "purpose": "conversation",
+        "startedAt": 1791973898475,
+        "requestHash": "4270743e39c0f9a57c321012df0eb97d66230e4d839af2f1094290cf6f8dd07d",
+        "turn": 1,
+        "step": 37
+      },
+      "prices": {
+        "currency": "USD",
+        "date": "2026-10-14",
+        "source": "https://api-docs.deepseek.com/quick_start/pricing",
+        "retrievedAt": "2026-10-14",
+        "model": "deepseek-flash",
+        "window": "off-peak",
+        "rates": {
+          "uncachedInputPerMillion": 0.15,
+          "cacheReadPerMillion": 0.003,
+          "outputPerMillion": 0.6
+        }
+      },
+      "status": "success",
+      "finishedAt": 1791973899628,
+      "usage": {
+        "uncachedInputTokens": 259,
+        "cacheReadTokens": 20992,
+        "outputTokens": 186
+      },
+      "cost": 0.00021342599999999999
+    },
+    {
+      "attemptId": "sqlite-db-truncate-baseline-r1-sqlite-db-truncate__xa4TRoD__agent:38",
+      "metadata": {
+        "agentId": "sqlite-db-truncate-baseline-r1-sqlite-db-truncate__xa4TRoD__agent",
+        "sessionId": "sqlite-db-truncate-baseline-r1-sqlite-db-truncate__xa4TRoD__agent",
+        "purpose": "conversation",
+        "startedAt": 1791973899713,
+        "requestHash": "70bd6314b2fb6d1c8ffbb1b48eb2d715773c2d6e37dfc4136f028d7c653ddfb2",
+        "turn": 1,
+        "step": 38
+      },
+      "prices": {
+        "currency": "USD",
+        "date": "2026-10-14",
+        "source": "https://api-docs.deepseek.com/quick_start/pricing",
+        "retrievedAt": "2026-10-14",
+        "model": "deepseek-flash",
+        "window": "off-peak",
+        "rates": {
+          "uncachedInputPerMillion": 0.15,
+          "cacheReadPerMillion": 0.003,
+          "outputPerMillion": 0.6
+        }
+      },
+      "status": "success",
+      "finishedAt": 1791973900854,
+      "usage": {
+        "uncachedInputTokens": 137,
+        "cacheReadTokens": 21376,
+        "outputTokens": 206
+      },
+      "cost": 0.000208278
+    },
+    {
+      "attemptId": "sqlite-db-truncate-baseline-r1-sqlite-db-truncate__xa4TRoD__agent:39",
+      "metadata": {
+        "agentId": "sqlite-db-truncate-baseline-r1-sqlite-db-truncate__xa4TRoD__agent",
+        "sessionId": "sqlite-db-truncate-baseline-r1-sqlite-db-truncate__xa4TRoD__agent",
+        "purpose": "conversation",
+        "startedAt": 1791973900963,
+        "requestHash": "581c9fbcbd1a65b72e8ce054e7bb6a1ecc4d67d509d849a56e9d4a76a7fb29ad",
+        "turn": 1,
+        "step": 39
+      },
+      "prices": {
+        "currency": "USD",
+        "date": "2026-10-14",
+        "source": "https://api-docs.deepseek.com/quick_start/pricing",
+        "retrievedAt": "2026-10-14",
+        "model": "deepseek-flash",
+        "window": "off-peak",
+        "rates": {
+          "uncachedInputPerMillion": 0.15,
+          "cacheReadPerMillion": 0.003,
+          "outputPerMillion": 0.6
+        }
+      },
+      "status": "success",
+      "finishedAt": 1791973902345,
+      "usage": {
+        "uncachedInputTokens": 188,
+        "cacheReadTokens": 21632,
+        "outputTokens": 146
+      },
+      "cost": 0.000180696
+    },
+    {
+      "attemptId": "sqlite-db-truncate-baseline-r1-sqlite-db-truncate__xa4TRoD__agent:40",
+      "metadata": {
+        "agentId": "sqlite-db-truncate-baseline-r1-sqlite-db-truncate__xa4TRoD__agent",
+        "sessionId": "sqlite-db-truncate-baseline-r1-sqlite-db-truncate__xa4TRoD__agent",
+        "purpose": "conversation",
+        "startedAt": 1791973902435,
+        "requestHash": "44171e33eb7441ae117797cb39d2d78a5b82c58edd3ff63cddcdcd8a2bd00741",
+        "turn": 1,
+        "step": 40
+      },
+      "prices": {
+        "currency": "USD",
+        "date": "2026-10-14",
+        "source": "https://api-docs.deepseek.com/quick_start/pricing",
+        "retrievedAt": "2026-10-14",
+        "model": "deepseek-flash",
+        "window": "off-peak",
+        "rates": {
+          "uncachedInputPerMillion": 0.15,
+          "cacheReadPerMillion": 0.003,
+          "outputPerMillion": 0.6
+        }
+      },
+      "status": "success",
+      "finishedAt": 1791973904113,
+      "usage": {
+        "uncachedInputTokens": 154,
+        "cacheReadTokens": 21888,
+        "outputTokens": 240
+      },
+      "cost": 0.00023276400000000002
+    },
+    {
+      "attemptId": "sqlite-db-truncate-baseline-r1-sqlite-db-truncate__xa4TRoD__agent:41",
+      "metadata": {
+        "agentId": "sqlite-db-truncate-baseline-r1-sqlite-db-truncate__xa4TRoD__agent",
+        "sessionId": "sqlite-db-truncate-baseline-r1-sqlite-db-truncate__xa4TRoD__agent",
+        "purpose": "conversation",
+        "startedAt": 1791973904212,
+        "requestHash": "f410fe0f7b6767d20618422dd6ffeb919ac57ce240299fa12f73e3cdd70f1757",
+        "turn": 1,
+        "step": 41
+      },
+      "prices": {
+        "currency": "USD",
+        "date": "2026-10-14",
+        "source": "https://api-docs.deepseek.com/quick_start/pricing",
+        "retrievedAt": "2026-10-14",
+        "model": "deepseek-flash",
+        "window": "off-peak",
+        "rates": {
+          "uncachedInputPerMillion": 0.15,
+          "cacheReadPerMillion": 0.003,
+          "outputPerMillion": 0.6
+        }
+      },
+      "status": "success",
+      "finishedAt": 1791973931652,
+      "usage": {
+        "uncachedInputTokens": 135,
+        "cacheReadTokens": 22272,
+        "outputTokens": 719
+      },
+      "cost": 0.000518466
+    },
+    {
+      "attemptId": "sqlite-db-truncate-baseline-r1-sqlite-db-truncate__xa4TRoD__agent:42",
+      "metadata": {
+        "agentId": "sqlite-db-truncate-baseline-r1-sqlite-db-truncate__xa4TRoD__agent",
+        "sessionId": "sqlite-db-truncate-baseline-r1-sqlite-db-truncate__xa4TRoD__agent",
+        "purpose": "conversation",
+        "startedAt": 1791973931745,
+        "requestHash": "ccfdcf59fd74ba423673229ceea9adb7d39df6c20aec8f4986f5044f4910ace4",
+        "turn": 1,
+        "step": 42
+      },
+      "prices": {
+        "currency": "USD",
+        "date": "2026-10-14",
+        "source": "https://api-docs.deepseek.com/quick_start/pricing",
+        "retrievedAt": "2026-10-14",
+        "model": "deepseek-flash",
+        "window": "off-peak",
+        "rates": {
+          "uncachedInputPerMillion": 0.15,
+          "cacheReadPerMillion": 0.003,
+          "outputPerMillion": 0.6
+        }
+      },
+      "status": "success",
+      "finishedAt": 1791973937724,
+      "usage": {
+        "uncachedInputTokens": 148,
+        "cacheReadTokens": 23040,
+        "outputTokens": 977
+      },
+      "cost": 0.00067752
+    },
+    {
+      "attemptId": "sqlite-db-truncate-baseline-r1-sqlite-db-truncate__xa4TRoD__agent:43",
+      "metadata": {
+        "agentId": "sqlite-db-truncate-baseline-r1-sqlite-db-truncate__xa4TRoD__agent",
+        "sessionId": "sqlite-db-truncate-baseline-r1-sqlite-db-truncate__xa4TRoD__agent",
+        "purpose": "conversation",
+        "startedAt": 1791973937809,
+        "requestHash": "eea974ed3ab0d8997aeb4d7adeace17578e1f3aae13108e093222771ce4e48a9",
+        "turn": 1,
+        "step": 43
+      },
+      "prices": {
+        "currency": "USD",
+        "date": "2026-10-14",
+        "source": "https://api-docs.deepseek.com/quick_start/pricing",
+        "retrievedAt": "2026-10-14",
+        "model": "deepseek-flash",
+        "window": "off-peak",
+        "rates": {
+          "uncachedInputPerMillion": 0.15,
+          "cacheReadPerMillion": 0.003,
+          "outputPerMillion": 0.6
+        }
+      },
+      "status": "success",
+      "finishedAt": 1791973941406,
+      "usage": {
+        "uncachedInputTokens": 180,
+        "cacheReadTokens": 24064,
+        "outputTokens": 504
+      },
+      "cost": 0.000401592
+    },
+    {
+      "attemptId": "sqlite-db-truncate-baseline-r1-sqlite-db-truncate__xa4TRoD__agent:44",
+      "metadata": {
+        "agentId": "sqlite-db-truncate-baseline-r1-sqlite-db-truncate__xa4TRoD__agent",
+        "sessionId": "sqlite-db-truncate-baseline-r1-sqlite-db-truncate__xa4TRoD__agent",
+        "purpose": "conversation",
+        "startedAt": 1791973941494,
+        "requestHash": "00a5644290683ae11ccf5c70e52be2e5a31146c6a8cebce4b5c710698e7ea2c6",
+        "turn": 1,
+        "step": 44
+      },
+      "prices": {
+        "currency": "USD",
+        "date": "2026-10-14",
+        "source": "https://api-docs.deepseek.com/quick_start/pricing",
+        "retrievedAt": "2026-10-14",
+        "model": "deepseek-flash",
+        "window": "off-peak",
+        "rates": {
+          "uncachedInputPerMillion": 0.15,
+          "cacheReadPerMillion": 0.003,
+          "outputPerMillion": 0.6
+        }
+      },
+      "status": "success",
+      "finishedAt": 1791973951489,
+      "usage": {
+        "uncachedInputTokens": 248,
+        "cacheReadTokens": 24704,
+        "outputTokens": 1742
+      },
+      "cost": 0.001156512
+    },
+    {
+      "attemptId": "sqlite-db-truncate-baseline-r1-sqlite-db-truncate__xa4TRoD__agent:45",
+      "metadata": {
+        "agentId": "sqlite-db-truncate-baseline-r1-sqlite-db-truncate__xa4TRoD__agent",
+        "sessionId": "sqlite-db-truncate-baseline-r1-sqlite-db-truncate__xa4TRoD__agent",
+        "purpose": "conversation",
+        "startedAt": 1791973951584,
+        "requestHash": "d76bd72df6bea020be96076581ead097b9b51b6788f56583c316da86d9e793a5",
+        "turn": 1,
+        "step": 45
+      },
+      "prices": {
+        "currency": "USD",
+        "date": "2026-10-14",
+        "source": "https://api-docs.deepseek.com/quick_start/pricing",
+        "retrievedAt": "2026-10-14",
+        "model": "deepseek-flash",
+        "window": "off-peak",
+        "rates": {
+          "uncachedInputPerMillion": 0.15,
+          "cacheReadPerMillion": 0.003,
+          "outputPerMillion": 0.6
+        }
+      },
+      "status": "success",
+      "finishedAt": 1791973955940,
+      "usage": {
+        "uncachedInputTokens": 464,
+        "cacheReadTokens": 26624,
+        "outputTokens": 792
+      },
+      "cost": 0.000624672
+    },
+    {
+      "attemptId": "sqlite-db-truncate-baseline-r1-sqlite-db-truncate__xa4TRoD__agent:46",
+      "metadata": {
+        "agentId": "sqlite-db-truncate-baseline-r1-sqlite-db-truncate__xa4TRoD__agent",
+        "sessionId": "sqlite-db-truncate-baseline-r1-sqlite-db-truncate__xa4TRoD__agent",
+        "purpose": "conversation",
+        "startedAt": 1791973956193,
+        "requestHash": "41fb0d475f43af4dc0a0945193b80cbeb8f21fd49ab586ffd7a2a593c3352074",
+        "turn": 1,
+        "step": 46
+      },
+      "prices": {
+        "currency": "USD",
+        "date": "2026-10-14",
+        "source": "https://api-docs.deepseek.com/quick_start/pricing",
+        "retrievedAt": "2026-10-14",
+        "model": "deepseek-flash",
+        "window": "off-peak",
+        "rates": {
+          "uncachedInputPerMillion": 0.15,
+          "cacheReadPerMillion": 0.003,
+          "outputPerMillion": 0.6
+        }
+      },
+      "status": "success",
+      "finishedAt": 1791973962378,
+      "usage": {
+        "uncachedInputTokens": 732,
+        "cacheReadTokens": 27776,
+        "outputTokens": 1004
+      },
+      "cost": 0.000795528
+    },
+    {
+      "attemptId": "sqlite-db-truncate-baseline-r1-sqlite-db-truncate__xa4TRoD__agent:47",
+      "metadata": {
+        "agentId": "sqlite-db-truncate-baseline-r1-sqlite-db-truncate__xa4TRoD__agent",
+        "sessionId": "sqlite-db-truncate-baseline-r1-sqlite-db-truncate__xa4TRoD__agent",
+        "purpose": "conversation",
+        "startedAt": 1791973962466,
+        "requestHash": "7702efbca80ddad64d3f7b43d409864a5c320ffd819f0068d6ad062e8f11a132",
+        "turn": 1,
+        "step": 47
+      },
+      "prices": {
+        "currency": "USD",
+        "date": "2026-10-14",
+        "source": "https://api-docs.deepseek.com/quick_start/pricing",
+        "retrievedAt": "2026-10-14",
+        "model": "deepseek-flash",
+        "window": "off-peak",
+        "rates": {
+          "uncachedInputPerMillion": 0.15,
+          "cacheReadPerMillion": 0.003,
+          "outputPerMillion": 0.6
+        }
+      },
+      "status": "success",
+      "finishedAt": 1791973967179,
+      "usage": {
+        "uncachedInputTokens": 283,
+        "cacheReadTokens": 29440,
+        "outputTokens": 781
+      },
+      "cost": 0.00059937
+    },
+    {
+      "attemptId": "sqlite-db-truncate-baseline-r1-sqlite-db-truncate__xa4TRoD__agent:48",
+      "metadata": {
+        "agentId": "sqlite-db-truncate-baseline-r1-sqlite-db-truncate__xa4TRoD__agent",
+        "sessionId": "sqlite-db-truncate-baseline-r1-sqlite-db-truncate__xa4TRoD__agent",
+        "purpose": "conversation",
+        "startedAt": 1791973967298,
+        "requestHash": "5cc9b67dcd8d60899c31d22ba00fc17062fa6c57d5aea2cb6403649e6278cdd4",
+        "turn": 1,
+        "step": 48
+      },
+      "prices": {
+        "currency": "USD",
+        "date": "2026-10-14",
+        "source": "https://api-docs.deepseek.com/quick_start/pricing",
+        "retrievedAt": "2026-10-14",
+        "model": "deepseek-flash",
+        "window": "off-peak",
+        "rates": {
+          "uncachedInputPerMillion": 0.15,
+          "cacheReadPerMillion": 0.003,
+          "outputPerMillion": 0.6
+        }
+      },
+      "status": "success",
+      "finishedAt": 1791973968493,
+      "usage": {
+        "uncachedInputTokens": 152,
+        "cacheReadTokens": 30464,
+        "outputTokens": 123
+      },
+      "cost": 0.000187992
+    },
+    {
+      "attemptId": "sqlite-db-truncate-baseline-r1-sqlite-db-truncate__xa4TRoD__agent:49",
+      "metadata": {
+        "agentId": "sqlite-db-truncate-baseline-r1-sqlite-db-truncate__xa4TRoD__agent",
+        "sessionId": "sqlite-db-truncate-baseline-r1-sqlite-db-truncate__xa4TRoD__agent",
+        "purpose": "conversation",
+        "startedAt": 1791973968582,
+        "requestHash": "4b8286576e42ebe0f264933bc96e10d29fc79753b9faf1c71065b6c933af825a",
+        "turn": 1,
+        "step": 49
+      },
+      "prices": {
+        "currency": "USD",
+        "date": "2026-10-14",
+        "source": "https://api-docs.deepseek.com/quick_start/pricing",
+        "retrievedAt": "2026-10-14",
+        "model": "deepseek-flash",
+        "window": "off-peak",
+        "rates": {
+          "uncachedInputPerMillion": 0.15,
+          "cacheReadPerMillion": 0.003,
+          "outputPerMillion": 0.6
+        }
+      },
+      "status": "success",
+      "finishedAt": 1791973971476,
+      "usage": {
+        "uncachedInputTokens": 186,
+        "cacheReadTokens": 30720,
+        "outputTokens": 509
+      },
+      "cost": 0.00042545999999999995
+    },
+    {
+      "attemptId": "sqlite-db-truncate-baseline-r1-sqlite-db-truncate__xa4TRoD__agent:50",
+      "metadata": {
+        "agentId": "sqlite-db-truncate-baseline-r1-sqlite-db-truncate__xa4TRoD__agent",
+        "sessionId": "sqlite-db-truncate-baseline-r1-sqlite-db-truncate__xa4TRoD__agent",
+        "purpose": "conversation",
+        "startedAt": 1791973971576,
+        "requestHash": "ba71660335f90d53dd664bca84fe7f37e2a7e36d580f825ff753da920a202a23",
+        "turn": 1,
+        "step": 50
+      },
+      "prices": {
+        "currency": "USD",
+        "date": "2026-10-14",
+        "source": "https://api-docs.deepseek.com/quick_start/pricing",
+        "retrievedAt": "2026-10-14",
+        "model": "deepseek-flash",
+        "window": "off-peak",
+        "rates": {
+          "uncachedInputPerMillion": 0.15,
+          "cacheReadPerMillion": 0.003,
+          "outputPerMillion": 0.6
+        }
+      },
+      "status": "success",
+      "finishedAt": 1791973973754,
+      "usage": {
+        "uncachedInputTokens": 218,
+        "cacheReadTokens": 31360,
+        "outputTokens": 375
+      },
+      "cost": 0.00035178
+    },
+    {
+      "attemptId": "sqlite-db-truncate-baseline-r1-sqlite-db-truncate__xa4TRoD__agent:51",
+      "metadata": {
+        "agentId": "sqlite-db-truncate-baseline-r1-sqlite-db-truncate__xa4TRoD__agent",
+        "sessionId": "sqlite-db-truncate-baseline-r1-sqlite-db-truncate__xa4TRoD__agent",
+        "purpose": "conversation",
+        "startedAt": 1791973973844,
+        "requestHash": "36f93850c85b9767f5018d7607bf8b24b76b19d1e47b2d97b8c0418d772b33b9",
+        "turn": 1,
+        "step": 51
+      },
+      "prices": {
+        "currency": "USD",
+        "date": "2026-10-14",
+        "source": "https://api-docs.deepseek.com/quick_start/pricing",
+        "retrievedAt": "2026-10-14",
+        "model": "deepseek-flash",
+        "window": "off-peak",
+        "rates": {
+          "uncachedInputPerMillion": 0.15,
+          "cacheReadPerMillion": 0.003,
+          "outputPerMillion": 0.6
+        }
+      },
+      "status": "success",
+      "finishedAt": 1791973976658,
+      "usage": {
+        "uncachedInputTokens": 149,
+        "cacheReadTokens": 31872,
+        "outputTokens": 736
+      },
+      "cost": 0.000559566
+    },
+    {
+      "attemptId": "sqlite-db-truncate-baseline-r1-sqlite-db-truncate__xa4TRoD__agent:52",
+      "metadata": {
+        "agentId": "sqlite-db-truncate-baseline-r1-sqlite-db-truncate__xa4TRoD__agent",
+        "sessionId": "sqlite-db-truncate-baseline-r1-sqlite-db-truncate__xa4TRoD__agent",
+        "purpose": "conversation",
+        "startedAt": 1791973976745,
+        "requestHash": "64a4c2f6a311169cd71828c2d6d2784722b7b8e01537b8416f2a0a4c98a36e68",
+        "turn": 1,
+        "step": 52
+      },
+      "prices": {
+        "currency": "USD",
+        "date": "2026-10-14",
+        "source": "https://api-docs.deepseek.com/quick_start/pricing",
+        "retrievedAt": "2026-10-14",
+        "model": "deepseek-flash",
+        "window": "off-peak",
+        "rates": {
+          "uncachedInputPerMillion": 0.15,
+          "cacheReadPerMillion": 0.003,
+          "outputPerMillion": 0.6
+        }
+      },
+      "status": "success",
+      "finishedAt": 1791973979480,
+      "usage": {
+        "uncachedInputTokens": 286,
+        "cacheReadTokens": 32640,
+        "outputTokens": 561
+      },
+      "cost": 0.00047741999999999994
+    },
+    {
+      "attemptId": "sqlite-db-truncate-baseline-r1-sqlite-db-truncate__xa4TRoD__agent:53",
+      "metadata": {
+        "agentId": "sqlite-db-truncate-baseline-r1-sqlite-db-truncate__xa4TRoD__agent",
+        "sessionId": "sqlite-db-truncate-baseline-r1-sqlite-db-truncate__xa4TRoD__agent",
+        "purpose": "conversation",
+        "startedAt": 1791973979588,
+        "requestHash": "7dd2f4fe660514ba0e986ef3e2c6362a1915558bbc111ef2f8ee2dc043990606",
+        "turn": 1,
+        "step": 53
+      },
+      "prices": {
+        "currency": "USD",
+        "date": "2026-10-14",
+        "source": "https://api-docs.deepseek.com/quick_start/pricing",
+        "retrievedAt": "2026-10-14",
+        "model": "deepseek-flash",
+        "window": "off-peak",
+        "rates": {
+          "uncachedInputPerMillion": 0.15,
+          "cacheReadPerMillion": 0.003,
+          "outputPerMillion": 0.6
+        }
+      },
+      "status": "success",
+      "finishedAt": 1791973982435,
+      "usage": {
+        "uncachedInputTokens": 364,
+        "cacheReadTokens": 33408,
+        "outputTokens": 544
+      },
+      "cost": 0.000481224
+    },
+    {
+      "attemptId": "sqlite-db-truncate-baseline-r1-sqlite-db-truncate__xa4TRoD__agent:54",
+      "metadata": {
+        "agentId": "sqlite-db-truncate-baseline-r1-sqlite-db-truncate__xa4TRoD__agent",
+        "sessionId": "sqlite-db-truncate-baseline-r1-sqlite-db-truncate__xa4TRoD__agent",
+        "purpose": "conversation",
+        "startedAt": 1791973982536,
+        "requestHash": "86a30b8cef153655ae2d25e592ea8c189b27c95dcc97da024fde53b26b21c79a",
+        "turn": 1,
+        "step": 54
+      },
+      "prices": {
+        "currency": "USD",
+        "date": "2026-10-14",
+        "source": "https://api-docs.deepseek.com/quick_start/pricing",
+        "retrievedAt": "2026-10-14",
+        "model": "deepseek-flash",
+        "window": "off-peak",
+        "rates": {
+          "uncachedInputPerMillion": 0.15,
+          "cacheReadPerMillion": 0.003,
+          "outputPerMillion": 0.6
+        }
+      },
+      "status": "success",
+      "finishedAt": 1791973984371,
+      "usage": {
+        "uncachedInputTokens": 419,
+        "cacheReadTokens": 34304,
+        "outputTokens": 280
+      },
+      "cost": 0.000333762
+    },
+    {
+      "attemptId": "sqlite-db-truncate-baseline-r1-sqlite-db-truncate__xa4TRoD__agent:55",
+      "metadata": {
+        "agentId": "sqlite-db-truncate-baseline-r1-sqlite-db-truncate__xa4TRoD__agent",
+        "sessionId": "sqlite-db-truncate-baseline-r1-sqlite-db-truncate__xa4TRoD__agent",
+        "purpose": "conversation",
+        "startedAt": 1791973984464,
+        "requestHash": "bd7a5065d9f0d65b0863a00c18e19b24c4595982d1c2b87661ca77f31b63feb7",
+        "turn": 1,
+        "step": 55
+      },
+      "prices": {
+        "currency": "USD",
+        "date": "2026-10-14",
+        "source": "https://api-docs.deepseek.com/quick_start/pricing",
+        "retrievedAt": "2026-10-14",
+        "model": "deepseek-flash",
+        "window": "off-peak",
+        "rates": {
+          "uncachedInputPerMillion": 0.15,
+          "cacheReadPerMillion": 0.003,
+          "outputPerMillion": 0.6
+        }
+      },
+      "status": "success",
+      "finishedAt": 1791973986355,
+      "usage": {
+        "uncachedInputTokens": 341,
+        "cacheReadTokens": 34944,
+        "outputTokens": 292
+      },
+      "cost": 0.000331182
+    },
+    {
+      "attemptId": "sqlite-db-truncate-baseline-r1-sqlite-db-truncate__xa4TRoD__agent:56",
+      "metadata": {
+        "agentId": "sqlite-db-truncate-baseline-r1-sqlite-db-truncate__xa4TRoD__agent",
+        "sessionId": "sqlite-db-truncate-baseline-r1-sqlite-db-truncate__xa4TRoD__agent",
+        "purpose": "conversation",
+        "startedAt": 1791973986464,
+        "requestHash": "57508b1828150f9d4eba57e1e4871a445147b17a8d3672b5e4110021340b87de",
+        "turn": 1,
+        "step": 56
+      },
+      "prices": {
+        "currency": "USD",
+        "date": "2026-10-14",
+        "source": "https://api-docs.deepseek.com/quick_start/pricing",
+        "retrievedAt": "2026-10-14",
+        "model": "deepseek-flash",
+        "window": "off-peak",
+        "rates": {
+          "uncachedInputPerMillion": 0.15,
+          "cacheReadPerMillion": 0.003,
+          "outputPerMillion": 0.6
+        }
+      },
+      "status": "success",
+      "finishedAt": 1791973991453,
+      "usage": {
+        "uncachedInputTokens": 564,
+        "cacheReadTokens": 35456,
+        "outputTokens": 1169
+      },
+      "cost": 0.0008923679999999999
+    },
+    {
+      "attemptId": "sqlite-db-truncate-baseline-r1-sqlite-db-truncate__xa4TRoD__agent:57",
+      "metadata": {
+        "agentId": "sqlite-db-truncate-baseline-r1-sqlite-db-truncate__xa4TRoD__agent",
+        "sessionId": "sqlite-db-truncate-baseline-r1-sqlite-db-truncate__xa4TRoD__agent",
+        "purpose": "conversation",
+        "startedAt": 1791973991551,
+        "requestHash": "74827e86081d720f4ac980fff81b2358f54eda4ef8259c55255a7c9521a3aaf1",
+        "turn": 1,
+        "step": 57
+      },
+      "prices": {
+        "currency": "USD",
+        "date": "2026-10-14",
+        "source": "https://api-docs.deepseek.com/quick_start/pricing",
+        "retrievedAt": "2026-10-14",
+        "model": "deepseek-flash",
+        "window": "off-peak",
+        "rates": {
+          "uncachedInputPerMillion": 0.15,
+          "cacheReadPerMillion": 0.003,
+          "outputPerMillion": 0.6
+        }
+      },
+      "status": "success",
+      "finishedAt": 1791973992642,
+      "usage": {
+        "uncachedInputTokens": 182,
+        "cacheReadTokens": 37120,
+        "outputTokens": 104
+      },
+      "cost": 0.00020106
+    },
+    {
+      "attemptId": "sqlite-db-truncate-baseline-r1-sqlite-db-truncate__xa4TRoD__agent:58",
+      "metadata": {
+        "agentId": "sqlite-db-truncate-baseline-r1-sqlite-db-truncate__xa4TRoD__agent",
+        "sessionId": "sqlite-db-truncate-baseline-r1-sqlite-db-truncate__xa4TRoD__agent",
+        "purpose": "conversation",
+        "startedAt": 1791973992736,
+        "requestHash": "3faff6ee702eb76fed92276afd39d08d07b7118a30d26e324d6a98d8d60d0022",
+        "turn": 1,
+        "step": 58
+      },
+      "prices": {
+        "currency": "USD",
+        "date": "2026-10-14",
+        "source": "https://api-docs.deepseek.com/quick_start/pricing",
+        "retrievedAt": "2026-10-14",
+        "model": "deepseek-flash",
+        "window": "off-peak",
+        "rates": {
+          "uncachedInputPerMillion": 0.15,
+          "cacheReadPerMillion": 0.003,
+          "outputPerMillion": 0.6
+        }
+      },
+      "status": "success",
+      "finishedAt": 1791973996414,
+      "usage": {
+        "uncachedInputTokens": 418,
+        "cacheReadTokens": 37376,
+        "outputTokens": 587
+      },
+      "cost": 0.000527028
+    }
+  ],
+  "outcome": "failure",
+  "success": false,
+  "finishedAt": 1791973996416,
+  "externalCost": 0,
+  "usageComplete": true,
+  "usageTotals": {
+    "uncachedInputTokens": 17738,
+    "cacheReadTokens": 1030912,
+    "outputTokens": 24890,
+    "reasoningTokens": 0
+  },
+  "knownCost": 0.020687435999999997,
+  "totalCost": 0.020687435999999997
+}

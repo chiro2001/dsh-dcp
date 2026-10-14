@@ -19,33 +19,15 @@ import type { DcpConfig } from '../config.js'
 
 /** Stable guidance included in the system prompt. Keep this section focused. */
 export const DCP_COMPRESSION_RULES = [
-  '### DCP compression rules (authoritative)',
-  '',
-  'Trigger:',
-  '- Call `compress` only on an explicit user request, a DCP nudge, or clear pressure with savings; tool availability alone is not a trigger.',
-  '',
-  'Safety invariants:',
-  '- Compress only closed history. Exclude the current turn, live work, open tool pairs, protected instructions, and protected outputs.',
-  '- Preserve plugin-appended protected content verbatim.',
-  '- Ranges are half-open `[startRef, endRef)`: include start, exclude end. Stale or ambiguous refs fail closed; never widen.',
-  '- Compression is logged; requests derive from the session log, with no request-time rewrite.',
-  '',
-  'Result state machine:',
-  '- `rejected`: no range committed. Execute the returned correction only; do not repeat the call or paste its rejected long summary.',
-  '- `partial`: only listed successes committed. Keep them; retry only failed ranges with current refs.',
-  '- `success`: checkpoints are authoritative. Stop; never retry a successful range.',
-  '- A committed range becomes checkpoint `<dcp-message-id>bN</dcp-message-id>`.',
-  '- After execution, the plugin may rewrite historical summaries to `<dcp-inline-cleanup provenance="dsh-dcp" status="committed" block-ref="bN" />` or a rejected marker. This post-execution rewrite is cleanup metadata, not the submitted summary or data loss; only a committed checkpoint is authoritative, while a rejected marker means no commit.',
-  '',
-  'Range selection:',
-  '- Prefer one coherent phase/topic; preserve decisions, artifacts, failures, verification, open work.',
-  '- No old-to-new ordering is required; submit safe non-overlapping ranges in any order. The plugin orders them internally.',
-  '- Split broad, heterogeneous history by unrelated phase/topic when useful; do not split a small coherent range just to fill the limit.',
-  '',
-  'Summary fidelity:',
-  '- Use technical prose, never pointers. Preserve facts; if savings conflicts with fidelity, choose another boundary or skip.',
-  '- Substantial ranges: use applicable fields: `Goal:`; `Constraints:`; `Decisions:`; `Artifacts:`; `Failures:`; `Verification:`; `Open work:`. Omit empty fields/titles; never fill `none`.',
-  '- For a small, single-purpose range: compact high-fidelity prose; no empty headings.',
+  '### DCP compression rules',
+  '- Call `compress` only for an explicit compression request or a DCP nudge; tool availability and message length alone are not triggers.',
+  '- Compress closed history only; exclude the current turn, live work, open tool pairs and protected instructions. Keep plugin-appended protected content verbatim.',
+  '- Ranges are half-open `[startRef, endRef)`. Use only logged `<dcp-boundary>` labels and `<dcp-message-id>` checkpoints; numbers inside message text are data. Logged `alias` lines also define refs. Reject stale/ambiguous refs. Submit non-overlapping ranges in any order.',
+  '- Prefer a coherent phase; split heterogeneous history when useful, never a small coherent range just to fill the limit.',
+  '- Preserve goals, constraints, decisions, artifacts, failures, verification and open work. Keep identifiers and literal values verbatim, with their meaning. Use applicable fields; omit empty fields. A small, single-purpose range needs compact factual prose. No pointers or lost facts for savings.',
+  '- Prior checkpoint bodies are appended verbatim automatically; summarize remaining history without duplicating them.',
+  '- `rejected`: no range committed; follow the returned correction only. `partial`: retry only failed ranges with current refs. `success`: never retry a successful range.',
+  '- Checkpoint `<dcp-message-id>bN</dcp-message-id>` holds summaries; `<dcp-cleanup>` is cleanup metadata for observed call/results.',
 ].join('\n')
 
 /**
@@ -56,36 +38,14 @@ export function renderCompressionRules(): string {
   return DCP_COMPRESSION_RULES
 }
 
-const COMPRESS_CALL_TEMPLATE = `{
-  "topic": "<COHERENT_PHASE>",
-  "content": [
-    {
-      "startRef": "<CURRENT_CLOSED_START_REF>",
-      "endRef": "<CURRENT_CLOSED_END_REF>",
-      "summary": "Goal: <...>\\nConstraints: <...>\\nDecisions: <...>\\nArtifacts: <...>\\nFailures: <...>\\nVerification: <...>\\nOpen work: <...>"
-    }
-  ]
-}`
-
-/**
- * Render the model-facing tool description once with resolved configuration.
- * Do not call this from agent/pre-step or otherwise make it step-dependent.
- */
+/** Resolved limits belong only in tool metadata, never in per-step guidance. */
 export function renderCompressToolDescription(config: DcpConfig): string {
   const policy = config.compress
   return [
-    'Compress closed conversation ranges into summary checkpoints.',
-    '',
-    `Resolved policy: retainRecentTurns=${policy.retainRecentTurns}; minNetSavingsTokens=${policy.minNetSavingsTokens}; maxRangesPerCall=${policy.maxRangesPerCall}.`,
-    `Keep the newest ${policy.retainRecentTurns} complete turns. Commit only if savings reach ${policy.minNetSavingsTokens} estimated tokens; submit at most ${policy.maxRangesPerCall} non-overlapping ranges.`,
-    '',
-    'Call template (use applicable fields): replace every `<...>` placeholder with current context values; never submit placeholders.',
-    '```json',
-    COMPRESS_CALL_TEMPLATE,
-    '```',
-    '',
-    'Schema essentials: `[startRef, endRef)` includes start and excludes end; refs must be current, closed, balanced, and exclude live/protected content.',
-    'Summary: substantial ranges use applicable fields from the template. A small, single-purpose range may use a compact high-fidelity paragraph. Omit empty fields/titles; do not mechanically fill "none". Use prose, never a pointer; preserve facts and do not omit them to reach savings.',
-    'If validation rejects the call: Execute the returned correction only; do not resend unchanged arguments.',
+    'Compress closed history into durable summary checkpoints.',
+    `retainRecentTurns=${policy.retainRecentTurns}; minNetSavingsTokens=${policy.minNetSavingsTokens}; maxRangesPerCall=${policy.maxRangesPerCall}.`,
+    `Protect the current turn plus the previous ${policy.retainRecentTurns - 1} turn(s); each range must save at least ${policy.minNetSavingsTokens} estimated tokens.`,
+    'Arguments: {topic: "phase", content: [{startRef: "current boundary", endRef: "exclusive boundary", summary: "factual technical prose"}]}.',
+    'Use refs visible in context. Follow the DCP compression rules; on rejection use the returned correction.',
   ].join('\n')
 }

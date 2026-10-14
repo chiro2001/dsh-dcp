@@ -50,36 +50,29 @@ export function formatCompressResult(result: CompressRangeResult): string {
   ]
 
   if (status === 'success') {
-    const cleanupNote = result.cleanupWarning
-      ? ` cleanup=not-confirmed; checkpoint remains authoritative; cleanup warning=${result.cleanupWarning}.`
-      : ' plugin rewrote the historical tool call after commit; cleanup=confirmed.'
     return (
       `Compressed ${messages} message(s) into ${committed.join(', ')}. ` +
       `status=success; committed=${committed.join(',') || 'none'}; rejected=none; ` +
-      'correction=STOP; checkpoints contain the full summaries; do not retry committed ranges.' +
-      cleanupNote
+      'correction=STOP; checkpoints contain the full summaries; do not retry committed ranges; ' +
+      'cleanup=deferred; eligible completed calls may be archived when this saves tokens.'
     )
   }
 
   const rejectedText = rejected.join(',') || 'none'
   if (status === 'partial') {
     const detail = corrections.length > 0 ? `; details=${corrections.join(' / ')}` : ''
-    const cleanupNote = result.cleanupWarning
-      ? `; cleanup=not-confirmed; cleanup warning=${result.cleanupWarning}`
-      : '; cleanup=confirmed'
     return (
       `Compressed ${messages} message(s) into ${committed.join(', ')}. ` +
       `status=partial; committed=${committed.join(',') || 'none'}; ` +
       `rejected=${rejectedText}; correction=HANDLE ONLY the rejected ranges as directed; ` +
-      `do not retry committed ranges${detail}${cleanupNote}.`
+      `do not retry committed ranges; cleanup=deferred; eligible completed calls may be archived when this saves tokens${detail}.`
     )
   }
 
   const correction = corrections[0] ?? 'inspect the rejected ranges and retry with current refs'
-  const warning = result.cleanupWarning ? ` cleanup warning=${result.cleanupWarning}.` : ''
   return (
     'Compression committed no ranges. ' +
     `status=rejected; committed=none; rejected=${rejectedText}; ` +
-    `correction=${correction}. No range was committed; follow the correction exactly.${warning}`
+    `correction=${correction}. No range was committed; follow the correction exactly.`
   )
 }

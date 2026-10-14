@@ -24,6 +24,7 @@ function toolTurn(
   args: string,
   isError = false,
   extraResultData: Record<string, unknown> = {},
+  resultText?: string,
 ): void {
   session.append('turn/start', { turn })
   session.append(
@@ -40,6 +41,7 @@ function toolTurn(
     {
       turn,
       step: 1,
+      stream: [],
       message: createAssistantMessage({
         content: [
           { type: 'tool-call', id: ToolCallId(callId), name: tool, arguments: args },
@@ -48,7 +50,7 @@ function toolTurn(
         source: { provider: 'mock', model: 'mock' },
       }),
     },
-    { surfaceOp: 'append', sourceEventSeqs: [] },
+    { surfaceOp: 'append' },
   )
   const call = session.append('tool/call', {
     turn,
@@ -67,7 +69,9 @@ function toolTurn(
         content: [
           {
             type: 'text',
-            text: isError ? `error text ${turn}` : `output ${turn} with enough detail to price`,
+            text:
+              resultText ??
+              (isError ? `error text ${turn}` : `output ${turn} with enough detail to price`),
           },
         ],
         isError,
@@ -93,8 +97,26 @@ describe('automatic strategies (M3)', () => {
 
   it('deduplicates identical tool calls, keeps the last, and is idempotent', () => {
     const session = Session.create(SessionId('dedup-test'))
-    toolTurn(session, 1, 'c1', 'read', '{"path":"a.txt"}')
-    toolTurn(session, 2, 'c2', 'read', '{"path":"a.txt"}')
+    toolTurn(
+      session,
+      1,
+      'c1',
+      'read',
+      '{"path":"a.txt"}',
+      false,
+      {},
+      `output 1 with details. ${'file context '.repeat(100)}`,
+    )
+    toolTurn(
+      session,
+      2,
+      'c2',
+      'read',
+      '{"path":"a.txt"}',
+      false,
+      {},
+      `output 2 with details. ${'file context '.repeat(100)}`,
+    )
     toolTurn(session, 3, 'c3', 'grep', '{"pattern":"x"}')
     session.append('turn/start', { turn: 4 })
 
@@ -109,12 +131,69 @@ describe('automatic strategies (M3)', () => {
     const text = session
       .deriveMessages()
       .flatMap((message) => message.content)
-      .flatMap((block) => (block.type === 'tool-result' ? block.content : []))
       .filter((block) => block.type === 'text')
       .map((block) => (block.type === 'text' ? block.text : ''))
       .join('\n')
     expect(text).toContain('[duplicate read output removed')
     expect(text).toContain('output 2')
+  })
+
+  it('leaves short duplicate output and the raw log untouched when cleanup would grow it', () => {
+    const session = Session.create(SessionId('dedup-short-result'))
+    toolTurn(session, 1, 'short-c1', 'read', '{"path":"short.txt"}', false, {}, 'ok')
+    toolTurn(session, 2, 'short-c2', 'read', '{"path":"short.txt"}', false, {}, 'ok')
+    session.append('turn/start', { turn: 3 })
+    const eventsBefore = session.snapshotEvents()
+    const surfaceBefore = [...session.surface.nodes]
+
+    const result = applyDeduplication(session, fixture.ctx.tokenMeter, config())
+
+    expect(result.replaced).toBe(0)
+    expect(session.surface.nodes).toEqual(surfaceBefore)
+    expect(session.snapshotEvents()).toEqual(eventsBefore)
+  })
+
+  it('reports net token savings for long duplicate output and remains idempotent', () => {
+    const session = Session.create(SessionId('dedup-net-savings'))
+    const output = 'Long tool output with useful details. '.repeat(120)
+    toolTurn(session, 1, 'long-c1', 'read', '{"path":"long.txt"}', false, {}, output)
+    toolTurn(session, 2, 'long-c2', 'read', '{"path":"long.txt"}', false, {}, output)
+    session.append('turn/start', { turn: 3 })
+    const original = session
+      .snapshotEvents()
+      .find(
+        (event) =>
+          event.type === 'tool/result' &&
+          String(event.data.message.source.callId) === 'long-c1',
+      )
+    expect(original?.type).toBe('tool/result')
+    if (original?.type !== 'tool/result') throw new Error('original duplicate result missing')
+    const originalTokens = fixture.ctx.tokenMeter.estimateMessage(original.data.message)
+
+    const first = applyDeduplication(session, fixture.ctx.tokenMeter, config())
+    const replacement = session
+      .snapshotEvents()
+      .findLast(
+        (event) =>
+          event.type === 'tool/result' &&
+          event.surfaceOp !== 'append' &&
+          String(event.data.message.source.callId) === 'long-c1',
+      )
+    expect(replacement?.type).toBe('tool/result')
+    if (replacement?.type !== 'tool/result') throw new Error('dedup replacement missing')
+    const replacementTokens = fixture.ctx.tokenMeter.estimateMessage(replacement.data.message)
+    const eventsAfterFirst = session.snapshotEvents()
+    const surfaceAfterFirst = [...session.surface.nodes]
+
+    expect(first.replaced).toBe(1)
+    expect(originalTokens - replacementTokens).toBeGreaterThan(0)
+    expect(first.tokensSaved).toBe(originalTokens - replacementTokens)
+    expect(applyDeduplication(session, fixture.ctx.tokenMeter, config())).toEqual({
+      replaced: 0,
+      tokensSaved: 0,
+    })
+    expect(session.snapshotEvents()).toEqual(eventsAfterFirst)
+    expect(session.surface.nodes).toEqual(surfaceAfterFirst)
   })
 
   it('preserves non-content tool/result fields through dedup replacement', () => {
@@ -124,10 +203,26 @@ describe('automatic strategies (M3)', () => {
     // prune is rejected with "tool/result surface replacement may change only
     // content" and the turn fails (observed in a real Router-Spec session).
     const session = Session.create(SessionId('dedup-error-field'))
-    toolTurn(session, 1, 'e1', 'bash', '{"cmd":"false"}', true, {
-      error: { name: 'FsError', code: 'FS_NOT_OBSERVED' },
-    })
-    toolTurn(session, 2, 'e2', 'bash', '{"cmd":"false"}')
+    toolTurn(
+      session,
+      1,
+      'e1',
+      'bash',
+      '{"cmd":"false"}',
+      true,
+      { error: { name: 'FsError', code: 'FS_NOT_OBSERVED' } },
+      `error text 1 with details. ${'failure context '.repeat(100)}`,
+    )
+    toolTurn(
+      session,
+      2,
+      'e2',
+      'bash',
+      '{"cmd":"false"}',
+      false,
+      {},
+      `output 2 with details. ${'failure context '.repeat(100)}`,
+    )
     session.append('turn/start', { turn: 3 })
 
     const result = applyDeduplication(session, fixture.ctx.tokenMeter, config())
@@ -145,7 +240,6 @@ describe('automatic strategies (M3)', () => {
     const text = session
       .deriveMessages()
       .flatMap((message) => message.content)
-      .flatMap((block) => (block.type === 'tool-result' ? block.content : []))
       .filter((block) => block.type === 'text')
       .map((block) => (block.type === 'text' ? block.text : ''))
       .join('\n')

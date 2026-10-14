@@ -1,12 +1,18 @@
 import { afterEach, beforeEach, describe, expect, it } from 'vitest'
 import { SessionId, type Session } from '@deepseek-ai/dsh-session'
-import { createAssistantMessage, createUserMessage } from '@deepseek-ai/dsh-llm/message'
+import {
+  createAssistantMessage,
+  createDeveloperMessage,
+  createSystemMessage,
+  createUserMessage,
+} from '@deepseek-ai/dsh-llm/message'
 import { mountContractFixture, type ContractFixture } from '../contract/fixture.js'
 import { resolveConfig, type DcpConfig } from '../../src/config.js'
 import { buildBoundaryMarker } from '../../src/refs/marker.js'
 import { buildCheckpointText, prepareRange } from '../../src/compress/prepare.js'
 import { reduceDcpState } from '../../src/protocol/replay.js'
-import type { CompressRangeEntry } from '../../src/compress/schema.js'
+import { classifyCompressError, type CompressRangeEntry } from '../../src/compress/schema.js'
+import '../../src/protocol/source.js'
 
 function appendTurn(
   session: Session,
@@ -20,7 +26,7 @@ function appendTurn(
     'user/message',
     createUserMessage({
       content: [{ type: 'text', text: buildBoundaryMarker(ref, turn, 1) }],
-      source: { kind: 'plugin', plugin: 'dsh-dcp' },
+      source: { kind: 'dsh-dcp' },
     }),
     { surfaceOp: 'append' },
   )
@@ -28,7 +34,7 @@ function appendTurn(
     'user/message',
     createUserMessage({
       content: [{ type: 'text', text }],
-      source: form === undefined ? { kind: 'user' } : { kind: 'plugin', plugin: 'test', form },
+      source: form === undefined ? { kind: 'user' } : { kind: 'prepare-test-context', form },
     }),
     { surfaceOp: 'append' },
   )
@@ -38,12 +44,74 @@ function appendTurn(
     {
       turn,
       step: 1,
+      stream: [],
       message: createAssistantMessage({
         content: [{ type: 'text', text: `assistant ${turn}` }],
         source: { provider: 'mock', model: 'mock' },
       }),
     },
-    { surfaceOp: 'append', sourceEventSeqs: [] },
+    { surfaceOp: 'append' },
+  )
+  session.append('step/end', { turn, step: 1 })
+  session.append('turn/end', { turn, reason: { kind: 'completed' } })
+}
+
+function appendTurnWithCoreNode(
+  session: Session,
+  turn: number,
+  ref: string,
+  kind: 'system' | 'developer',
+): void {
+  session.append('turn/start', { turn })
+  session.append(
+    'user/message',
+    createUserMessage({
+      content: [{ type: 'text', text: buildBoundaryMarker(ref, turn, 1) }],
+      source: { kind: 'dsh-dcp' },
+    }),
+    { surfaceOp: 'append' },
+  )
+  session.append('step/start', { turn, step: 1 })
+  if (kind === 'system') {
+    session.append(
+      'system/message',
+      { turn, step: 1, message: createSystemMessage('route-specific system instructions') },
+      { surfaceOp: 'append' },
+    )
+  } else {
+    session.append(
+      'developer/message',
+      {
+        turn,
+        step: 1,
+        message: createDeveloperMessage({
+          content: [{ type: 'text', text: 'tool schema update' }],
+          source: { kind: 'dsh-dcp' },
+        }),
+      },
+      { surfaceOp: 'append' },
+    )
+  }
+  session.append(
+    'user/message',
+    createUserMessage({
+      content: [{ type: 'text', text: `closed history with ${kind} update` }],
+      source: { kind: 'user' },
+    }),
+    { surfaceOp: 'append' },
+  )
+  session.append(
+    'assistant/message',
+    {
+      turn,
+      step: 1,
+      stream: [],
+      message: createAssistantMessage({
+        content: [{ type: 'text', text: `assistant ${turn}` }],
+        source: { provider: 'mock', model: 'mock' },
+      }),
+    },
+    { surfaceOp: 'append' },
   )
   session.append('step/end', { turn, step: 1 })
   session.append('turn/end', { turn, reason: { kind: 'completed' } })
@@ -179,4 +247,23 @@ describe('prepareRange actionable failure details', () => {
     if (result.ok) return
     expect(result.errors[0]).toMatch(/\[savingsGapTokens=\d+\]/)
   })
+
+  it.each(['system', 'developer'] as const)(
+    'fails closed with PROTECTED_RANGE when a range includes a %s message',
+    (kind) => {
+      const session = fixture.ctx.sessions.create(SessionId(`prepare-protected-${kind}`))
+      appendTurnWithCoreNode(session, 1, 'm0001', kind)
+      appendTurn(session, 2, 'm0002', 'safe closed turn')
+      appendTurn(session, 3, 'm0003', 'latest turn')
+
+      const result = prepare(
+        session,
+        resolveConfig({ compress: { retainRecentTurns: 1, minNetSavingsTokens: 1 } }),
+        { startRef: 'm0001', endRef: 'm0003', summary: 'compact summary' },
+      )
+      expect(result.ok).toBe(false)
+      if (result.ok) return
+      expect(classifyCompressError(result.errors.join('\n'))).toBe('PROTECTED_RANGE')
+    },
+  )
 })

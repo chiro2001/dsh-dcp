@@ -1,0 +1,487 @@
+{
+  "runId": "nginx-request-logging-dcp-r1-nginx-request-logging__fAf3sSd__agent",
+  "taskId": "nginx-request-logging",
+  "arm": "dcp",
+  "replicate": 1,
+  "model": "deepseek-flash",
+  "provider": "deepseek",
+  "startedAt": 1791975525785,
+  "version": 1,
+  "attempts": [
+    {
+      "attemptId": "nginx-request-logging-dcp-r1-nginx-request-logging__fAf3sSd__agent:1",
+      "metadata": {
+        "agentId": "nginx-request-logging-dcp-r1-nginx-request-logging__fAf3sSd__agent",
+        "sessionId": "nginx-request-logging-dcp-r1-nginx-request-logging__fAf3sSd__agent",
+        "purpose": "conversation",
+        "startedAt": 1791975526005,
+        "requestHash": "45ddaf6be890018ae2aed01c6c7682fd15b00e73e98d5ff906e033f7547a9a3a",
+        "turn": 1,
+        "step": 1
+      },
+      "prices": {
+        "currency": "USD",
+        "date": "2026-10-14",
+        "source": "https://api-docs.deepseek.com/quick_start/pricing",
+        "retrievedAt": "2026-10-14",
+        "model": "deepseek-flash",
+        "window": "off-peak",
+        "rates": {
+          "uncachedInputPerMillion": 0.15,
+          "cacheReadPerMillion": 0.003,
+          "outputPerMillion": 0.6
+        }
+      },
+      "status": "success",
+      "finishedAt": 1791975526928,
+      "usage": {
+        "uncachedInputTokens": 688,
+        "cacheReadTokens": 768,
+        "outputTokens": 154
+      },
+      "cost": 0.000197904
+    },
+    {
+      "attemptId": "nginx-request-logging-dcp-r1-nginx-request-logging__fAf3sSd__agent:2",
+      "metadata": {
+        "agentId": "nginx-request-logging-dcp-r1-nginx-request-logging__fAf3sSd__agent",
+        "sessionId": "nginx-request-logging-dcp-r1-nginx-request-logging__fAf3sSd__agent",
+        "purpose": "conversation",
+        "startedAt": 1791975527093,
+        "requestHash": "6eed6b7120a37b76fc346092c1b5d9c8eef930b44f7e5970669b6439f04433b5",
+        "turn": 1,
+        "step": 2
+      },
+      "prices": {
+        "currency": "USD",
+        "date": "2026-10-14",
+        "source": "https://api-docs.deepseek.com/quick_start/pricing",
+        "retrievedAt": "2026-10-14",
+        "model": "deepseek-flash",
+        "window": "off-peak",
+        "rates": {
+          "uncachedInputPerMillion": 0.15,
+          "cacheReadPerMillion": 0.003,
+          "outputPerMillion": 0.6
+        }
+      },
+      "status": "success",
+      "finishedAt": 1791975528791,
+      "usage": {
+        "uncachedInputTokens": 173,
+        "cacheReadTokens": 1536,
+        "outputTokens": 95
+      },
+      "cost": 0.00008755799999999999
+    },
+    {
+      "attemptId": "nginx-request-logging-dcp-r1-nginx-request-logging__fAf3sSd__agent:3",
+      "metadata": {
+        "agentId": "nginx-request-logging-dcp-r1-nginx-request-logging__fAf3sSd__agent",
+        "sessionId": "nginx-request-logging-dcp-r1-nginx-request-logging__fAf3sSd__agent",
+        "purpose": "conversation",
+        "startedAt": 1791975534330,
+        "requestHash": "fb352e9498df56947b4fba97234b19a72ece36bf7f7519d3ab67a749124caeb9",
+        "turn": 1,
+        "step": 3
+      },
+      "prices": {
+        "currency": "USD",
+        "date": "2026-10-14",
+        "source": "https://api-docs.deepseek.com/quick_start/pricing",
+        "retrievedAt": "2026-10-14",
+        "model": "deepseek-flash",
+        "window": "off-peak",
+        "rates": {
+          "uncachedInputPerMillion": 0.15,
+          "cacheReadPerMillion": 0.003,
+          "outputPerMillion": 0.6
+        }
+      },
+      "status": "success",
+      "finishedAt": 1791975535663,
+      "usage": {
+        "uncachedInputTokens": 137,
+        "cacheReadTokens": 1792,
+        "outputTokens": 115
+      },
+      "cost": 0.000094926
+    },
+    {
+      "attemptId": "nginx-request-logging-dcp-r1-nginx-request-logging__fAf3sSd__agent:4",
+      "metadata": {
+        "agentId": "nginx-request-logging-dcp-r1-nginx-request-logging__fAf3sSd__agent",
+        "sessionId": "nginx-request-logging-dcp-r1-nginx-request-logging__fAf3sSd__agent",
+        "purpose": "conversation",
+        "startedAt": 1791975535741,
+        "requestHash": "4d1b7afcfe296c29684e4f83f0080dea821d32c4c16f2ef7233c9edb7930ec1d",
+        "turn": 1,
+        "step": 4
+      },
+      "prices": {
+        "currency": "USD",
+        "date": "2026-10-14",
+        "source": "https://api-docs.deepseek.com/quick_start/pricing",
+        "retrievedAt": "2026-10-14",
+        "model": "deepseek-flash",
+        "window": "off-peak",
+        "rates": {
+          "uncachedInputPerMillion": 0.15,
+          "cacheReadPerMillion": 0.003,
+          "outputPerMillion": 0.6
+        }
+      },
+      "status": "success",
+      "finishedAt": 1791975536683,
+      "usage": {
+        "uncachedInputTokens": 403,
+        "cacheReadTokens": 1920,
+        "outputTokens": 73
+      },
+      "cost": 0.00011000999999999999
+    },
+    {
+      "attemptId": "nginx-request-logging-dcp-r1-nginx-request-logging__fAf3sSd__agent:5",
+      "metadata": {
+        "agentId": "nginx-request-logging-dcp-r1-nginx-request-logging__fAf3sSd__agent",
+        "sessionId": "nginx-request-logging-dcp-r1-nginx-request-logging__fAf3sSd__agent",
+        "purpose": "conversation",
+        "startedAt": 1791975536758,
+        "requestHash": "612c22cb5e8ff799b3dabd2e8c039ac13e5e78aa63926c7eb1305048e0751fc4",
+        "turn": 1,
+        "step": 5
+      },
+      "prices": {
+        "currency": "USD",
+        "date": "2026-10-14",
+        "source": "https://api-docs.deepseek.com/quick_start/pricing",
+        "retrievedAt": "2026-10-14",
+        "model": "deepseek-flash",
+        "window": "off-peak",
+        "rates": {
+          "uncachedInputPerMillion": 0.15,
+          "cacheReadPerMillion": 0.003,
+          "outputPerMillion": 0.6
+        }
+      },
+      "status": "success",
+      "finishedAt": 1791975538089,
+      "usage": {
+        "uncachedInputTokens": 294,
+        "cacheReadTokens": 2304,
+        "outputTokens": 216
+      },
+      "cost": 0.000180612
+    },
+    {
+      "attemptId": "nginx-request-logging-dcp-r1-nginx-request-logging__fAf3sSd__agent:6",
+      "metadata": {
+        "agentId": "nginx-request-logging-dcp-r1-nginx-request-logging__fAf3sSd__agent",
+        "sessionId": "nginx-request-logging-dcp-r1-nginx-request-logging__fAf3sSd__agent",
+        "purpose": "conversation",
+        "startedAt": 1791975538171,
+        "requestHash": "5713976a8ec883606c15ae59cc2627c22936392bbfc0ed19a08f6f1830c94f1c",
+        "turn": 1,
+        "step": 6
+      },
+      "prices": {
+        "currency": "USD",
+        "date": "2026-10-14",
+        "source": "https://api-docs.deepseek.com/quick_start/pricing",
+        "retrievedAt": "2026-10-14",
+        "model": "deepseek-flash",
+        "window": "off-peak",
+        "rates": {
+          "uncachedInputPerMillion": 0.15,
+          "cacheReadPerMillion": 0.003,
+          "outputPerMillion": 0.6
+        }
+      },
+      "status": "success",
+      "finishedAt": 1791975539634,
+      "usage": {
+        "uncachedInputTokens": 175,
+        "cacheReadTokens": 2688,
+        "outputTokens": 221
+      },
+      "cost": 0.000166914
+    },
+    {
+      "attemptId": "nginx-request-logging-dcp-r1-nginx-request-logging__fAf3sSd__agent:7",
+      "metadata": {
+        "agentId": "nginx-request-logging-dcp-r1-nginx-request-logging__fAf3sSd__agent",
+        "sessionId": "nginx-request-logging-dcp-r1-nginx-request-logging__fAf3sSd__agent",
+        "purpose": "conversation",
+        "startedAt": 1791975539730,
+        "requestHash": "1f1599963f92cb3c540a9aa847f9553ddcc952641c5ba624e6f867a256ae0712",
+        "turn": 1,
+        "step": 7
+      },
+      "prices": {
+        "currency": "USD",
+        "date": "2026-10-14",
+        "source": "https://api-docs.deepseek.com/quick_start/pricing",
+        "retrievedAt": "2026-10-14",
+        "model": "deepseek-flash",
+        "window": "off-peak",
+        "rates": {
+          "uncachedInputPerMillion": 0.15,
+          "cacheReadPerMillion": 0.003,
+          "outputPerMillion": 0.6
+        }
+      },
+      "status": "success",
+      "finishedAt": 1791975541187,
+      "usage": {
+        "uncachedInputTokens": 170,
+        "cacheReadTokens": 2944,
+        "outputTokens": 249
+      },
+      "cost": 0.000183732
+    },
+    {
+      "attemptId": "nginx-request-logging-dcp-r1-nginx-request-logging__fAf3sSd__agent:8",
+      "metadata": {
+        "agentId": "nginx-request-logging-dcp-r1-nginx-request-logging__fAf3sSd__agent",
+        "sessionId": "nginx-request-logging-dcp-r1-nginx-request-logging__fAf3sSd__agent",
+        "purpose": "conversation",
+        "startedAt": 1791975541276,
+        "requestHash": "4c1585c21c1d8da020a390c8ff5097aee304032b30d4cf608db8149ba6ab339a",
+        "turn": 1,
+        "step": 8
+      },
+      "prices": {
+        "currency": "USD",
+        "date": "2026-10-14",
+        "source": "https://api-docs.deepseek.com/quick_start/pricing",
+        "retrievedAt": "2026-10-14",
+        "model": "deepseek-flash",
+        "window": "off-peak",
+        "rates": {
+          "uncachedInputPerMillion": 0.15,
+          "cacheReadPerMillion": 0.003,
+          "outputPerMillion": 0.6
+        }
+      },
+      "status": "success",
+      "finishedAt": 1791975542521,
+      "usage": {
+        "uncachedInputTokens": 324,
+        "cacheReadTokens": 3072,
+        "outputTokens": 82
+      },
+      "cost": 0.00010701599999999999
+    },
+    {
+      "attemptId": "nginx-request-logging-dcp-r1-nginx-request-logging__fAf3sSd__agent:9",
+      "metadata": {
+        "agentId": "nginx-request-logging-dcp-r1-nginx-request-logging__fAf3sSd__agent",
+        "sessionId": "nginx-request-logging-dcp-r1-nginx-request-logging__fAf3sSd__agent",
+        "purpose": "conversation",
+        "startedAt": 1791975542600,
+        "requestHash": "812b796673c7576ff4951d294fcf702f82f25cb22bbd3514dbf64d8945741e6b",
+        "turn": 1,
+        "step": 9
+      },
+      "prices": {
+        "currency": "USD",
+        "date": "2026-10-14",
+        "source": "https://api-docs.deepseek.com/quick_start/pricing",
+        "retrievedAt": "2026-10-14",
+        "model": "deepseek-flash",
+        "window": "off-peak",
+        "rates": {
+          "uncachedInputPerMillion": 0.15,
+          "cacheReadPerMillion": 0.003,
+          "outputPerMillion": 0.6
+        }
+      },
+      "status": "success",
+      "finishedAt": 1791975544064,
+      "usage": {
+        "uncachedInputTokens": 213,
+        "cacheReadTokens": 3328,
+        "outputTokens": 249
+      },
+      "cost": 0.000191334
+    },
+    {
+      "attemptId": "nginx-request-logging-dcp-r1-nginx-request-logging__fAf3sSd__agent:10",
+      "metadata": {
+        "agentId": "nginx-request-logging-dcp-r1-nginx-request-logging__fAf3sSd__agent",
+        "sessionId": "nginx-request-logging-dcp-r1-nginx-request-logging__fAf3sSd__agent",
+        "purpose": "conversation",
+        "startedAt": 1791975544154,
+        "requestHash": "5b84176e8fd19b3ed09d4cfc35cb948f280e5a92748556fc7d2a6bbe8af1f838",
+        "turn": 1,
+        "step": 10
+      },
+      "prices": {
+        "currency": "USD",
+        "date": "2026-10-14",
+        "source": "https://api-docs.deepseek.com/quick_start/pricing",
+        "retrievedAt": "2026-10-14",
+        "model": "deepseek-flash",
+        "window": "off-peak",
+        "rates": {
+          "uncachedInputPerMillion": 0.15,
+          "cacheReadPerMillion": 0.003,
+          "outputPerMillion": 0.6
+        }
+      },
+      "status": "success",
+      "finishedAt": 1791975545656,
+      "usage": {
+        "uncachedInputTokens": 181,
+        "cacheReadTokens": 3712,
+        "outputTokens": 317
+      },
+      "cost": 0.000228486
+    },
+    {
+      "attemptId": "nginx-request-logging-dcp-r1-nginx-request-logging__fAf3sSd__agent:11",
+      "metadata": {
+        "agentId": "nginx-request-logging-dcp-r1-nginx-request-logging__fAf3sSd__agent",
+        "sessionId": "nginx-request-logging-dcp-r1-nginx-request-logging__fAf3sSd__agent",
+        "purpose": "conversation",
+        "startedAt": 1791975545743,
+        "requestHash": "0bb0cf093dfc817f53127eb61128a8e01b473abc5c737b14cb78dd635d879c0a",
+        "turn": 1,
+        "step": 11
+      },
+      "prices": {
+        "currency": "USD",
+        "date": "2026-10-14",
+        "source": "https://api-docs.deepseek.com/quick_start/pricing",
+        "retrievedAt": "2026-10-14",
+        "model": "deepseek-flash",
+        "window": "off-peak",
+        "rates": {
+          "uncachedInputPerMillion": 0.15,
+          "cacheReadPerMillion": 0.003,
+          "outputPerMillion": 0.6
+        }
+      },
+      "status": "success",
+      "finishedAt": 1791975546647,
+      "usage": {
+        "uncachedInputTokens": 268,
+        "cacheReadTokens": 4096,
+        "outputTokens": 99
+      },
+      "cost": 0.00011188800000000001
+    },
+    {
+      "attemptId": "nginx-request-logging-dcp-r1-nginx-request-logging__fAf3sSd__agent:12",
+      "metadata": {
+        "agentId": "nginx-request-logging-dcp-r1-nginx-request-logging__fAf3sSd__agent",
+        "sessionId": "nginx-request-logging-dcp-r1-nginx-request-logging__fAf3sSd__agent",
+        "purpose": "conversation",
+        "startedAt": 1791975547740,
+        "requestHash": "1be6299a336a433f6b31eee48f69a7a28bdd9fcadb64b84bcfa4b94cc22e45d3",
+        "turn": 1,
+        "step": 12
+      },
+      "prices": {
+        "currency": "USD",
+        "date": "2026-10-14",
+        "source": "https://api-docs.deepseek.com/quick_start/pricing",
+        "retrievedAt": "2026-10-14",
+        "model": "deepseek-flash",
+        "window": "off-peak",
+        "rates": {
+          "uncachedInputPerMillion": 0.15,
+          "cacheReadPerMillion": 0.003,
+          "outputPerMillion": 0.6
+        }
+      },
+      "status": "success",
+      "finishedAt": 1791975548861,
+      "usage": {
+        "uncachedInputTokens": 180,
+        "cacheReadTokens": 4352,
+        "outputTokens": 195
+      },
+      "cost": 0.00015705599999999998
+    },
+    {
+      "attemptId": "nginx-request-logging-dcp-r1-nginx-request-logging__fAf3sSd__agent:13",
+      "metadata": {
+        "agentId": "nginx-request-logging-dcp-r1-nginx-request-logging__fAf3sSd__agent",
+        "sessionId": "nginx-request-logging-dcp-r1-nginx-request-logging__fAf3sSd__agent",
+        "purpose": "conversation",
+        "startedAt": 1791975548970,
+        "requestHash": "f5afcecff31c03f263336ff59cac1f7a353e6b32956de020c5989ccaeda01ac2",
+        "turn": 1,
+        "step": 13
+      },
+      "prices": {
+        "currency": "USD",
+        "date": "2026-10-14",
+        "source": "https://api-docs.deepseek.com/quick_start/pricing",
+        "retrievedAt": "2026-10-14",
+        "model": "deepseek-flash",
+        "window": "off-peak",
+        "rates": {
+          "uncachedInputPerMillion": 0.15,
+          "cacheReadPerMillion": 0.003,
+          "outputPerMillion": 0.6
+        }
+      },
+      "status": "success",
+      "finishedAt": 1791975550293,
+      "usage": {
+        "uncachedInputTokens": 382,
+        "cacheReadTokens": 4608,
+        "outputTokens": 179
+      },
+      "cost": 0.000178524
+    },
+    {
+      "attemptId": "nginx-request-logging-dcp-r1-nginx-request-logging__fAf3sSd__agent:14",
+      "metadata": {
+        "agentId": "nginx-request-logging-dcp-r1-nginx-request-logging__fAf3sSd__agent",
+        "sessionId": "nginx-request-logging-dcp-r1-nginx-request-logging__fAf3sSd__agent",
+        "purpose": "conversation",
+        "startedAt": 1791975550533,
+        "requestHash": "82cc08e00c2de30067773e1bfebb081f63bfaaca03a33c322c540a64d5891bdf",
+        "turn": 1,
+        "step": 14
+      },
+      "prices": {
+        "currency": "USD",
+        "date": "2026-10-14",
+        "source": "https://api-docs.deepseek.com/quick_start/pricing",
+        "retrievedAt": "2026-10-14",
+        "model": "deepseek-flash",
+        "window": "off-peak",
+        "rates": {
+          "uncachedInputPerMillion": 0.15,
+          "cacheReadPerMillion": 0.003,
+          "outputPerMillion": 0.6
+        }
+      },
+      "status": "success",
+      "finishedAt": 1791975553181,
+      "usage": {
+        "uncachedInputTokens": 430,
+        "cacheReadTokens": 5120,
+        "outputTokens": 530
+      },
+      "cost": 0.00039786
+    }
+  ],
+  "outcome": "success",
+  "success": true,
+  "finishedAt": 1791975575163,
+  "externalCost": 0,
+  "usageComplete": true,
+  "usageTotals": {
+    "uncachedInputTokens": 4018,
+    "cacheReadTokens": 42240,
+    "outputTokens": 2774,
+    "reasoningTokens": 0
+  },
+  "knownCost": 0.0023938199999999996,
+  "totalCost": 0.0023938199999999996
+}

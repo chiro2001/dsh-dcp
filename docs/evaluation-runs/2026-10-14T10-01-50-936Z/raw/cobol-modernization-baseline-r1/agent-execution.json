@@ -1,0 +1,13 @@
+{
+  "execution": {
+    "status": "budget_exceeded",
+    "requestCount": 79,
+    "reason": "deadline"
+  },
+  "verification": "pending",
+  "nativeCompaction": {
+    "enabled": true,
+    "auto": true,
+    "contextWindow": 1000000
+  }
+}

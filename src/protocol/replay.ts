@@ -7,6 +7,7 @@
 import { foldSurface, type SessionEvent, SessionSeq } from '@deepseek-ai/dsh-session'
 import { isCompactCheckpointSource } from '@deepseek-ai/dsh-compaction'
 import { decodeDcpMeta, type DcpCheckpointMetaV1, type DcpDiagnostic } from './metadata.js'
+import { isDcpSource } from './source.js'
 import { isSafeBoundaryRef, parseAlias } from '../refs/marker.js'
 import {
   foldPruneReplacements,
@@ -101,7 +102,7 @@ export function reduceDcpState(
     }
 
     const source = event.data.source
-    if (source.kind === 'plugin' && source.plugin === 'dsh-dcp') {
+    if (isDcpSource(source)) {
       const text = event.data.content
         .filter((block) => block.type === 'text')
         .map((block) => (block.type === 'text' ? block.text : ''))

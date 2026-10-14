@@ -15,7 +15,7 @@ mkdir -p "$e2e_fake_home" "$e2e_xdg_config" "$e2e_xdg_data" "$e2e_xdg_state"
 trap 'rm -rf -- "$DSH_HOME"' EXIT
 echo "DSH_HOME=$DSH_HOME"
 
-expected_dsh_version="0.1.2-rc.1"
+expected_dsh_version="$(node -p 'JSON.parse(require("fs").readFileSync("package.json", "utf8")).devDependencies["@deepseek-ai/dsh-agent-loop"]')"
 if ! command -v dsh >/dev/null 2>&1; then
   echo "e2e-install FAILED: dsh CLI not found" >&2
   exit 1
@@ -59,6 +59,7 @@ BOOT_OUTPUT="$(
     XDG_CONFIG_HOME="$e2e_xdg_config" \
     XDG_DATA_HOME="$e2e_xdg_data" \
     XDG_STATE_HOME="$e2e_xdg_state" \
+    TMPDIR="$e2e_tmp_root" \
     dsh --profile headless "dsh-dcp installed-artifact activation smoke" 2>&1
 )"
 BOOT_STATUS=$?

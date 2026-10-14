@@ -101,7 +101,6 @@ export function collectProtectedAppendix(
     )
     if (!protectedByTool && !protectedByPath) continue
     const output = event.data.message.content
-      .flatMap((block) => (block.type === 'tool-result' ? block.content : []))
       .filter((block) => block.type === 'text')
       .map((block) => (block.type === 'text' ? block.text : ''))
       .join('\n')

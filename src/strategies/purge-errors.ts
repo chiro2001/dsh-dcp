@@ -38,7 +38,7 @@ export function purgeTargets(
 
   for (const seq of session.surface.nodes) {
     const event = session.eventAt(seq)
-    if (event?.type !== 'tool/result' || !event.data.message.content[0]?.isError) continue
+    if (event?.type !== 'tool/result' || !event.data.message.isError) continue
     if (event.surfaceOp !== 'append') continue
     const callId = String(event.data.message.source.callId)
     const turn = turnOfSeq(events, seq) ?? 0
@@ -72,7 +72,6 @@ export function purgeTargets(
     }
     const errorText =
       event.data.message.content
-        .flatMap((block) => (block.type === 'tool-result' ? block.content : []))
         .filter((block) => block.type === 'text')
         .map((block) => (block.type === 'text' ? block.text : ''))
         .join('\n') || 'tool failed (no error text)'
@@ -95,7 +94,7 @@ export function applyPurgeErrors(
     const checkpointText = `[errored tool unit removed]\ntool: ${target.tool}\nerror: ${target.errorText}`
     const checkpoint = createUserMessage({
       content: [{ type: 'text', text: checkpointText }],
-      source: { kind: 'plugin', plugin: 'dsh-dcp' },
+      source: { kind: 'dsh-dcp' },
     })
     const tokensOut = tokenMeter.estimateMessage(checkpoint)
     if (tokensOut >= target.tokensIn) continue
@@ -105,7 +104,7 @@ export function applyPurgeErrors(
       shadowedTokenCount: target.tokensIn,
     })
     session.append('user/message', checkpoint, {
-      surfaceOp: { op: 'replace', start: target.assistantSeq, end: target.resultSeq },
+      surfaceOp: { op: 'replace', startSeq: target.assistantSeq, endSeq: target.resultSeq },
       sourceEventSeqs: [target.assistantSeq, target.resultSeq],
     })
     purged++

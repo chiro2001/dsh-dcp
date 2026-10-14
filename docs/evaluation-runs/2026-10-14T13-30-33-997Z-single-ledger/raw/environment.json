@@ -1,0 +1,8 @@
+{
+  "image": "sha256:9e87977b867847e186d066f531ef783b006d582a985c341c269446088d90f2c4",
+  "workdir": "/work",
+  "network": "none",
+  "cpus": 1,
+  "memory": "768m",
+  "node": "v26.5.1"
+}

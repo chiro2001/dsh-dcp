@@ -1,0 +1,130 @@
+{
+    "id": "29fa9fd2-4023-423f-9cf5-01bb7f48e27f",
+    "task_name": "terminal-bench/fix-git",
+    "trial_name": "fix-git__MPjRSMg",
+    "trial_uri": "file:///home/chiro/projects/dsh-dynamic-context-pruning/dsh-dynamic-context-pruning/.tmp-vitest/evaluation-setup/jobs/dsh-controller-baseline-preflight-001/fix-git__MPjRSMg",
+    "task_id": {
+        "path": "/home/chiro/projects/dsh-dynamic-context-pruning/dsh-dynamic-context-pruning/.tmp-vitest/evaluation-setup/terminal-bench-2/fix-git"
+    },
+    "source": null,
+    "task_checksum": "020f98d84ec6fd1565f699cc3195250882da952f4e6566c4561a615ad120c9de",
+    "config": {
+        "task": {
+            "path": "/home/chiro/projects/dsh-dynamic-context-pruning/dsh-dynamic-context-pruning/.tmp-vitest/evaluation-setup/terminal-bench-2/fix-git",
+            "git_url": null,
+            "git_commit_id": null,
+            "name": null,
+            "ref": null,
+            "overwrite": false,
+            "download_dir": null,
+            "source": null
+        },
+        "trial_name": "fix-git__MPjRSMg",
+        "trials_dir": "/home/chiro/projects/dsh-dynamic-context-pruning/dsh-dynamic-context-pruning/.tmp-vitest/evaluation-setup/jobs/dsh-controller-baseline-preflight-001",
+        "install_only": false,
+        "timeout_multiplier": 1.0,
+        "agent_timeout_multiplier": null,
+        "verifier_timeout_multiplier": null,
+        "agent_setup_timeout_multiplier": null,
+        "environment_build_timeout_multiplier": null,
+        "agent": {
+            "name": "scripts.evaluation.harbor_agent:DSHAgent",
+            "import_path": null,
+            "model_name": "deepseek/deepseek-flash",
+            "n_concurrent": null,
+            "concurrency_group": null,
+            "skills": [],
+            "override_timeout_sec": null,
+            "override_setup_timeout_sec": null,
+            "max_timeout_sec": null,
+            "resume_trajectory": false,
+            "load_trajectory": null,
+            "extra_allowed_hosts": [],
+            "kwargs": {
+                "arm": "baseline",
+                "task_id": "fix-git",
+                "replicate": 0,
+                "max_requests": 20,
+                "max_seconds": 120,
+                "max_cost_usd": 0.1
+            },
+            "mcp_servers": []
+        },
+        "user_agent": null,
+        "environment": {
+            "type": "docker",
+            "import_path": null,
+            "force_build": false,
+            "delete": true,
+            "stream": false,
+            "cpu_enforcement_policy": "auto",
+            "memory_enforcement_policy": "auto",
+            "override_cpus": null,
+            "override_memory_mb": null,
+            "override_storage_mb": null,
+            "override_gpus": null,
+            "override_tpu": null,
+            "mounts": null,
+            "extra_docker_compose": [],
+            "kwargs": {},
+            "extra_allowed_hosts": []
+        },
+        "verifier": {
+            "override_timeout_sec": null,
+            "max_timeout_sec": null,
+            "disable": false
+        },
+        "artifacts": [],
+        "extra_instruction_paths": [],
+        "extra_instructions": [],
+        "job_id": "26f300a1-4f98-4b8d-af63-35e86c3db840",
+        "source_trial": null
+    },
+    "agent_info": {
+        "name": "dsh-dcp-evaluation",
+        "version": "0.2.0-rc.2/dcp-0.1.0-rc.9",
+        "model_info": {
+            "name": "deepseek-flash",
+            "provider": "deepseek"
+        }
+    },
+    "agent_result": {
+        "n_input_tokens": 34046,
+        "n_cache_tokens": 29696,
+        "n_output_tokens": 2076,
+        "cost_usd": 0.003974376,
+        "model_usage": null,
+        "rollout_details": null,
+        "metadata": {
+            "execution_status": "completed",
+            "verification": "pending",
+            "ledger_path": "/home/chiro/projects/dsh-dynamic-context-pruning/dsh-dynamic-context-pruning/.tmp-vitest/evaluation-setup/jobs/dsh-controller-baseline-preflight-001/fix-git__MPjRSMg/agent/ledger.json"
+        }
+    },
+    "verifier_result": {
+        "rewards": {
+            "reward": 1.0
+        }
+    },
+    "verifier_environment_mode": "shared",
+    "exception_info": null,
+    "started_at": "2026-10-14T09:08:14.679186Z",
+    "finished_at": "2026-10-14T09:08:54.755051Z",
+    "environment_setup": {
+        "started_at": "2026-10-14T09:08:14.705586Z",
+        "finished_at": "2026-10-14T09:08:15.753171Z"
+    },
+    "agent_setup": {
+        "started_at": "2026-10-14T09:08:15.753223Z",
+        "finished_at": "2026-10-14T09:08:15.829375Z"
+    },
+    "agent_execution": {
+        "started_at": "2026-10-14T09:08:15.829510Z",
+        "finished_at": "2026-10-14T09:08:33.307237Z"
+    },
+    "verifier": {
+        "started_at": "2026-10-14T09:08:33.576098Z",
+        "finished_at": "2026-10-14T09:08:44.079112Z"
+    },
+    "step_results": null
+}

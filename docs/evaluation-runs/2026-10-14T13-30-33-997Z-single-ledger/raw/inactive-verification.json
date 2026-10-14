@@ -1,0 +1,54 @@
+{
+  "passed": true,
+  "total": 12,
+  "checks": [
+    {
+      "name": "immutable-inputs-before-verification",
+      "passed": true
+    },
+    {
+      "name": "delivered-balances",
+      "passed": true
+    },
+    {
+      "name": "repair-notes",
+      "passed": true
+    },
+    {
+      "name": "public-smoke",
+      "passed": true
+    },
+    {
+      "name": "full-input",
+      "passed": true
+    },
+    {
+      "name": "delivery-order",
+      "passed": true
+    },
+    {
+      "name": "repeated-delivery",
+      "passed": true
+    },
+    {
+      "name": "large-exact-cents",
+      "passed": true
+    },
+    {
+      "name": "reversal-order-and-targets",
+      "passed": true
+    },
+    {
+      "name": "invalid-fields",
+      "passed": true
+    },
+    {
+      "name": "currency-and-account-isolation",
+      "passed": true
+    },
+    {
+      "name": "immutable-inputs-after-verification",
+      "passed": true
+    }
+  ]
+}

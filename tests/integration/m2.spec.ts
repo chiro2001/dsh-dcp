@@ -1,7 +1,11 @@
 import { afterEach, beforeEach, describe, expect, it } from 'vitest'
 import { CompactionId } from '@deepseek-ai/dsh-compaction'
 import { ToolCallId } from '@deepseek-ai/dsh-llm/brand'
-import { createAssistantMessage, createUserMessage } from '@deepseek-ai/dsh-llm/message'
+import {
+  createAssistantMessage,
+  createSystemMessage,
+  createUserMessage,
+} from '@deepseek-ai/dsh-llm/message'
 import { mountContractFixture, type ContractFixture } from '../contract/fixture.js'
 import { resolveConfig, type DcpConfig } from '../../src/config.js'
 import { executeCompressRange } from '../../src/compress/pipeline.js'
@@ -62,12 +66,13 @@ describe('M2: multi-range, nesting, protection, stats', () => {
       {
         turn: 5,
         step: 1,
+        stream: [],
         message: createAssistantMessage({
           content: [{ type: 'text', text: 'assistant five' }],
           source: { provider: 'mock', model: 'mock' },
         }),
       },
-      { surfaceOp: 'append', sourceEventSeqs: [] },
+      { surfaceOp: 'append' },
     )
     session.append('step/end', { turn: 5, step: 1 })
     session.append('turn/end', { turn: 5, reason: { kind: 'completed' } })
@@ -88,6 +93,7 @@ describe('M2: multi-range, nesting, protection, stats', () => {
       {
         turn: 6,
         step: 1,
+        stream: [],
         message: createAssistantMessage({
           content: [
             { type: 'text', text: 'compressing again' },
@@ -102,7 +108,7 @@ describe('M2: multi-range, nesting, protection, stats', () => {
           source: { provider: 'mock', model: 'mock' },
         }),
       },
-      { surfaceOp: 'append', sourceEventSeqs: [] },
+      { surfaceOp: 'append' },
     )
     session.append('tool/call', {
       turn: 6,
@@ -186,31 +192,37 @@ describe('M2: multi-range, nesting, protection, stats', () => {
     expect(stats.markerTokens).toBeGreaterThan(0)
   })
 
-  it('rejects ranges containing hard-protected instruction messages', () => {
+  it('rejects ranges containing hard-protected system messages', () => {
     const ctx = fixture.ctx
     const minimal = ctx.sessions.create()
     minimal.append('turn/start', { turn: 1 })
     minimal.append('user/message', markerMessage('m0001', 1, 1), { surfaceOp: 'append' })
+    minimal.append('step/start', { turn: 1, step: 1 })
+    minimal.append(
+      'system/message',
+      { turn: 1, step: 1, message: createSystemMessage('MUST NOT COMPRESS') },
+      { surfaceOp: 'append' },
+    )
     minimal.append(
       'user/message',
       createUserMessage({
-        content: [{ type: 'text', text: 'MUST NOT COMPRESS' }],
-        source: { kind: 'plugin', plugin: 'test', form: 'instructions' },
+        content: [{ type: 'text', text: 'protected turn content' }],
+        source: { kind: 'user' },
       }),
       { surfaceOp: 'append' },
     )
-    minimal.append('step/start', { turn: 1, step: 1 })
     minimal.append(
       'assistant/message',
       {
         turn: 1,
         step: 1,
+        stream: [],
         message: createAssistantMessage({
           content: [{ type: 'text', text: 'assistant' }],
           source: { provider: 'mock', model: 'mock' },
         }),
       },
-      { surfaceOp: 'append', sourceEventSeqs: [] },
+      { surfaceOp: 'append' },
     )
     minimal.append('step/end', { turn: 1, step: 1 })
     minimal.append('turn/end', { turn: 1, reason: { kind: 'completed' } })
@@ -230,12 +242,13 @@ describe('M2: multi-range, nesting, protection, stats', () => {
       {
         turn: 2,
         step: 1,
+        stream: [],
         message: createAssistantMessage({
           content: [{ type: 'text', text: 'assistant two' }],
           source: { provider: 'mock', model: 'mock' },
         }),
       },
-      { surfaceOp: 'append', sourceEventSeqs: [] },
+      { surfaceOp: 'append' },
     )
     minimal.append('step/end', { turn: 2, step: 1 })
     minimal.append('turn/end', { turn: 2, reason: { kind: 'completed' } })

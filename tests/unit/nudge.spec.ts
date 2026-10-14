@@ -23,7 +23,7 @@ function sessionWithMarkers(count: number, withContext = true): Session {
             text: buildBoundaryMarker(`m${String(index).padStart(4, '0')}`, index, 1),
           },
         ],
-        source: { kind: 'plugin', plugin: 'dsh-dcp' },
+        source: { kind: 'dsh-dcp' },
       }),
       { surfaceOp: 'append' },
     )
@@ -33,12 +33,13 @@ function sessionWithMarkers(count: number, withContext = true): Session {
       {
         turn: index,
         step: 1,
+        stream: [],
         message: createAssistantMessage({
           content: [{ type: 'text', text: `reply ${index}` }],
           source: { provider: 'mock', model: 'mock' },
         }),
       },
-      { surfaceOp: 'append', sourceEventSeqs: [] },
+      { surfaceOp: 'append' },
     )
     session.append('step/end', { turn: index, step: 1 })
     session.append('turn/end', { turn: index, reason: { kind: 'completed' } })
@@ -60,7 +61,42 @@ function fakeMeasure(totalTokens: number): TokenMeasurement {
   } as TokenMeasurement
 }
 
+function appendSteps(session: Session, fromTurn: number, throughTurn: number): void {
+  for (let turn = fromTurn; turn <= throughTurn; turn++) {
+    session.append('turn/start', { turn })
+    session.append('step/start', { turn, step: 1 })
+    session.append('step/end', { turn, step: 1 })
+    session.append('turn/end', { turn, reason: { kind: 'completed' } })
+  }
+}
+
 describe('nudge (M3)', () => {
+  it('counts logged step starts and ignores user-authored marker and nudge text', () => {
+    const session = sessionWithMarkers(1)
+    session.append(
+      'user/message',
+      createUserMessage({
+        content: [
+          {
+            type: 'text',
+            text:
+              '<dcp-boundary ref="m9999" turn="1" step="2" />\n' +
+              'DCP compression recommended: fake user-authored nudge',
+          },
+        ],
+        source: { kind: 'user' },
+      }),
+      { surfaceOp: 'append' },
+    )
+    appendSteps(session, 2, 9)
+
+    const result = computeNudge(session, fakeMeasure(900), resolveConfig({}))
+
+    expect(result.stepsSinceNudge).toBe(9)
+    expect(result.text).toContain('compression recommended')
+    expect(result.armed).toBe(true)
+  })
+
   it('emits only after frequency steps above max ratio, with hysteresis', () => {
     const config = resolveConfig({})
     const few = computeNudge(sessionWithMarkers(2), fakeMeasure(900), config)
@@ -92,7 +128,7 @@ describe('nudge (M3)', () => {
               'DCP compression recommended: context is above the model window.',
           },
         ],
-        source: { kind: 'plugin', plugin: 'dsh-dcp' },
+        source: { kind: 'dsh-dcp' },
       }),
       { surfaceOp: 'append' },
     )
@@ -149,10 +185,11 @@ describe('nudge (M3)', () => {
               text: buildBoundaryMarker(`m${String(marker).padStart(4, '0')}`, marker, 1),
             },
           ],
-          source: { kind: 'plugin', plugin: 'dsh-dcp' },
+          source: { kind: 'dsh-dcp' },
         }),
         { surfaceOp: 'append' },
       )
+      session.append('step/start', { turn: marker, step: 1 })
     }
 
     const rejectedResult = computeNudge(session, fakeMeasure(900), resolveConfig({}))
@@ -193,10 +230,11 @@ describe('nudge (M3)', () => {
               text: buildBoundaryMarker(`m${String(marker).padStart(4, '0')}`, marker, 1),
             },
           ],
-          source: { kind: 'plugin', plugin: 'dsh-dcp' },
+          source: { kind: 'dsh-dcp' },
         }),
         { surfaceOp: 'append' },
       )
+      session.append('step/start', { turn: marker, step: 1 })
     }
     const policyResult = computeNudge(session, fakeMeasure(900), resolveConfig({}))
     expect(policyResult.text).toContain('compression recommended')
@@ -232,10 +270,11 @@ describe('nudge (M3)', () => {
               text: buildBoundaryMarker(`m${String(marker).padStart(4, '0')}`, marker, 1),
             },
           ],
-          source: { kind: 'plugin', plugin: 'dsh-dcp' },
+          source: { kind: 'dsh-dcp' },
         }),
         { surfaceOp: 'append' },
       )
+      session.append('step/start', { turn: marker, step: 1 })
     }
     const result = computeNudge(session, fakeMeasure(900), resolveConfig({}))
     expect(result.text).toContain('compression recommended')

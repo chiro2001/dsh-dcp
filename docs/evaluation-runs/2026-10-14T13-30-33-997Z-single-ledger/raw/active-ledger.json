@@ -1,0 +1,784 @@
+{
+  "runId": "2026-10-14T13-30-33-997Z-single-ledger-active",
+  "taskId": "single-ledger-repair-v1",
+  "arm": "active",
+  "replicate": 1,
+  "model": "deepseek-flash",
+  "provider": "deepseek",
+  "startedAt": 1791984673388,
+  "version": 1,
+  "attempts": [
+    {
+      "attemptId": "2026-10-14T13-30-33-997Z-single-ledger-active:1",
+      "metadata": {
+        "agentId": "2026-10-14T13-30-33-997Z-single-ledger-active",
+        "sessionId": "2026-10-14T13-30-33-997Z-single-ledger-active",
+        "purpose": "conversation",
+        "startedAt": 1791984673434,
+        "requestHash": "fe2faf24f943ab2a2d62efd2b02ba64570e110d34ed030a62c88b4699b77528c",
+        "turn": 5,
+        "step": 1
+      },
+      "prices": {
+        "currency": "USD",
+        "date": "2026-10-14",
+        "source": "https://api-docs.deepseek.com/quick_start/pricing",
+        "retrievedAt": "2026-10-14",
+        "model": "deepseek-flash",
+        "window": "off-peak",
+        "rates": {
+          "uncachedInputPerMillion": 0.15,
+          "cacheReadPerMillion": 0.003,
+          "outputPerMillion": 0.6
+        }
+      },
+      "status": "success",
+      "finishedAt": 1791984678971,
+      "usage": {
+        "uncachedInputTokens": 245,
+        "cacheReadTokens": 477952,
+        "outputTokens": 875
+      },
+      "cost": 0.001995606
+    },
+    {
+      "attemptId": "2026-10-14T13-30-33-997Z-single-ledger-active:2",
+      "metadata": {
+        "agentId": "2026-10-14T13-30-33-997Z-single-ledger-active",
+        "sessionId": "2026-10-14T13-30-33-997Z-single-ledger-active",
+        "purpose": "conversation",
+        "startedAt": 1791984678991,
+        "requestHash": "f1c857379b7e0eb3ab85a611ed60abf25d4dd1016b13456a3f93f2849b2f9292",
+        "turn": 5,
+        "step": 2
+      },
+      "prices": {
+        "currency": "USD",
+        "date": "2026-10-14",
+        "source": "https://api-docs.deepseek.com/quick_start/pricing",
+        "retrievedAt": "2026-10-14",
+        "model": "deepseek-flash",
+        "window": "off-peak",
+        "rates": {
+          "uncachedInputPerMillion": 0.15,
+          "cacheReadPerMillion": 0.003,
+          "outputPerMillion": 0.6
+        }
+      },
+      "status": "success",
+      "finishedAt": 1791984679963,
+      "usage": {
+        "uncachedInputTokens": 3174,
+        "cacheReadTokens": 384,
+        "outputTokens": 120
+      },
+      "cost": 0.000549252
+    },
+    {
+      "attemptId": "2026-10-14T13-30-33-997Z-single-ledger-active:3",
+      "metadata": {
+        "agentId": "2026-10-14T13-30-33-997Z-single-ledger-active",
+        "sessionId": "2026-10-14T13-30-33-997Z-single-ledger-active",
+        "purpose": "conversation",
+        "startedAt": 1791984680061,
+        "requestHash": "dfe851ce44d949d672c7cb567deecef6d5fa94781db4798a0ff84b85935d92df",
+        "turn": 5,
+        "step": 3
+      },
+      "prices": {
+        "currency": "USD",
+        "date": "2026-10-14",
+        "source": "https://api-docs.deepseek.com/quick_start/pricing",
+        "retrievedAt": "2026-10-14",
+        "model": "deepseek-flash",
+        "window": "off-peak",
+        "rates": {
+          "uncachedInputPerMillion": 0.15,
+          "cacheReadPerMillion": 0.003,
+          "outputPerMillion": 0.6
+        }
+      },
+      "status": "success",
+      "finishedAt": 1791984681560,
+      "usage": {
+        "uncachedInputTokens": 1633,
+        "cacheReadTokens": 2432,
+        "outputTokens": 264
+      },
+      "cost": 0.00041064599999999997
+    },
+    {
+      "attemptId": "2026-10-14T13-30-33-997Z-single-ledger-active:4",
+      "metadata": {
+        "agentId": "2026-10-14T13-30-33-997Z-single-ledger-active",
+        "sessionId": "2026-10-14T13-30-33-997Z-single-ledger-active",
+        "purpose": "conversation",
+        "startedAt": 1791984681703,
+        "requestHash": "7e5c70af94ab3cca2db83c11ac7748d9a202fe9cd23ba7b7f0c6a41c73d7c3eb",
+        "turn": 5,
+        "step": 4
+      },
+      "prices": {
+        "currency": "USD",
+        "date": "2026-10-14",
+        "source": "https://api-docs.deepseek.com/quick_start/pricing",
+        "retrievedAt": "2026-10-14",
+        "model": "deepseek-flash",
+        "window": "off-peak",
+        "rates": {
+          "uncachedInputPerMillion": 0.15,
+          "cacheReadPerMillion": 0.003,
+          "outputPerMillion": 0.6
+        }
+      },
+      "status": "success",
+      "finishedAt": 1791984683507,
+      "usage": {
+        "uncachedInputTokens": 795,
+        "cacheReadTokens": 4224,
+        "outputTokens": 297
+      },
+      "cost": 0.00031012199999999997
+    },
+    {
+      "attemptId": "2026-10-14T13-30-33-997Z-single-ledger-active:5",
+      "metadata": {
+        "agentId": "2026-10-14T13-30-33-997Z-single-ledger-active",
+        "sessionId": "2026-10-14T13-30-33-997Z-single-ledger-active",
+        "purpose": "conversation",
+        "startedAt": 1791984683633,
+        "requestHash": "a9b15ccccd0e2e7184ac1a538a8f0794b4cc8d97360271bf92afa79c1f4aa842",
+        "turn": 5,
+        "step": 5
+      },
+      "prices": {
+        "currency": "USD",
+        "date": "2026-10-14",
+        "source": "https://api-docs.deepseek.com/quick_start/pricing",
+        "retrievedAt": "2026-10-14",
+        "model": "deepseek-flash",
+        "window": "off-peak",
+        "rates": {
+          "uncachedInputPerMillion": 0.15,
+          "cacheReadPerMillion": 0.003,
+          "outputPerMillion": 0.6
+        }
+      },
+      "status": "success",
+      "finishedAt": 1791984690040,
+      "usage": {
+        "uncachedInputTokens": 403,
+        "cacheReadTokens": 5248,
+        "outputTokens": 1624
+      },
+      "cost": 0.001050594
+    },
+    {
+      "attemptId": "2026-10-14T13-30-33-997Z-single-ledger-active:6",
+      "metadata": {
+        "agentId": "2026-10-14T13-30-33-997Z-single-ledger-active",
+        "sessionId": "2026-10-14T13-30-33-997Z-single-ledger-active",
+        "purpose": "conversation",
+        "startedAt": 1791984690093,
+        "requestHash": "0683263b98e4b74ecfc4034a6488aa491ddfa1e0523bf6221e75f7d285cbc706",
+        "turn": 5,
+        "step": 6
+      },
+      "prices": {
+        "currency": "USD",
+        "date": "2026-10-14",
+        "source": "https://api-docs.deepseek.com/quick_start/pricing",
+        "retrievedAt": "2026-10-14",
+        "model": "deepseek-flash",
+        "window": "off-peak",
+        "rates": {
+          "uncachedInputPerMillion": 0.15,
+          "cacheReadPerMillion": 0.003,
+          "outputPerMillion": 0.6
+        }
+      },
+      "status": "success",
+      "finishedAt": 1791984696035,
+      "usage": {
+        "uncachedInputTokens": 134,
+        "cacheReadTokens": 7168,
+        "outputTokens": 1624
+      },
+      "cost": 0.001016004
+    },
+    {
+      "attemptId": "2026-10-14T13-30-33-997Z-single-ledger-active:7",
+      "metadata": {
+        "agentId": "2026-10-14T13-30-33-997Z-single-ledger-active",
+        "sessionId": "2026-10-14T13-30-33-997Z-single-ledger-active",
+        "purpose": "conversation",
+        "startedAt": 1791984696293,
+        "requestHash": "170cf7be3eff76c734763fa70c93fb0e901a30d36cf643e2d339ed20258d584c",
+        "turn": 5,
+        "step": 7
+      },
+      "prices": {
+        "currency": "USD",
+        "date": "2026-10-14",
+        "source": "https://api-docs.deepseek.com/quick_start/pricing",
+        "retrievedAt": "2026-10-14",
+        "model": "deepseek-flash",
+        "window": "off-peak",
+        "rates": {
+          "uncachedInputPerMillion": 0.15,
+          "cacheReadPerMillion": 0.003,
+          "outputPerMillion": 0.6
+        }
+      },
+      "status": "success",
+      "finishedAt": 1791984697738,
+      "usage": {
+        "uncachedInputTokens": 793,
+        "cacheReadTokens": 8832,
+        "outputTokens": 180
+      },
+      "cost": 0.000253446
+    },
+    {
+      "attemptId": "2026-10-14T13-30-33-997Z-single-ledger-active:8",
+      "metadata": {
+        "agentId": "2026-10-14T13-30-33-997Z-single-ledger-active",
+        "sessionId": "2026-10-14T13-30-33-997Z-single-ledger-active",
+        "purpose": "conversation",
+        "startedAt": 1791984698075,
+        "requestHash": "3c230112bd645c9ecae5ab9021f48b8e782a5a974b72ee3164e04b7dd3de604b",
+        "turn": 5,
+        "step": 8
+      },
+      "prices": {
+        "currency": "USD",
+        "date": "2026-10-14",
+        "source": "https://api-docs.deepseek.com/quick_start/pricing",
+        "retrievedAt": "2026-10-14",
+        "model": "deepseek-flash",
+        "window": "off-peak",
+        "rates": {
+          "uncachedInputPerMillion": 0.15,
+          "cacheReadPerMillion": 0.003,
+          "outputPerMillion": 0.6
+        }
+      },
+      "status": "success",
+      "finishedAt": 1791984702875,
+      "usage": {
+        "uncachedInputTokens": 140,
+        "cacheReadTokens": 9728,
+        "outputTokens": 1127
+      },
+      "cost": 0.000726384
+    },
+    {
+      "attemptId": "2026-10-14T13-30-33-997Z-single-ledger-active:9",
+      "metadata": {
+        "agentId": "2026-10-14T13-30-33-997Z-single-ledger-active",
+        "sessionId": "2026-10-14T13-30-33-997Z-single-ledger-active",
+        "purpose": "conversation",
+        "startedAt": 1791984703134,
+        "requestHash": "2769373ff9d485ea2488a44397ccbf799bcf19f7beac90197abee7e4aed1c3f0",
+        "turn": 5,
+        "step": 9
+      },
+      "prices": {
+        "currency": "USD",
+        "date": "2026-10-14",
+        "source": "https://api-docs.deepseek.com/quick_start/pricing",
+        "retrievedAt": "2026-10-14",
+        "model": "deepseek-flash",
+        "window": "off-peak",
+        "rates": {
+          "uncachedInputPerMillion": 0.15,
+          "cacheReadPerMillion": 0.003,
+          "outputPerMillion": 0.6
+        }
+      },
+      "status": "success",
+      "finishedAt": 1791984705885,
+      "usage": {
+        "uncachedInputTokens": 143,
+        "cacheReadTokens": 10880,
+        "outputTokens": 613
+      },
+      "cost": 0.00042188999999999996
+    },
+    {
+      "attemptId": "2026-10-14T13-30-33-997Z-single-ledger-active:10",
+      "metadata": {
+        "agentId": "2026-10-14T13-30-33-997Z-single-ledger-active",
+        "sessionId": "2026-10-14T13-30-33-997Z-single-ledger-active",
+        "purpose": "conversation",
+        "startedAt": 1791984706115,
+        "requestHash": "18ef384643830e923b423772efe5c83658ac9fa70bc77c55b1e0c20be4e50d45",
+        "turn": 5,
+        "step": 10
+      },
+      "prices": {
+        "currency": "USD",
+        "date": "2026-10-14",
+        "source": "https://api-docs.deepseek.com/quick_start/pricing",
+        "retrievedAt": "2026-10-14",
+        "model": "deepseek-flash",
+        "window": "off-peak",
+        "rates": {
+          "uncachedInputPerMillion": 0.15,
+          "cacheReadPerMillion": 0.003,
+          "outputPerMillion": 0.6
+        }
+      },
+      "status": "success",
+      "finishedAt": 1791984709298,
+      "usage": {
+        "uncachedInputTokens": 339,
+        "cacheReadTokens": 11520,
+        "outputTokens": 606
+      },
+      "cost": 0.00044901
+    },
+    {
+      "attemptId": "2026-10-14T13-30-33-997Z-single-ledger-active:11",
+      "metadata": {
+        "agentId": "2026-10-14T13-30-33-997Z-single-ledger-active",
+        "sessionId": "2026-10-14T13-30-33-997Z-single-ledger-active",
+        "purpose": "conversation",
+        "startedAt": 1791984709453,
+        "requestHash": "f81503ac075a9326e2fe12728188a9b48ac53d3eb4efe839e3174971f9617d28",
+        "turn": 5,
+        "step": 11
+      },
+      "prices": {
+        "currency": "USD",
+        "date": "2026-10-14",
+        "source": "https://api-docs.deepseek.com/quick_start/pricing",
+        "retrievedAt": "2026-10-14",
+        "model": "deepseek-flash",
+        "window": "off-peak",
+        "rates": {
+          "uncachedInputPerMillion": 0.15,
+          "cacheReadPerMillion": 0.003,
+          "outputPerMillion": 0.6
+        }
+      },
+      "status": "success",
+      "finishedAt": 1791984711600,
+      "usage": {
+        "uncachedInputTokens": 237,
+        "cacheReadTokens": 12288,
+        "outputTokens": 583
+      },
+      "cost": 0.000422214
+    },
+    {
+      "attemptId": "2026-10-14T13-30-33-997Z-single-ledger-active:12",
+      "metadata": {
+        "agentId": "2026-10-14T13-30-33-997Z-single-ledger-active",
+        "sessionId": "2026-10-14T13-30-33-997Z-single-ledger-active",
+        "purpose": "conversation",
+        "startedAt": 1791984711782,
+        "requestHash": "a1e94c17d5d3a5859ac67a3f338fafde5cab89ee7a08987ba3790451e609a34a",
+        "turn": 5,
+        "step": 12
+      },
+      "prices": {
+        "currency": "USD",
+        "date": "2026-10-14",
+        "source": "https://api-docs.deepseek.com/quick_start/pricing",
+        "retrievedAt": "2026-10-14",
+        "model": "deepseek-flash",
+        "window": "off-peak",
+        "rates": {
+          "uncachedInputPerMillion": 0.15,
+          "cacheReadPerMillion": 0.003,
+          "outputPerMillion": 0.6
+        }
+      },
+      "status": "success",
+      "finishedAt": 1791984713814,
+      "usage": {
+        "uncachedInputTokens": 270,
+        "cacheReadTokens": 13056,
+        "outputTokens": 302
+      },
+      "cost": 0.000260868
+    },
+    {
+      "attemptId": "2026-10-14T13-30-33-997Z-single-ledger-active:13",
+      "metadata": {
+        "agentId": "2026-10-14T13-30-33-997Z-single-ledger-active",
+        "sessionId": "2026-10-14T13-30-33-997Z-single-ledger-active",
+        "purpose": "conversation",
+        "startedAt": 1791984714000,
+        "requestHash": "aaf9f6f17d76ac20ce665aa54220dbbd9a856ee84188c6f8180b71e7b3a2d2ae",
+        "turn": 5,
+        "step": 13
+      },
+      "prices": {
+        "currency": "USD",
+        "date": "2026-10-14",
+        "source": "https://api-docs.deepseek.com/quick_start/pricing",
+        "retrievedAt": "2026-10-14",
+        "model": "deepseek-flash",
+        "window": "off-peak",
+        "rates": {
+          "uncachedInputPerMillion": 0.15,
+          "cacheReadPerMillion": 0.003,
+          "outputPerMillion": 0.6
+        }
+      },
+      "status": "success",
+      "finishedAt": 1791984716278,
+      "usage": {
+        "uncachedInputTokens": 251,
+        "cacheReadTokens": 13440,
+        "outputTokens": 328
+      },
+      "cost": 0.00027477
+    },
+    {
+      "attemptId": "2026-10-14T13-30-33-997Z-single-ledger-active:14",
+      "metadata": {
+        "agentId": "2026-10-14T13-30-33-997Z-single-ledger-active",
+        "sessionId": "2026-10-14T13-30-33-997Z-single-ledger-active",
+        "purpose": "conversation",
+        "startedAt": 1791984716487,
+        "requestHash": "3b66241856b2ababcb1142e399a0df8682a1a7b114b1738778fdfcb6f1322302",
+        "turn": 5,
+        "step": 14
+      },
+      "prices": {
+        "currency": "USD",
+        "date": "2026-10-14",
+        "source": "https://api-docs.deepseek.com/quick_start/pricing",
+        "retrievedAt": "2026-10-14",
+        "model": "deepseek-flash",
+        "window": "off-peak",
+        "rates": {
+          "uncachedInputPerMillion": 0.15,
+          "cacheReadPerMillion": 0.003,
+          "outputPerMillion": 0.6
+        }
+      },
+      "status": "success",
+      "finishedAt": 1791984717785,
+      "usage": {
+        "uncachedInputTokens": 194,
+        "cacheReadTokens": 13952,
+        "outputTokens": 230
+      },
+      "cost": 0.00020895600000000002
+    },
+    {
+      "attemptId": "2026-10-14T13-30-33-997Z-single-ledger-active:15",
+      "metadata": {
+        "agentId": "2026-10-14T13-30-33-997Z-single-ledger-active",
+        "sessionId": "2026-10-14T13-30-33-997Z-single-ledger-active",
+        "purpose": "conversation",
+        "startedAt": 1791984718148,
+        "requestHash": "b1589379c81f6f0ee9a24cda3c9894cb785a204728ace26bde35ebf9f4e9135f",
+        "turn": 5,
+        "step": 15
+      },
+      "prices": {
+        "currency": "USD",
+        "date": "2026-10-14",
+        "source": "https://api-docs.deepseek.com/quick_start/pricing",
+        "retrievedAt": "2026-10-14",
+        "model": "deepseek-flash",
+        "window": "off-peak",
+        "rates": {
+          "uncachedInputPerMillion": 0.15,
+          "cacheReadPerMillion": 0.003,
+          "outputPerMillion": 0.6
+        }
+      },
+      "status": "success",
+      "finishedAt": 1791984721320,
+      "usage": {
+        "uncachedInputTokens": 198,
+        "cacheReadTokens": 14208,
+        "outputTokens": 833
+      },
+      "cost": 0.0005721239999999999
+    },
+    {
+      "attemptId": "2026-10-14T13-30-33-997Z-single-ledger-active:16",
+      "metadata": {
+        "agentId": "2026-10-14T13-30-33-997Z-single-ledger-active",
+        "sessionId": "2026-10-14T13-30-33-997Z-single-ledger-active",
+        "purpose": "conversation",
+        "startedAt": 1791984721804,
+        "requestHash": "dc148eb07b1c765b4bc287ec7607c4d638529b3eef2d373150fb8d3b781184d2",
+        "turn": 5,
+        "step": 16
+      },
+      "prices": {
+        "currency": "USD",
+        "date": "2026-10-14",
+        "source": "https://api-docs.deepseek.com/quick_start/pricing",
+        "retrievedAt": "2026-10-14",
+        "model": "deepseek-flash",
+        "window": "off-peak",
+        "rates": {
+          "uncachedInputPerMillion": 0.15,
+          "cacheReadPerMillion": 0.003,
+          "outputPerMillion": 0.6
+        }
+      },
+      "status": "success",
+      "finishedAt": 1791984723513,
+      "usage": {
+        "uncachedInputTokens": 173,
+        "cacheReadTokens": 15104,
+        "outputTokens": 229
+      },
+      "cost": 0.000208662
+    },
+    {
+      "attemptId": "2026-10-14T13-30-33-997Z-single-ledger-active:17",
+      "metadata": {
+        "agentId": "2026-10-14T13-30-33-997Z-single-ledger-active",
+        "sessionId": "2026-10-14T13-30-33-997Z-single-ledger-active",
+        "purpose": "conversation",
+        "startedAt": 1791984724367,
+        "requestHash": "4528866c5a4b14e95d97e44c5eb674a6658ca62ac15f8b67d7164c7141b6f543",
+        "turn": 5,
+        "step": 17
+      },
+      "prices": {
+        "currency": "USD",
+        "date": "2026-10-14",
+        "source": "https://api-docs.deepseek.com/quick_start/pricing",
+        "retrievedAt": "2026-10-14",
+        "model": "deepseek-flash",
+        "window": "off-peak",
+        "rates": {
+          "uncachedInputPerMillion": 0.15,
+          "cacheReadPerMillion": 0.003,
+          "outputPerMillion": 0.6
+        }
+      },
+      "status": "success",
+      "finishedAt": 1791984725935,
+      "usage": {
+        "uncachedInputTokens": 217,
+        "cacheReadTokens": 15360,
+        "outputTokens": 171
+      },
+      "cost": 0.00018123
+    },
+    {
+      "attemptId": "2026-10-14T13-30-33-997Z-single-ledger-active:18",
+      "metadata": {
+        "agentId": "2026-10-14T13-30-33-997Z-single-ledger-active",
+        "sessionId": "2026-10-14T13-30-33-997Z-single-ledger-active",
+        "purpose": "conversation",
+        "startedAt": 1791984725992,
+        "requestHash": "6c24fb0c08f233010fd17621e8e7c61f23be2a6c8b2b2662522663b8e3b31601",
+        "turn": 5,
+        "step": 18
+      },
+      "prices": {
+        "currency": "USD",
+        "date": "2026-10-14",
+        "source": "https://api-docs.deepseek.com/quick_start/pricing",
+        "retrievedAt": "2026-10-14",
+        "model": "deepseek-flash",
+        "window": "off-peak",
+        "rates": {
+          "uncachedInputPerMillion": 0.15,
+          "cacheReadPerMillion": 0.003,
+          "outputPerMillion": 0.6
+        }
+      },
+      "status": "success",
+      "finishedAt": 1791984729350,
+      "usage": {
+        "uncachedInputTokens": 2007,
+        "cacheReadTokens": 15744,
+        "outputTokens": 602
+      },
+      "cost": 0.000709482
+    },
+    {
+      "attemptId": "2026-10-14T13-30-33-997Z-single-ledger-active:19",
+      "metadata": {
+        "agentId": "2026-10-14T13-30-33-997Z-single-ledger-active",
+        "sessionId": "2026-10-14T13-30-33-997Z-single-ledger-active",
+        "purpose": "conversation",
+        "startedAt": 1791984729504,
+        "requestHash": "7ca0ce09422f9ebfd5e3651e5498775d033e97dac467f6b7c3e5d3bfa59358ba",
+        "turn": 5,
+        "step": 19
+      },
+      "prices": {
+        "currency": "USD",
+        "date": "2026-10-14",
+        "source": "https://api-docs.deepseek.com/quick_start/pricing",
+        "retrievedAt": "2026-10-14",
+        "model": "deepseek-flash",
+        "window": "off-peak",
+        "rates": {
+          "uncachedInputPerMillion": 0.15,
+          "cacheReadPerMillion": 0.003,
+          "outputPerMillion": 0.6
+        }
+      },
+      "status": "success",
+      "finishedAt": 1791984731269,
+      "usage": {
+        "uncachedInputTokens": 279,
+        "cacheReadTokens": 18304,
+        "outputTokens": 261
+      },
+      "cost": 0.000253362
+    },
+    {
+      "attemptId": "2026-10-14T13-30-33-997Z-single-ledger-active:20",
+      "metadata": {
+        "agentId": "2026-10-14T13-30-33-997Z-single-ledger-active",
+        "sessionId": "2026-10-14T13-30-33-997Z-single-ledger-active",
+        "purpose": "conversation",
+        "startedAt": 1791984731741,
+        "requestHash": "3c72312e20e57c4ae8421f4eb48cf85d6384f2a279a40acda6a196374b2b57f8",
+        "turn": 5,
+        "step": 20
+      },
+      "prices": {
+        "currency": "USD",
+        "date": "2026-10-14",
+        "source": "https://api-docs.deepseek.com/quick_start/pricing",
+        "retrievedAt": "2026-10-14",
+        "model": "deepseek-flash",
+        "window": "off-peak",
+        "rates": {
+          "uncachedInputPerMillion": 0.15,
+          "cacheReadPerMillion": 0.003,
+          "outputPerMillion": 0.6
+        }
+      },
+      "status": "success",
+      "finishedAt": 1791984740050,
+      "usage": {
+        "uncachedInputTokens": 178,
+        "cacheReadTokens": 18816,
+        "outputTokens": 1588
+      },
+      "cost": 0.0010359479999999999
+    },
+    {
+      "attemptId": "2026-10-14T13-30-33-997Z-single-ledger-active:21",
+      "metadata": {
+        "agentId": "2026-10-14T13-30-33-997Z-single-ledger-active",
+        "sessionId": "2026-10-14T13-30-33-997Z-single-ledger-active",
+        "purpose": "conversation",
+        "startedAt": 1791984740451,
+        "requestHash": "b63b2ca32b84921dcc91ff00581bd08baa0480ce2e06d996e6940e597935a715",
+        "turn": 5,
+        "step": 21
+      },
+      "prices": {
+        "currency": "USD",
+        "date": "2026-10-14",
+        "source": "https://api-docs.deepseek.com/quick_start/pricing",
+        "retrievedAt": "2026-10-14",
+        "model": "deepseek-flash",
+        "window": "off-peak",
+        "rates": {
+          "uncachedInputPerMillion": 0.15,
+          "cacheReadPerMillion": 0.003,
+          "outputPerMillion": 0.6
+        }
+      },
+      "status": "success",
+      "finishedAt": 1791984741313,
+      "usage": {
+        "uncachedInputTokens": 178,
+        "cacheReadTokens": 20480,
+        "outputTokens": 67
+      },
+      "cost": 0.00012834
+    },
+    {
+      "attemptId": "2026-10-14T13-30-33-997Z-single-ledger-active:22",
+      "metadata": {
+        "agentId": "2026-10-14T13-30-33-997Z-single-ledger-active",
+        "sessionId": "2026-10-14T13-30-33-997Z-single-ledger-active",
+        "purpose": "conversation",
+        "startedAt": 1791984741372,
+        "requestHash": "959fe752ea5b67b0ee87e5b99e7e893b2fa5605cf7d746ac29f7170c4e115a2f",
+        "turn": 5,
+        "step": 22
+      },
+      "prices": {
+        "currency": "USD",
+        "date": "2026-10-14",
+        "source": "https://api-docs.deepseek.com/quick_start/pricing",
+        "retrievedAt": "2026-10-14",
+        "model": "deepseek-flash",
+        "window": "off-peak",
+        "rates": {
+          "uncachedInputPerMillion": 0.15,
+          "cacheReadPerMillion": 0.003,
+          "outputPerMillion": 0.6
+        }
+      },
+      "status": "success",
+      "finishedAt": 1791984742131,
+      "usage": {
+        "uncachedInputTokens": 896,
+        "cacheReadTokens": 20608,
+        "outputTokens": 78
+      },
+      "cost": 0.000243024
+    },
+    {
+      "attemptId": "2026-10-14T13-30-33-997Z-single-ledger-active:23",
+      "metadata": {
+        "agentId": "2026-10-14T13-30-33-997Z-single-ledger-active",
+        "sessionId": "2026-10-14T13-30-33-997Z-single-ledger-active",
+        "purpose": "conversation",
+        "startedAt": 1791984742190,
+        "requestHash": "7cd228c58416b09adb5619aad17a2db78a3e2590c328a2006284880b4b553347",
+        "turn": 5,
+        "step": 23
+      },
+      "prices": {
+        "currency": "USD",
+        "date": "2026-10-14",
+        "source": "https://api-docs.deepseek.com/quick_start/pricing",
+        "retrievedAt": "2026-10-14",
+        "model": "deepseek-flash",
+        "window": "off-peak",
+        "rates": {
+          "uncachedInputPerMillion": 0.15,
+          "cacheReadPerMillion": 0.003,
+          "outputPerMillion": 0.6
+        }
+      },
+      "status": "success",
+      "finishedAt": 1791984745934,
+      "usage": {
+        "uncachedInputTokens": 391,
+        "cacheReadTokens": 21376,
+        "outputTokens": 621
+      },
+      "cost": 0.0004953779999999999
+    }
+  ],
+  "outcome": "success",
+  "success": true,
+  "finishedAt": 1791984745935,
+  "externalCost": 0,
+  "usageComplete": true,
+  "usageTotals": {
+    "uncachedInputTokens": 13268,
+    "cacheReadTokens": 751104,
+    "outputTokens": 13223,
+    "reasoningTokens": 0
+  },
+  "knownCost": 0.012177312,
+  "totalCost": 0.012177312
+}

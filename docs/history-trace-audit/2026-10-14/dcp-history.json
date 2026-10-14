@@ -1,0 +1,3636 @@
+{
+  "generatedAt": "2026-10-14T06:40:29.427Z",
+  "scope": {
+    "discoveredPhysicalTraces": 817,
+    "distinctLogicalSessionsInDiscovery": 816,
+    "discoveryHeaderVersions": [0, 3],
+    "dcpRepositoryCwdCandidatePhysicalTraces": 25,
+    "dcpRepositoryCwdCandidateLogicalSessions": 25,
+    "genericNonRepositorySamplePerVersion": 8,
+    "genericNonRepositorySampleCount": 16,
+    "decodedUniqueLogicalSessions": 41,
+    "dcpPositiveSessions": 6,
+    "dcpPositiveSessionsByHeaderVersion": {
+      "0": 6
+    },
+    "sessionsWithExecutedCompressCallsInSample": 6,
+    "executedNativeCompressCallsInSample": 39,
+    "matchedNativeCompressResultsInSample": 39,
+    "footprintOnlySessions": 3,
+    "runCodeWorkflowSample": {
+      "topLevelRunCodeCalls": 0,
+      "runCodeArgumentsMentioningCompress": 0,
+      "ptcDispatchEvents": 0,
+      "codeDispatchEvents": 0,
+      "dispatchParentKinds": {},
+      "limitation": "top-level tool/call events do not expose nested calls hidden inside PTC/code dispatch; zero dispatch in this sample is not a corpus-wide estimate."
+    },
+    "decodedCompressedBytes": 51966935,
+    "decodedUncompressedBytes": 144637695,
+    "cohortCounts": {
+      "dcp-repository-project:decoded": 25,
+      "dcp-repository-project:footprint-only": 3,
+      "dcp-repository-project:dcp-positive": 4,
+      "cross-project-stratified-probe:decoded": 16,
+      "cross-project-stratified-probe:dcp-positive": 2
+    },
+    "errors": {
+      "readFailures": 0,
+      "oversizedOrMalformed": 0
+    },
+    "credentialsRead": false,
+    "externalCalls": 0,
+    "rawTextPersisted": false,
+    "rawToolOutputPersisted": false,
+    "userMessagesEmittedToStdout": false,
+    "dcpBuildVersionPersistedByHost": false,
+    "attributionCaveat": "headerVersion and marker family describe the host log, not the installed DCP build; missing historical cleanup records cannot be attributed to current unreleased code."
+  },
+  "sessions": [
+    {
+      "sessionHash": "d12108b4e9ad32ce3bd2",
+      "headerVersion": 0,
+      "fileFamily": "base",
+      "sessionComplete": true,
+      "dcpPresence": {
+        "hasDcpPresence": true,
+        "hasConfirmedCompression": true,
+        "hasExecutedNativeCompressCall": true,
+        "hasDcpCompactionSummaryMetadata": false,
+        "hasLegacyInBandCompactionSummary": true,
+        "hasDcpSourceMarker": false,
+        "footprintOnlyStoredPointer": false
+      },
+      "eventCounts": {
+        "permission/preset": 1,
+        "sandbox/mode": 1,
+        "approval/policy": 1,
+        "agent/inbox/spliced": 6,
+        "turn/start": 3,
+        "step/start": 11,
+        "user/message": 16,
+        "session/title": 2,
+        "request/header": 4,
+        "request/context": 1,
+        "session/title-llm-request": 1,
+        "unknown-event-type": 12180,
+        "assistant/message": 11,
+        "tool/call": 8,
+        "tool/result": 8,
+        "step/end": 10,
+        "turn/end": 2,
+        "compaction/start": 1,
+        "compaction/summary": 1,
+        "compaction/end": 1,
+        "compaction/prune": 1
+      },
+      "dcpEventCounts": {
+        "user/message": 16,
+        "assistant/message": 11,
+        "tool/call": 8,
+        "tool/result": 8,
+        "compaction/start": 1,
+        "compaction/summary": 1,
+        "compaction/end": 1,
+        "compaction/prune": 1
+      },
+      "dcp": {
+        "nativeCompressCalls": 3,
+        "matchedNativeCompressResults": 3,
+        "submittedAssistantMessageEventsWithCompressBlock": 4,
+        "uniqueSubmittedCompressCallIds": 3,
+        "executedCompressCallIds": 3,
+        "executedCompressCallIdsWithAppendAuthor": 3,
+        "executedCompressCallIdsWithReplacementAuthor": 1,
+        "executedCallIdsWithBothAppendAndReplacementAuthor": 1,
+        "assistantAuthorCallIdsWithoutExecution": 0,
+        "callIdsWithoutAssistantAuthor": 0,
+        "callDiagnostics": {
+          "unparseableArguments": 0,
+          "missingResult": 0,
+          "noAssistantAuthorMatch": 0
+        },
+        "dcpSummaryCheckpoints": 0,
+        "resultStatusCounts": {
+          "unknown": 3
+        },
+        "resultCodeCounts": {},
+        "checkpointCommitCoverage": {
+          "allSubmittedRangesHaveCheckpoint": 1,
+          "someSubmittedRangesHaveCheckpoint": 0,
+          "noRangeCheckpointObserved": 2,
+          "unparseableOrEmptyArguments": 0,
+          "submittedRangeCount": 3,
+          "checkpointedRangeCount": 1,
+          "caveat": "inferred only from structurally valid source.dcp metadata matched by compressCallId and refs; calls with no checkpoint are unknown, not labeled rejected"
+        },
+        "resultMetrics": {
+          "missingResults": 0,
+          "isErrorFlags": 0,
+          "textLengthMedianChars": 0,
+          "contentBlockTypes": {
+            "other": 3
+          },
+          "statusPatternCounts": {
+            "unknown": 3,
+            "empty-result-text": 3
+          }
+        },
+        "executedAuthorPayloadMetrics": {
+          "uniqueSelectedAuthorMessages": 3,
+          "distinctExecutedCompressCallIds": 3,
+          "uniqueAuthorMessagesContainingReasoning": 3,
+          "uniqueAuthorMessagesContainingText": 0,
+          "reasoningCharsMedian": 9360,
+          "reasoningCharsP90": 9360,
+          "assistantTextCharsMedian": 0,
+          "toolArgumentCharsMedian": 1839,
+          "authorMessageHeuristicTokensMedian": 2813,
+          "caveat": "length/token estimates only; reasoning and tool arguments were never exported"
+        },
+        "refLengthCounts": {
+          "start:<8": 3,
+          "end:<8": 3
+        },
+        "refKindCounts": {
+          "start:message": 2,
+          "end:message": 3,
+          "start:block": 1
+        },
+        "refDistanceBuckets": {
+          "<8": 3
+        },
+        "submittedSummaryLengthChars": {
+          "count": 3,
+          "median": 1748,
+          "p90": 1748
+        },
+        "checkpointLengthChars": {
+          "count": 0,
+          "median": null,
+          "p90": null
+        },
+        "tokenHeuristic": {
+          "method": "persisted compaction/summary.shadowedTokenCount for input; current dsh-token-meter estimateMessage for checkpoint; both estimates, not provider API usage",
+          "matchedCheckpointPairs": 0,
+          "inputTokensSum": 0,
+          "outputTokensSum": 0,
+          "netSavedTokensSum": 0,
+          "negativeNetSavedCount": 0
+        },
+        "nestedAppendix": {
+          "nestedCheckpointCount": 0,
+          "consumedBlockRefs": 0,
+          "checkpointCharsMedian": null,
+          "appendixCharsMedian": null,
+          "growthOutsideAppendixCharsMedian": null
+        },
+        "cleanup": {
+          "submittedAssistantMessageEventsWithCompress": 4,
+          "uniqueSubmittedCompressCallIds": 3,
+          "executedCompressCallIds": 3,
+          "executedCompressCallIdsWithAppendAuthor": 3,
+          "executedCompressCallIdsWithReplacementAuthor": 1,
+          "executedCallIdsWithBothAppendAndReplacementAuthor": 1,
+          "executedCallIdsWithNoAssistantAuthor": 0,
+          "assistantAuthorCallIdsWithoutExecution": 0,
+          "pureCompressExecutedCallIds": 0,
+          "mixedTextExecutedCallIds": 0,
+          "mixedReasoningExecutedCallIds": 3,
+          "mixedOtherExecutedCallIds": 0,
+          "pairedComplete": 0,
+          "observedByLaterClosedAssistant": 0,
+          "contiguousSurfaceAtObservation": 0,
+          "estimatedPositiveSavings": 0,
+          "recordedCurrentCleanupCallIds": 0,
+          "missingSurfaceProjection": true,
+          "recordedRateAmongPureCompress": null,
+          "estimatedPositiveSavingsRateAmongObservedContiguous": null,
+          "inputMessageTokensMedian": null,
+          "predictedCleanupMessageTokensMedian": null
+        },
+        "nativeCompactionOrder": {
+          "dcpSummaryEventCount": 1,
+          "unknownCompactionSummaryEventCount": 0,
+          "directlyNamedNativeCompactionToolCalls": 0,
+          "dcpAfterAtLeastOneUnknownCompaction": 0,
+          "unknownCompactionAfterAtLeastOneDcp": 0,
+          "unknownCompactionSummaryAbsorbedDcpCheckpointCount": 0,
+          "dcpSummaryAbsorbedUnknownCompactionCount": 0,
+          "attribution": "a compaction/summary without DCP checkpoint metadata or an in-band compress tool call is classified unknown, not native"
+        },
+        "sourceKindsInDcpRanges": {},
+        "sourceFormsInDcpRanges": {},
+        "allUserMessageSourceKinds": {
+          "other-kind": 13,
+          "user": 3
+        },
+        "allUserMessageSourceForms": {
+          "missing": 15,
+          "other-form": 1
+        },
+        "userMessageWrapperAndMetadataShapes": {
+          "direct-content/other-kind/no-recognized-meta-field": 12,
+          "direct-content/user/no-recognized-meta-field": 3,
+          "direct-content/other-kind/source-dcp-field": 1
+        },
+        "surfaceOperationFieldShapes": {
+          "append": 33,
+          "sourceEventSeqs-missing": 15,
+          "sourceEventSeqs-present": 20,
+          "replace": 2
+        },
+        "userMessageDataDcpFieldKeys": {
+          "v": 1,
+          "kind": 1,
+          "blockRef": 1,
+          "mode": 1,
+          "topic": 1,
+          "startRef": 1,
+          "endRef": 1,
+          "authorMessageId": 1,
+          "compressCallId": 1,
+          "consumedBlockRefs": 1,
+          "protectedKinds": 1
+        },
+        "structurallyIdentifiedLegacyCheckpoints": {
+          "sourceDcpFieldObjects": 1,
+          "structurallyValidV1Metadata": 1,
+          "acceptedByCurrentDecoder": 0,
+          "rejectedByCurrentDecoderBecauseSourceKindDiffers": 1,
+          "compactionIdPresent": 1,
+          "pairedCompactionSummaryEvents": 1,
+          "exactSummaryTextMatches": 1,
+          "matchingCompressCallIds": 1,
+          "matchingSubmittedRanges": 1,
+          "uniqueCompressCallsWithCheckpoint": 1,
+          "nestedCheckpointCount": 0,
+          "consumedBlockRefs": 0,
+          "checkpointTextCharsMedian": 1944,
+          "appendixTextCharsMedian": 0,
+          "hostRecordedShadowedTokenCountSum": 2896,
+          "currentMeterOutputHeuristicTokensSum": 494,
+          "crossVersionNetHeuristicTokensSum": 2402,
+          "tokenMetricPairs": 1,
+          "tokenMetricCaveat": "input is persisted host shadowedTokenCount; output is current token-meter estimate of a text-identical checkpoint; neither is provider API usage, and host/DCP build version is unknown"
+        },
+        "sourceKindsInLegacyCompressedRanges": {
+          "other-kind": 4,
+          "user": 1
+        },
+        "sourceFormsInLegacyCompressedRanges": {
+          "missing": 4,
+          "other-form": 1
+        },
+        "uniqueUserMessagesInLegacyCompressedRanges": 5,
+        "uniqueSubagentSourceEventsInLegacyCompressedRanges": {},
+        "dcpMetadataKeyPaths": {
+          "source.dcp-field": 1
+        },
+        "legacyCompactionCorrelation": {
+          "compressCallsWithInBandCompactionSummary": 1,
+          "pairedCompactionSummaries": 1,
+          "checkpointMessageDcpFieldRecognizedByCurrentDecoder": 0,
+          "checkpointMessageDcpFieldPresentButNotRecognizedByCurrentDecoder": 1,
+          "checkpointMessageWithoutRecognizedDcpField": 0,
+          "checkpointLikeMessagesInCompressInterval": 1,
+          "checkpointSourceKinds": {
+            "other-kind": 2
+          },
+          "correlatedCompactionSummaryEventTextCharsMedian": 1944,
+          "correlatedCompactionSummaryEventTextCharsP90": 1944,
+          "summaryAppendixCharsMedian": 0,
+          "nestedBlockBoundaryRefs": 0,
+          "hostRecordedShadowedTokenCountSum": 2896,
+          "netSavedTokens": null,
+          "netSavedReason": "checkpoint source is not recognized well enough to pair output token price; no net-savings claim emitted",
+          "subagentSourceKindFormCounts": {},
+          "subagentFormsMatchingCurrentProtectedSources": 0,
+          "subagentFormsNotMatchingCurrentProtectedSources": 0,
+          "subagentVerbatimOccurrencesInsideMatchedCheckpoint": 0,
+          "subagentProtectedAppendixMarkers": 0
+        },
+        "subagentSourceAudit": {
+          "sourceKindFormCounts": {},
+          "protectedByCurrentSourceFormRule": 0,
+          "notProtectedByCurrentSourceFormRule": 0,
+          "verbatimOccurrencesInsideCheckpoint": 0,
+          "caveat": "absence from the protected appendix is not evidence that a fact was lost; content was not exported"
+        },
+        "dcpStructureFamilies": {
+          "inlineCleanup": 0,
+          "storedPointer": 1,
+          "cleanup": 0,
+          "dcpCustomEvents": 0,
+          "oldCheckpointShape": 0
+        },
+        "runCodeParenting": {
+          "calls": 0,
+          "compressMentions": 0,
+          "compressErrors": 0,
+          "ptcDispatchEvents": 0,
+          "codeDispatchEvents": 0,
+          "parentKinds": {},
+          "compressNativeCallCount": 3,
+          "compressParentCallCount": 0
+        },
+        "selectedTraceBytes": 230414,
+        "selectedTraceUncompressedBytes": 464084
+      },
+      "cohort": "dcp-repository-project"
+    },
+    {
+      "sessionHash": "9f031066aae205993367",
+      "headerVersion": 0,
+      "fileFamily": "base",
+      "sessionComplete": true,
+      "dcpPresence": {
+        "hasDcpPresence": true,
+        "hasConfirmedCompression": true,
+        "hasExecutedNativeCompressCall": true,
+        "hasDcpCompactionSummaryMetadata": false,
+        "hasLegacyInBandCompactionSummary": true,
+        "hasDcpSourceMarker": false,
+        "footprintOnlyStoredPointer": false
+      },
+      "eventCounts": {
+        "permission/preset": 1,
+        "sandbox/mode": 1,
+        "approval/policy": 1,
+        "agent/inbox/spliced": 20,
+        "turn/start": 10,
+        "step/start": 32,
+        "user/message": 47,
+        "session/title": 2,
+        "request/header": 6,
+        "request/context": 1,
+        "session/title-llm-request": 1,
+        "unknown-event-type": 53014,
+        "assistant/message": 35,
+        "tool/call": 23,
+        "tool/result": 23,
+        "step/end": 32,
+        "turn/end": 10,
+        "compaction/start": 4,
+        "compaction/summary": 4,
+        "compaction/end": 4,
+        "compaction/prune": 3
+      },
+      "dcpEventCounts": {
+        "user/message": 47,
+        "assistant/message": 35,
+        "tool/call": 23,
+        "tool/result": 23,
+        "compaction/start": 4,
+        "compaction/summary": 4,
+        "compaction/end": 4,
+        "compaction/prune": 3
+      },
+      "dcp": {
+        "nativeCompressCalls": 4,
+        "matchedNativeCompressResults": 4,
+        "submittedAssistantMessageEventsWithCompressBlock": 6,
+        "uniqueSubmittedCompressCallIds": 4,
+        "executedCompressCallIds": 4,
+        "executedCompressCallIdsWithAppendAuthor": 4,
+        "executedCompressCallIdsWithReplacementAuthor": 3,
+        "executedCallIdsWithBothAppendAndReplacementAuthor": 3,
+        "assistantAuthorCallIdsWithoutExecution": 0,
+        "callIdsWithoutAssistantAuthor": 0,
+        "callDiagnostics": {
+          "unparseableArguments": 0,
+          "missingResult": 0,
+          "noAssistantAuthorMatch": 0
+        },
+        "dcpSummaryCheckpoints": 0,
+        "resultStatusCounts": {
+          "unknown": 4
+        },
+        "resultCodeCounts": {},
+        "checkpointCommitCoverage": {
+          "allSubmittedRangesHaveCheckpoint": 3,
+          "someSubmittedRangesHaveCheckpoint": 0,
+          "noRangeCheckpointObserved": 1,
+          "unparseableOrEmptyArguments": 0,
+          "submittedRangeCount": 6,
+          "checkpointedRangeCount": 4,
+          "caveat": "inferred only from structurally valid source.dcp metadata matched by compressCallId and refs; calls with no checkpoint are unknown, not labeled rejected"
+        },
+        "resultMetrics": {
+          "missingResults": 0,
+          "isErrorFlags": 0,
+          "textLengthMedianChars": 0,
+          "contentBlockTypes": {
+            "other": 4
+          },
+          "statusPatternCounts": {
+            "unknown": 4,
+            "empty-result-text": 4
+          }
+        },
+        "executedAuthorPayloadMetrics": {
+          "uniqueSelectedAuthorMessages": 3,
+          "distinctExecutedCompressCallIds": 4,
+          "uniqueAuthorMessagesContainingReasoning": 3,
+          "uniqueAuthorMessagesContainingText": 0,
+          "reasoningCharsMedian": 6660,
+          "reasoningCharsP90": 6660,
+          "assistantTextCharsMedian": 0,
+          "toolArgumentCharsMedian": 9290,
+          "authorMessageHeuristicTokensMedian": 3068,
+          "caveat": "length/token estimates only; reasoning and tool arguments were never exported"
+        },
+        "refLengthCounts": {
+          "start:<8": 6,
+          "end:<8": 6
+        },
+        "refKindCounts": {
+          "start:message": 6,
+          "end:message": 6
+        },
+        "refDistanceBuckets": {
+          "<8": 6
+        },
+        "submittedSummaryLengthChars": {
+          "count": 6,
+          "median": 3526,
+          "p90": 5529
+        },
+        "checkpointLengthChars": {
+          "count": 0,
+          "median": null,
+          "p90": null
+        },
+        "tokenHeuristic": {
+          "method": "persisted compaction/summary.shadowedTokenCount for input; current dsh-token-meter estimateMessage for checkpoint; both estimates, not provider API usage",
+          "matchedCheckpointPairs": 0,
+          "inputTokensSum": 0,
+          "outputTokensSum": 0,
+          "netSavedTokensSum": 0,
+          "negativeNetSavedCount": 0
+        },
+        "nestedAppendix": {
+          "nestedCheckpointCount": 0,
+          "consumedBlockRefs": 0,
+          "checkpointCharsMedian": null,
+          "appendixCharsMedian": null,
+          "growthOutsideAppendixCharsMedian": null
+        },
+        "cleanup": {
+          "submittedAssistantMessageEventsWithCompress": 6,
+          "uniqueSubmittedCompressCallIds": 4,
+          "executedCompressCallIds": 4,
+          "executedCompressCallIdsWithAppendAuthor": 4,
+          "executedCompressCallIdsWithReplacementAuthor": 3,
+          "executedCallIdsWithBothAppendAndReplacementAuthor": 3,
+          "executedCallIdsWithNoAssistantAuthor": 0,
+          "assistantAuthorCallIdsWithoutExecution": 0,
+          "pureCompressExecutedCallIds": 0,
+          "mixedTextExecutedCallIds": 0,
+          "mixedReasoningExecutedCallIds": 4,
+          "mixedOtherExecutedCallIds": 0,
+          "pairedComplete": 0,
+          "observedByLaterClosedAssistant": 0,
+          "contiguousSurfaceAtObservation": 0,
+          "estimatedPositiveSavings": 0,
+          "recordedCurrentCleanupCallIds": 0,
+          "missingSurfaceProjection": true,
+          "recordedRateAmongPureCompress": null,
+          "estimatedPositiveSavingsRateAmongObservedContiguous": null,
+          "inputMessageTokensMedian": null,
+          "predictedCleanupMessageTokensMedian": null
+        },
+        "nativeCompactionOrder": {
+          "dcpSummaryEventCount": 4,
+          "unknownCompactionSummaryEventCount": 0,
+          "directlyNamedNativeCompactionToolCalls": 0,
+          "dcpAfterAtLeastOneUnknownCompaction": 0,
+          "unknownCompactionAfterAtLeastOneDcp": 0,
+          "unknownCompactionSummaryAbsorbedDcpCheckpointCount": 0,
+          "dcpSummaryAbsorbedUnknownCompactionCount": 0,
+          "attribution": "a compaction/summary without DCP checkpoint metadata or an in-band compress tool call is classified unknown, not native"
+        },
+        "sourceKindsInDcpRanges": {},
+        "sourceFormsInDcpRanges": {},
+        "allUserMessageSourceKinds": {
+          "other-kind": 37,
+          "user": 10
+        },
+        "allUserMessageSourceForms": {
+          "missing": 46,
+          "other-form": 1
+        },
+        "userMessageWrapperAndMetadataShapes": {
+          "direct-content/other-kind/no-recognized-meta-field": 33,
+          "direct-content/user/no-recognized-meta-field": 10,
+          "direct-content/other-kind/source-dcp-field": 4
+        },
+        "surfaceOperationFieldShapes": {
+          "append": 98,
+          "sourceEventSeqs-missing": 43,
+          "sourceEventSeqs-present": 62,
+          "replace": 7
+        },
+        "userMessageDataDcpFieldKeys": {
+          "v": 4,
+          "kind": 4,
+          "blockRef": 4,
+          "mode": 4,
+          "topic": 4,
+          "startRef": 4,
+          "endRef": 4,
+          "authorMessageId": 4,
+          "compressCallId": 4,
+          "consumedBlockRefs": 4,
+          "protectedKinds": 4
+        },
+        "structurallyIdentifiedLegacyCheckpoints": {
+          "sourceDcpFieldObjects": 4,
+          "structurallyValidV1Metadata": 4,
+          "acceptedByCurrentDecoder": 0,
+          "rejectedByCurrentDecoderBecauseSourceKindDiffers": 4,
+          "compactionIdPresent": 4,
+          "pairedCompactionSummaryEvents": 4,
+          "exactSummaryTextMatches": 4,
+          "matchingCompressCallIds": 4,
+          "matchingSubmittedRanges": 4,
+          "uniqueCompressCallsWithCheckpoint": 3,
+          "nestedCheckpointCount": 0,
+          "consumedBlockRefs": 0,
+          "checkpointTextCharsMedian": 3272.5,
+          "appendixTextCharsMedian": 0,
+          "hostRecordedShadowedTokenCountSum": 10903,
+          "currentMeterOutputHeuristicTokensSum": 3692,
+          "crossVersionNetHeuristicTokensSum": 7211,
+          "tokenMetricPairs": 4,
+          "tokenMetricCaveat": "input is persisted host shadowedTokenCount; output is current token-meter estimate of a text-identical checkpoint; neither is provider API usage, and host/DCP build version is unknown"
+        },
+        "sourceKindsInLegacyCompressedRanges": {
+          "other-kind": 10,
+          "user": 4
+        },
+        "sourceFormsInLegacyCompressedRanges": {
+          "missing": 13,
+          "other-form": 1
+        },
+        "uniqueUserMessagesInLegacyCompressedRanges": 14,
+        "uniqueSubagentSourceEventsInLegacyCompressedRanges": {},
+        "dcpMetadataKeyPaths": {
+          "other.metadata-field": 1,
+          "source.dcp-field": 4
+        },
+        "legacyCompactionCorrelation": {
+          "compressCallsWithInBandCompactionSummary": 3,
+          "pairedCompactionSummaries": 4,
+          "checkpointMessageDcpFieldRecognizedByCurrentDecoder": 0,
+          "checkpointMessageDcpFieldPresentButNotRecognizedByCurrentDecoder": 4,
+          "checkpointMessageWithoutRecognizedDcpField": 0,
+          "checkpointLikeMessagesInCompressInterval": 4,
+          "checkpointSourceKinds": {
+            "other-kind": 8
+          },
+          "correlatedCompactionSummaryEventTextCharsMedian": 3272.5,
+          "correlatedCompactionSummaryEventTextCharsP90": 3597,
+          "summaryAppendixCharsMedian": 0,
+          "nestedBlockBoundaryRefs": 0,
+          "hostRecordedShadowedTokenCountSum": 10903,
+          "netSavedTokens": null,
+          "netSavedReason": "checkpoint source is not recognized well enough to pair output token price; no net-savings claim emitted",
+          "subagentSourceKindFormCounts": {},
+          "subagentFormsMatchingCurrentProtectedSources": 0,
+          "subagentFormsNotMatchingCurrentProtectedSources": 0,
+          "subagentVerbatimOccurrencesInsideMatchedCheckpoint": 0,
+          "subagentProtectedAppendixMarkers": 0
+        },
+        "subagentSourceAudit": {
+          "sourceKindFormCounts": {},
+          "protectedByCurrentSourceFormRule": 0,
+          "notProtectedByCurrentSourceFormRule": 0,
+          "verbatimOccurrencesInsideCheckpoint": 0,
+          "caveat": "absence from the protected appendix is not evidence that a fact was lost; content was not exported"
+        },
+        "dcpStructureFamilies": {
+          "inlineCleanup": 0,
+          "storedPointer": 11,
+          "cleanup": 0,
+          "dcpCustomEvents": 0,
+          "oldCheckpointShape": 0
+        },
+        "runCodeParenting": {
+          "calls": 0,
+          "compressMentions": 0,
+          "compressErrors": 0,
+          "ptcDispatchEvents": 0,
+          "codeDispatchEvents": 0,
+          "parentKinds": {},
+          "compressNativeCallCount": 4,
+          "compressParentCallCount": 0
+        },
+        "selectedTraceBytes": 876093,
+        "selectedTraceUncompressedBytes": 1883119
+      },
+      "cohort": "dcp-repository-project"
+    },
+    {
+      "sessionHash": "f1ec44916eb4e1b62c26",
+      "headerVersion": 0,
+      "fileFamily": "base",
+      "sessionComplete": true,
+      "dcpPresence": {
+        "hasDcpPresence": true,
+        "hasConfirmedCompression": true,
+        "hasExecutedNativeCompressCall": true,
+        "hasDcpCompactionSummaryMetadata": false,
+        "hasLegacyInBandCompactionSummary": true,
+        "hasDcpSourceMarker": false,
+        "footprintOnlyStoredPointer": false
+      },
+      "eventCounts": {
+        "permission/preset": 1,
+        "sandbox/mode": 1,
+        "approval/policy": 1,
+        "agent/inbox/spliced": 8,
+        "turn/start": 4,
+        "step/start": 20,
+        "user/message": 27,
+        "session/title": 2,
+        "request/header": 4,
+        "request/context": 1,
+        "session/title-llm-request": 1,
+        "unknown-event-type": 27560,
+        "assistant/message": 21,
+        "tool/call": 19,
+        "tool/result": 19,
+        "step/end": 20,
+        "turn/end": 4,
+        "compaction/start": 2,
+        "compaction/summary": 2,
+        "compaction/end": 2,
+        "compaction/prune": 1
+      },
+      "dcpEventCounts": {
+        "user/message": 27,
+        "assistant/message": 21,
+        "tool/call": 19,
+        "tool/result": 19,
+        "compaction/start": 2,
+        "compaction/summary": 2,
+        "compaction/end": 2,
+        "compaction/prune": 1
+      },
+      "dcp": {
+        "nativeCompressCalls": 1,
+        "matchedNativeCompressResults": 1,
+        "submittedAssistantMessageEventsWithCompressBlock": 2,
+        "uniqueSubmittedCompressCallIds": 1,
+        "executedCompressCallIds": 1,
+        "executedCompressCallIdsWithAppendAuthor": 1,
+        "executedCompressCallIdsWithReplacementAuthor": 1,
+        "executedCallIdsWithBothAppendAndReplacementAuthor": 1,
+        "assistantAuthorCallIdsWithoutExecution": 0,
+        "callIdsWithoutAssistantAuthor": 0,
+        "callDiagnostics": {
+          "unparseableArguments": 0,
+          "missingResult": 0,
+          "noAssistantAuthorMatch": 0
+        },
+        "dcpSummaryCheckpoints": 0,
+        "resultStatusCounts": {
+          "unknown": 1
+        },
+        "resultCodeCounts": {},
+        "checkpointCommitCoverage": {
+          "allSubmittedRangesHaveCheckpoint": 1,
+          "someSubmittedRangesHaveCheckpoint": 0,
+          "noRangeCheckpointObserved": 0,
+          "unparseableOrEmptyArguments": 0,
+          "submittedRangeCount": 2,
+          "checkpointedRangeCount": 2,
+          "caveat": "inferred only from structurally valid source.dcp metadata matched by compressCallId and refs; calls with no checkpoint are unknown, not labeled rejected"
+        },
+        "resultMetrics": {
+          "missingResults": 0,
+          "isErrorFlags": 0,
+          "textLengthMedianChars": 0,
+          "contentBlockTypes": {
+            "other": 1
+          },
+          "statusPatternCounts": {
+            "unknown": 1,
+            "empty-result-text": 1
+          }
+        },
+        "executedAuthorPayloadMetrics": {
+          "uniqueSelectedAuthorMessages": 1,
+          "distinctExecutedCompressCallIds": 1,
+          "uniqueAuthorMessagesContainingReasoning": 1,
+          "uniqueAuthorMessagesContainingText": 0,
+          "reasoningCharsMedian": 21363,
+          "reasoningCharsP90": 21363,
+          "assistantTextCharsMedian": 0,
+          "toolArgumentCharsMedian": 3163,
+          "authorMessageHeuristicTokensMedian": 6146,
+          "caveat": "length/token estimates only; reasoning and tool arguments were never exported"
+        },
+        "refLengthCounts": {
+          "start:<8": 2,
+          "end:<8": 2
+        },
+        "refKindCounts": {
+          "start:message": 2,
+          "end:message": 2
+        },
+        "refDistanceBuckets": {
+          "<8": 2
+        },
+        "submittedSummaryLengthChars": {
+          "count": 2,
+          "median": 1504.5,
+          "p90": 1427
+        },
+        "checkpointLengthChars": {
+          "count": 0,
+          "median": null,
+          "p90": null
+        },
+        "tokenHeuristic": {
+          "method": "persisted compaction/summary.shadowedTokenCount for input; current dsh-token-meter estimateMessage for checkpoint; both estimates, not provider API usage",
+          "matchedCheckpointPairs": 0,
+          "inputTokensSum": 0,
+          "outputTokensSum": 0,
+          "netSavedTokensSum": 0,
+          "negativeNetSavedCount": 0
+        },
+        "nestedAppendix": {
+          "nestedCheckpointCount": 0,
+          "consumedBlockRefs": 0,
+          "checkpointCharsMedian": null,
+          "appendixCharsMedian": null,
+          "growthOutsideAppendixCharsMedian": null
+        },
+        "cleanup": {
+          "submittedAssistantMessageEventsWithCompress": 2,
+          "uniqueSubmittedCompressCallIds": 1,
+          "executedCompressCallIds": 1,
+          "executedCompressCallIdsWithAppendAuthor": 1,
+          "executedCompressCallIdsWithReplacementAuthor": 1,
+          "executedCallIdsWithBothAppendAndReplacementAuthor": 1,
+          "executedCallIdsWithNoAssistantAuthor": 0,
+          "assistantAuthorCallIdsWithoutExecution": 0,
+          "pureCompressExecutedCallIds": 0,
+          "mixedTextExecutedCallIds": 0,
+          "mixedReasoningExecutedCallIds": 1,
+          "mixedOtherExecutedCallIds": 0,
+          "pairedComplete": 0,
+          "observedByLaterClosedAssistant": 0,
+          "contiguousSurfaceAtObservation": 0,
+          "estimatedPositiveSavings": 0,
+          "recordedCurrentCleanupCallIds": 0,
+          "missingSurfaceProjection": true,
+          "recordedRateAmongPureCompress": null,
+          "estimatedPositiveSavingsRateAmongObservedContiguous": null,
+          "inputMessageTokensMedian": null,
+          "predictedCleanupMessageTokensMedian": null
+        },
+        "nativeCompactionOrder": {
+          "dcpSummaryEventCount": 2,
+          "unknownCompactionSummaryEventCount": 0,
+          "directlyNamedNativeCompactionToolCalls": 0,
+          "dcpAfterAtLeastOneUnknownCompaction": 0,
+          "unknownCompactionAfterAtLeastOneDcp": 0,
+          "unknownCompactionSummaryAbsorbedDcpCheckpointCount": 0,
+          "dcpSummaryAbsorbedUnknownCompactionCount": 0,
+          "attribution": "a compaction/summary without DCP checkpoint metadata or an in-band compress tool call is classified unknown, not native"
+        },
+        "sourceKindsInDcpRanges": {},
+        "sourceFormsInDcpRanges": {},
+        "allUserMessageSourceKinds": {
+          "other-kind": 23,
+          "user": 4
+        },
+        "allUserMessageSourceForms": {
+          "missing": 26,
+          "other-form": 1
+        },
+        "userMessageWrapperAndMetadataShapes": {
+          "direct-content/other-kind/no-recognized-meta-field": 21,
+          "direct-content/user/no-recognized-meta-field": 4,
+          "direct-content/other-kind/source-dcp-field": 2
+        },
+        "surfaceOperationFieldShapes": {
+          "append": 64,
+          "sourceEventSeqs-missing": 25,
+          "sourceEventSeqs-present": 42,
+          "replace": 3
+        },
+        "userMessageDataDcpFieldKeys": {
+          "v": 2,
+          "kind": 2,
+          "blockRef": 2,
+          "mode": 2,
+          "topic": 2,
+          "startRef": 2,
+          "endRef": 2,
+          "authorMessageId": 2,
+          "compressCallId": 2,
+          "consumedBlockRefs": 2,
+          "protectedKinds": 2
+        },
+        "structurallyIdentifiedLegacyCheckpoints": {
+          "sourceDcpFieldObjects": 2,
+          "structurallyValidV1Metadata": 2,
+          "acceptedByCurrentDecoder": 0,
+          "rejectedByCurrentDecoderBecauseSourceKindDiffers": 2,
+          "compactionIdPresent": 2,
+          "pairedCompactionSummaryEvents": 2,
+          "exactSummaryTextMatches": 2,
+          "matchingCompressCallIds": 2,
+          "matchingSubmittedRanges": 2,
+          "uniqueCompressCallsWithCheckpoint": 1,
+          "nestedCheckpointCount": 0,
+          "consumedBlockRefs": 0,
+          "checkpointTextCharsMedian": 1575.5,
+          "appendixTextCharsMedian": 0,
+          "hostRecordedShadowedTokenCountSum": 4927,
+          "currentMeterOutputHeuristicTokensSum": 805,
+          "crossVersionNetHeuristicTokensSum": 4122,
+          "tokenMetricPairs": 2,
+          "tokenMetricCaveat": "input is persisted host shadowedTokenCount; output is current token-meter estimate of a text-identical checkpoint; neither is provider API usage, and host/DCP build version is unknown"
+        },
+        "sourceKindsInLegacyCompressedRanges": {
+          "other-kind": 8,
+          "user": 2
+        },
+        "sourceFormsInLegacyCompressedRanges": {
+          "missing": 9,
+          "other-form": 1
+        },
+        "uniqueUserMessagesInLegacyCompressedRanges": 10,
+        "uniqueSubagentSourceEventsInLegacyCompressedRanges": {},
+        "dcpMetadataKeyPaths": {
+          "other.metadata-field": 1,
+          "source.dcp-field": 2
+        },
+        "legacyCompactionCorrelation": {
+          "compressCallsWithInBandCompactionSummary": 1,
+          "pairedCompactionSummaries": 2,
+          "checkpointMessageDcpFieldRecognizedByCurrentDecoder": 0,
+          "checkpointMessageDcpFieldPresentButNotRecognizedByCurrentDecoder": 2,
+          "checkpointMessageWithoutRecognizedDcpField": 0,
+          "checkpointLikeMessagesInCompressInterval": 2,
+          "checkpointSourceKinds": {
+            "other-kind": 4
+          },
+          "correlatedCompactionSummaryEventTextCharsMedian": 1575.5,
+          "correlatedCompactionSummaryEventTextCharsP90": 1498,
+          "summaryAppendixCharsMedian": 0,
+          "nestedBlockBoundaryRefs": 0,
+          "hostRecordedShadowedTokenCountSum": 4927,
+          "netSavedTokens": null,
+          "netSavedReason": "checkpoint source is not recognized well enough to pair output token price; no net-savings claim emitted",
+          "subagentSourceKindFormCounts": {},
+          "subagentFormsMatchingCurrentProtectedSources": 0,
+          "subagentFormsNotMatchingCurrentProtectedSources": 0,
+          "subagentVerbatimOccurrencesInsideMatchedCheckpoint": 0,
+          "subagentProtectedAppendixMarkers": 0
+        },
+        "subagentSourceAudit": {
+          "sourceKindFormCounts": {},
+          "protectedByCurrentSourceFormRule": 0,
+          "notProtectedByCurrentSourceFormRule": 0,
+          "verbatimOccurrencesInsideCheckpoint": 0,
+          "caveat": "absence from the protected appendix is not evidence that a fact was lost; content was not exported"
+        },
+        "dcpStructureFamilies": {
+          "inlineCleanup": 0,
+          "storedPointer": 3,
+          "cleanup": 0,
+          "dcpCustomEvents": 0,
+          "oldCheckpointShape": 0
+        },
+        "runCodeParenting": {
+          "calls": 0,
+          "compressMentions": 0,
+          "compressErrors": 0,
+          "ptcDispatchEvents": 0,
+          "codeDispatchEvents": 0,
+          "parentKinds": {},
+          "compressNativeCallCount": 1,
+          "compressParentCallCount": 0
+        },
+        "selectedTraceBytes": 474080,
+        "selectedTraceUncompressedBytes": 1072117
+      },
+      "cohort": "dcp-repository-project"
+    },
+    {
+      "sessionHash": "0068db5ae7556fad31ea",
+      "headerVersion": 0,
+      "fileFamily": "base",
+      "sessionComplete": true,
+      "dcpPresence": {
+        "hasDcpPresence": true,
+        "hasConfirmedCompression": true,
+        "hasExecutedNativeCompressCall": true,
+        "hasDcpCompactionSummaryMetadata": false,
+        "hasLegacyInBandCompactionSummary": true,
+        "hasDcpSourceMarker": false,
+        "footprintOnlyStoredPointer": false
+      },
+      "eventCounts": {
+        "permission/preset": 1,
+        "sandbox/mode": 1,
+        "approval/policy": 1,
+        "agent-preset/selected": 1,
+        "agent/inbox/spliced": 10,
+        "turn/start": 4,
+        "step/start": 46,
+        "user/message": 54,
+        "session/title": 2,
+        "request/header": 2,
+        "request/context": 1,
+        "session/title-llm-request": 1,
+        "unknown-event-type": 33775,
+        "assistant/message": 47,
+        "step/end": 46,
+        "turn/end": 4,
+        "tool/call": 60,
+        "tool/result": 60,
+        "compaction/start": 1,
+        "compaction/summary": 1,
+        "compaction/end": 1,
+        "compaction/prune": 1
+      },
+      "dcpEventCounts": {
+        "user/message": 54,
+        "assistant/message": 47,
+        "tool/call": 60,
+        "tool/result": 60,
+        "compaction/start": 1,
+        "compaction/summary": 1,
+        "compaction/end": 1,
+        "compaction/prune": 1
+      },
+      "dcp": {
+        "nativeCompressCalls": 4,
+        "matchedNativeCompressResults": 4,
+        "submittedAssistantMessageEventsWithCompressBlock": 5,
+        "uniqueSubmittedCompressCallIds": 4,
+        "executedCompressCallIds": 4,
+        "executedCompressCallIdsWithAppendAuthor": 4,
+        "executedCompressCallIdsWithReplacementAuthor": 1,
+        "executedCallIdsWithBothAppendAndReplacementAuthor": 1,
+        "assistantAuthorCallIdsWithoutExecution": 0,
+        "callIdsWithoutAssistantAuthor": 0,
+        "callDiagnostics": {
+          "unparseableArguments": 0,
+          "missingResult": 0,
+          "noAssistantAuthorMatch": 0
+        },
+        "dcpSummaryCheckpoints": 0,
+        "resultStatusCounts": {
+          "unknown": 4
+        },
+        "resultCodeCounts": {},
+        "checkpointCommitCoverage": {
+          "allSubmittedRangesHaveCheckpoint": 1,
+          "someSubmittedRangesHaveCheckpoint": 0,
+          "noRangeCheckpointObserved": 3,
+          "unparseableOrEmptyArguments": 0,
+          "submittedRangeCount": 4,
+          "checkpointedRangeCount": 1,
+          "caveat": "inferred only from structurally valid source.dcp metadata matched by compressCallId and refs; calls with no checkpoint are unknown, not labeled rejected"
+        },
+        "resultMetrics": {
+          "missingResults": 0,
+          "isErrorFlags": 0,
+          "textLengthMedianChars": 0,
+          "contentBlockTypes": {
+            "other": 4
+          },
+          "statusPatternCounts": {
+            "unknown": 4,
+            "empty-result-text": 4
+          }
+        },
+        "executedAuthorPayloadMetrics": {
+          "uniqueSelectedAuthorMessages": 4,
+          "distinctExecutedCompressCallIds": 4,
+          "uniqueAuthorMessagesContainingReasoning": 4,
+          "uniqueAuthorMessagesContainingText": 4,
+          "reasoningCharsMedian": 1852.5,
+          "reasoningCharsP90": 1859,
+          "assistantTextCharsMedian": 56,
+          "toolArgumentCharsMedian": 485,
+          "authorMessageHeuristicTokensMedian": 596.5,
+          "caveat": "length/token estimates only; reasoning and tool arguments were never exported"
+        },
+        "refLengthCounts": {
+          "start:<8": 4,
+          "end:<8": 4
+        },
+        "refKindCounts": {
+          "start:message": 4,
+          "end:message": 4
+        },
+        "refDistanceBuckets": {
+          "32-63": 1,
+          "<8": 3
+        },
+        "submittedSummaryLengthChars": {
+          "count": 4,
+          "median": 402.5,
+          "p90": 423
+        },
+        "checkpointLengthChars": {
+          "count": 0,
+          "median": null,
+          "p90": null
+        },
+        "tokenHeuristic": {
+          "method": "persisted compaction/summary.shadowedTokenCount for input; current dsh-token-meter estimateMessage for checkpoint; both estimates, not provider API usage",
+          "matchedCheckpointPairs": 0,
+          "inputTokensSum": 0,
+          "outputTokensSum": 0,
+          "netSavedTokensSum": 0,
+          "negativeNetSavedCount": 0
+        },
+        "nestedAppendix": {
+          "nestedCheckpointCount": 0,
+          "consumedBlockRefs": 0,
+          "checkpointCharsMedian": null,
+          "appendixCharsMedian": null,
+          "growthOutsideAppendixCharsMedian": null
+        },
+        "cleanup": {
+          "submittedAssistantMessageEventsWithCompress": 5,
+          "uniqueSubmittedCompressCallIds": 4,
+          "executedCompressCallIds": 4,
+          "executedCompressCallIdsWithAppendAuthor": 4,
+          "executedCompressCallIdsWithReplacementAuthor": 1,
+          "executedCallIdsWithBothAppendAndReplacementAuthor": 1,
+          "executedCallIdsWithNoAssistantAuthor": 0,
+          "assistantAuthorCallIdsWithoutExecution": 0,
+          "pureCompressExecutedCallIds": 0,
+          "mixedTextExecutedCallIds": 4,
+          "mixedReasoningExecutedCallIds": 4,
+          "mixedOtherExecutedCallIds": 0,
+          "pairedComplete": 0,
+          "observedByLaterClosedAssistant": 0,
+          "contiguousSurfaceAtObservation": 0,
+          "estimatedPositiveSavings": 0,
+          "recordedCurrentCleanupCallIds": 0,
+          "missingSurfaceProjection": true,
+          "recordedRateAmongPureCompress": null,
+          "estimatedPositiveSavingsRateAmongObservedContiguous": null,
+          "inputMessageTokensMedian": null,
+          "predictedCleanupMessageTokensMedian": null
+        },
+        "nativeCompactionOrder": {
+          "dcpSummaryEventCount": 1,
+          "unknownCompactionSummaryEventCount": 0,
+          "directlyNamedNativeCompactionToolCalls": 0,
+          "dcpAfterAtLeastOneUnknownCompaction": 0,
+          "unknownCompactionAfterAtLeastOneDcp": 0,
+          "unknownCompactionSummaryAbsorbedDcpCheckpointCount": 0,
+          "dcpSummaryAbsorbedUnknownCompactionCount": 0,
+          "attribution": "a compaction/summary without DCP checkpoint metadata or an in-band compress tool call is classified unknown, not native"
+        },
+        "sourceKindsInDcpRanges": {},
+        "sourceFormsInDcpRanges": {},
+        "allUserMessageSourceKinds": {
+          "other-kind": 50,
+          "user": 4
+        },
+        "allUserMessageSourceForms": {
+          "missing": 51,
+          "instructions": 1,
+          "snapshot": 1,
+          "notice": 1
+        },
+        "userMessageWrapperAndMetadataShapes": {
+          "direct-content/other-kind/no-recognized-meta-field": 49,
+          "direct-content/user/no-recognized-meta-field": 4,
+          "direct-content/other-kind/source-dcp-field": 1
+        },
+        "surfaceOperationFieldShapes": {
+          "append": 159,
+          "sourceEventSeqs-missing": 53,
+          "sourceEventSeqs-present": 108,
+          "replace": 2
+        },
+        "userMessageDataDcpFieldKeys": {
+          "v": 1,
+          "kind": 1,
+          "blockRef": 1,
+          "mode": 1,
+          "topic": 1,
+          "startRef": 1,
+          "endRef": 1,
+          "authorMessageId": 1,
+          "compressCallId": 1,
+          "consumedBlockRefs": 1,
+          "protectedKinds": 1
+        },
+        "structurallyIdentifiedLegacyCheckpoints": {
+          "sourceDcpFieldObjects": 1,
+          "structurallyValidV1Metadata": 1,
+          "acceptedByCurrentDecoder": 0,
+          "rejectedByCurrentDecoderBecauseSourceKindDiffers": 1,
+          "compactionIdPresent": 1,
+          "pairedCompactionSummaryEvents": 1,
+          "exactSummaryTextMatches": 1,
+          "matchingCompressCallIds": 1,
+          "matchingSubmittedRanges": 1,
+          "uniqueCompressCallsWithCheckpoint": 1,
+          "nestedCheckpointCount": 0,
+          "consumedBlockRefs": 0,
+          "checkpointTextCharsMedian": 316,
+          "appendixTextCharsMedian": 0,
+          "hostRecordedShadowedTokenCountSum": 353,
+          "currentMeterOutputHeuristicTokensSum": 87,
+          "crossVersionNetHeuristicTokensSum": 266,
+          "tokenMetricPairs": 1,
+          "tokenMetricCaveat": "input is persisted host shadowedTokenCount; output is current token-meter estimate of a text-identical checkpoint; neither is provider API usage, and host/DCP build version is unknown"
+        },
+        "sourceKindsInLegacyCompressedRanges": {
+          "other-kind": 1,
+          "user": 1
+        },
+        "sourceFormsInLegacyCompressedRanges": {
+          "missing": 2
+        },
+        "uniqueUserMessagesInLegacyCompressedRanges": 2,
+        "uniqueSubagentSourceEventsInLegacyCompressedRanges": {},
+        "dcpMetadataKeyPaths": {
+          "other.metadata-field": 15,
+          "source.dcp-field": 1
+        },
+        "legacyCompactionCorrelation": {
+          "compressCallsWithInBandCompactionSummary": 1,
+          "pairedCompactionSummaries": 1,
+          "checkpointMessageDcpFieldRecognizedByCurrentDecoder": 0,
+          "checkpointMessageDcpFieldPresentButNotRecognizedByCurrentDecoder": 1,
+          "checkpointMessageWithoutRecognizedDcpField": 0,
+          "checkpointLikeMessagesInCompressInterval": 1,
+          "checkpointSourceKinds": {
+            "other-kind": 2
+          },
+          "correlatedCompactionSummaryEventTextCharsMedian": 316,
+          "correlatedCompactionSummaryEventTextCharsP90": 316,
+          "summaryAppendixCharsMedian": 0,
+          "nestedBlockBoundaryRefs": 0,
+          "hostRecordedShadowedTokenCountSum": 353,
+          "netSavedTokens": null,
+          "netSavedReason": "checkpoint source is not recognized well enough to pair output token price; no net-savings claim emitted",
+          "subagentSourceKindFormCounts": {},
+          "subagentFormsMatchingCurrentProtectedSources": 0,
+          "subagentFormsNotMatchingCurrentProtectedSources": 0,
+          "subagentVerbatimOccurrencesInsideMatchedCheckpoint": 0,
+          "subagentProtectedAppendixMarkers": 0
+        },
+        "subagentSourceAudit": {
+          "sourceKindFormCounts": {},
+          "protectedByCurrentSourceFormRule": 0,
+          "notProtectedByCurrentSourceFormRule": 0,
+          "verbatimOccurrencesInsideCheckpoint": 0,
+          "caveat": "absence from the protected appendix is not evidence that a fact was lost; content was not exported"
+        },
+        "dcpStructureFamilies": {
+          "inlineCleanup": 0,
+          "storedPointer": 4,
+          "cleanup": 0,
+          "dcpCustomEvents": 0,
+          "oldCheckpointShape": 0
+        },
+        "runCodeParenting": {
+          "calls": 0,
+          "compressMentions": 0,
+          "compressErrors": 0,
+          "ptcDispatchEvents": 0,
+          "codeDispatchEvents": 0,
+          "parentKinds": {},
+          "compressNativeCallCount": 4,
+          "compressParentCallCount": 0
+        },
+        "selectedTraceBytes": 562763,
+        "selectedTraceUncompressedBytes": 1416943
+      },
+      "cohort": "dcp-repository-project"
+    },
+    {
+      "sessionHash": "50e22c762cb5662822a8",
+      "headerVersion": 0,
+      "fileFamily": "base",
+      "sessionComplete": true,
+      "dcpPresence": {
+        "hasDcpPresence": true,
+        "hasConfirmedCompression": true,
+        "hasExecutedNativeCompressCall": true,
+        "hasDcpCompactionSummaryMetadata": false,
+        "hasLegacyInBandCompactionSummary": false,
+        "hasDcpSourceMarker": false,
+        "footprintOnlyStoredPointer": false
+      },
+      "eventCounts": {
+        "subagent/descriptor": 1,
+        "session/end-seed": 1,
+        "sandbox/mode": 1,
+        "approval/policy": 1,
+        "permission/preset": 1,
+        "agent/inbox/spliced": 2,
+        "turn/start": 1,
+        "step/start": 223,
+        "user/message": 225,
+        "session/title": 1,
+        "request/header": 2,
+        "request/context": 1,
+        "unknown-event-type": 84798,
+        "assistant/message": 223,
+        "tool/call": 235,
+        "tool/result": 235,
+        "step/end": 223,
+        "turn/end": 1
+      },
+      "dcpEventCounts": {
+        "user/message": 225,
+        "assistant/message": 223,
+        "tool/call": 235,
+        "tool/result": 235
+      },
+      "dcp": {
+        "nativeCompressCalls": 2,
+        "matchedNativeCompressResults": 2,
+        "submittedAssistantMessageEventsWithCompressBlock": 2,
+        "uniqueSubmittedCompressCallIds": 2,
+        "executedCompressCallIds": 2,
+        "executedCompressCallIdsWithAppendAuthor": 2,
+        "executedCompressCallIdsWithReplacementAuthor": 0,
+        "executedCallIdsWithBothAppendAndReplacementAuthor": 0,
+        "assistantAuthorCallIdsWithoutExecution": 0,
+        "callIdsWithoutAssistantAuthor": 0,
+        "callDiagnostics": {
+          "unparseableArguments": 0,
+          "missingResult": 0,
+          "noAssistantAuthorMatch": 0
+        },
+        "dcpSummaryCheckpoints": 0,
+        "resultStatusCounts": {
+          "unknown": 2
+        },
+        "resultCodeCounts": {},
+        "checkpointCommitCoverage": {
+          "allSubmittedRangesHaveCheckpoint": 0,
+          "someSubmittedRangesHaveCheckpoint": 0,
+          "noRangeCheckpointObserved": 2,
+          "unparseableOrEmptyArguments": 0,
+          "submittedRangeCount": 2,
+          "checkpointedRangeCount": 0,
+          "caveat": "inferred only from structurally valid source.dcp metadata matched by compressCallId and refs; calls with no checkpoint are unknown, not labeled rejected"
+        },
+        "resultMetrics": {
+          "missingResults": 0,
+          "isErrorFlags": 0,
+          "textLengthMedianChars": 0,
+          "contentBlockTypes": {
+            "other": 2
+          },
+          "statusPatternCounts": {
+            "unknown": 2,
+            "empty-result-text": 2
+          }
+        },
+        "executedAuthorPayloadMetrics": {
+          "uniqueSelectedAuthorMessages": 2,
+          "distinctExecutedCompressCallIds": 2,
+          "uniqueAuthorMessagesContainingReasoning": 2,
+          "uniqueAuthorMessagesContainingText": 0,
+          "reasoningCharsMedian": 1781.5,
+          "reasoningCharsP90": 243,
+          "assistantTextCharsMedian": 0,
+          "toolArgumentCharsMedian": 2663.5,
+          "authorMessageHeuristicTokensMedian": 1126,
+          "caveat": "length/token estimates only; reasoning and tool arguments were never exported"
+        },
+        "refLengthCounts": {
+          "start:<8": 2,
+          "end:<8": 2
+        },
+        "refKindCounts": {
+          "start:message": 2,
+          "end:message": 2
+        },
+        "refDistanceBuckets": {
+          "128-255": 2
+        },
+        "submittedSummaryLengthChars": {
+          "count": 2,
+          "median": 2519,
+          "p90": 1973
+        },
+        "checkpointLengthChars": {
+          "count": 0,
+          "median": null,
+          "p90": null
+        },
+        "tokenHeuristic": {
+          "method": "persisted compaction/summary.shadowedTokenCount for input; current dsh-token-meter estimateMessage for checkpoint; both estimates, not provider API usage",
+          "matchedCheckpointPairs": 0,
+          "inputTokensSum": 0,
+          "outputTokensSum": 0,
+          "netSavedTokensSum": 0,
+          "negativeNetSavedCount": 0
+        },
+        "nestedAppendix": {
+          "nestedCheckpointCount": 0,
+          "consumedBlockRefs": 0,
+          "checkpointCharsMedian": null,
+          "appendixCharsMedian": null,
+          "growthOutsideAppendixCharsMedian": null
+        },
+        "cleanup": {
+          "submittedAssistantMessageEventsWithCompress": 2,
+          "uniqueSubmittedCompressCallIds": 2,
+          "executedCompressCallIds": 2,
+          "executedCompressCallIdsWithAppendAuthor": 2,
+          "executedCompressCallIdsWithReplacementAuthor": 0,
+          "executedCallIdsWithBothAppendAndReplacementAuthor": 0,
+          "executedCallIdsWithNoAssistantAuthor": 0,
+          "assistantAuthorCallIdsWithoutExecution": 0,
+          "pureCompressExecutedCallIds": 0,
+          "mixedTextExecutedCallIds": 0,
+          "mixedReasoningExecutedCallIds": 2,
+          "mixedOtherExecutedCallIds": 0,
+          "pairedComplete": 0,
+          "observedByLaterClosedAssistant": 0,
+          "contiguousSurfaceAtObservation": 0,
+          "estimatedPositiveSavings": 0,
+          "recordedCurrentCleanupCallIds": 0,
+          "missingSurfaceProjection": false,
+          "recordedRateAmongPureCompress": null,
+          "estimatedPositiveSavingsRateAmongObservedContiguous": null,
+          "inputMessageTokensMedian": null,
+          "predictedCleanupMessageTokensMedian": null
+        },
+        "nativeCompactionOrder": {
+          "dcpSummaryEventCount": 0,
+          "unknownCompactionSummaryEventCount": 0,
+          "directlyNamedNativeCompactionToolCalls": 0,
+          "dcpAfterAtLeastOneUnknownCompaction": 0,
+          "unknownCompactionAfterAtLeastOneDcp": 0,
+          "unknownCompactionSummaryAbsorbedDcpCheckpointCount": 0,
+          "dcpSummaryAbsorbedUnknownCompactionCount": 0,
+          "attribution": "a compaction/summary without DCP checkpoint metadata or an in-band compress tool call is classified unknown, not native"
+        },
+        "sourceKindsInDcpRanges": {},
+        "sourceFormsInDcpRanges": {},
+        "allUserMessageSourceKinds": {
+          "other-kind": 224,
+          "user": 1
+        },
+        "allUserMessageSourceForms": {
+          "missing": 224,
+          "other-form": 1
+        },
+        "userMessageWrapperAndMetadataShapes": {
+          "direct-content/other-kind/no-recognized-meta-field": 224,
+          "direct-content/user/no-recognized-meta-field": 1
+        },
+        "surfaceOperationFieldShapes": {
+          "append": 683,
+          "sourceEventSeqs-missing": 225,
+          "sourceEventSeqs-present": 458
+        },
+        "userMessageDataDcpFieldKeys": {},
+        "structurallyIdentifiedLegacyCheckpoints": {
+          "sourceDcpFieldObjects": 0,
+          "structurallyValidV1Metadata": 0,
+          "acceptedByCurrentDecoder": 0,
+          "rejectedByCurrentDecoderBecauseSourceKindDiffers": 0,
+          "compactionIdPresent": 0,
+          "pairedCompactionSummaryEvents": 0,
+          "exactSummaryTextMatches": 0,
+          "matchingCompressCallIds": 0,
+          "matchingSubmittedRanges": 0,
+          "uniqueCompressCallsWithCheckpoint": 0,
+          "nestedCheckpointCount": 0,
+          "consumedBlockRefs": 0,
+          "checkpointTextCharsMedian": null,
+          "appendixTextCharsMedian": null,
+          "hostRecordedShadowedTokenCountSum": 0,
+          "currentMeterOutputHeuristicTokensSum": 0,
+          "crossVersionNetHeuristicTokensSum": 0,
+          "tokenMetricPairs": 0,
+          "tokenMetricCaveat": "input is persisted host shadowedTokenCount; output is current token-meter estimate of a text-identical checkpoint; neither is provider API usage, and host/DCP build version is unknown"
+        },
+        "sourceKindsInLegacyCompressedRanges": {},
+        "sourceFormsInLegacyCompressedRanges": {},
+        "uniqueUserMessagesInLegacyCompressedRanges": 0,
+        "uniqueSubagentSourceEventsInLegacyCompressedRanges": {},
+        "dcpMetadataKeyPaths": {
+          "other.metadata-field": 24
+        },
+        "legacyCompactionCorrelation": {
+          "compressCallsWithInBandCompactionSummary": 0,
+          "pairedCompactionSummaries": 0,
+          "checkpointMessageDcpFieldRecognizedByCurrentDecoder": 0,
+          "checkpointMessageDcpFieldPresentButNotRecognizedByCurrentDecoder": 0,
+          "checkpointMessageWithoutRecognizedDcpField": 0,
+          "checkpointLikeMessagesInCompressInterval": 0,
+          "checkpointSourceKinds": {},
+          "correlatedCompactionSummaryEventTextCharsMedian": null,
+          "correlatedCompactionSummaryEventTextCharsP90": null,
+          "summaryAppendixCharsMedian": null,
+          "nestedBlockBoundaryRefs": 0,
+          "hostRecordedShadowedTokenCountSum": 0,
+          "netSavedTokens": null,
+          "netSavedReason": "checkpoint source is not recognized well enough to pair output token price; no net-savings claim emitted",
+          "subagentSourceKindFormCounts": {},
+          "subagentFormsMatchingCurrentProtectedSources": 0,
+          "subagentFormsNotMatchingCurrentProtectedSources": 0,
+          "subagentVerbatimOccurrencesInsideMatchedCheckpoint": 0,
+          "subagentProtectedAppendixMarkers": 0
+        },
+        "subagentSourceAudit": {
+          "sourceKindFormCounts": {},
+          "protectedByCurrentSourceFormRule": 0,
+          "notProtectedByCurrentSourceFormRule": 0,
+          "verbatimOccurrencesInsideCheckpoint": 0,
+          "caveat": "absence from the protected appendix is not evidence that a fact was lost; content was not exported"
+        },
+        "dcpStructureFamilies": {
+          "inlineCleanup": 0,
+          "storedPointer": 0,
+          "cleanup": 0,
+          "dcpCustomEvents": 0,
+          "oldCheckpointShape": 0
+        },
+        "runCodeParenting": {
+          "calls": 0,
+          "compressMentions": 0,
+          "compressErrors": 0,
+          "ptcDispatchEvents": 0,
+          "codeDispatchEvents": 0,
+          "parentKinds": {},
+          "compressNativeCallCount": 2,
+          "compressParentCallCount": 0
+        },
+        "selectedTraceBytes": 1634402,
+        "selectedTraceUncompressedBytes": 3906435
+      },
+      "cohort": "cross-project-stratified-probe"
+    },
+    {
+      "sessionHash": "70d4482364d015e8b5d6",
+      "headerVersion": 0,
+      "fileFamily": "base",
+      "sessionComplete": true,
+      "dcpPresence": {
+        "hasDcpPresence": true,
+        "hasConfirmedCompression": true,
+        "hasExecutedNativeCompressCall": true,
+        "hasDcpCompactionSummaryMetadata": false,
+        "hasLegacyInBandCompactionSummary": true,
+        "hasDcpSourceMarker": false,
+        "footprintOnlyStoredPointer": false
+      },
+      "eventCounts": {
+        "permission/preset": 1,
+        "sandbox/mode": 1,
+        "approval/policy": 1,
+        "agent/inbox/spliced": 505,
+        "turn/start": 204,
+        "step/start": 1575,
+        "user/message": 1845,
+        "session/title": 2,
+        "request/header": 23,
+        "request/context": 1,
+        "session/title-llm-request": 1,
+        "unknown-event-type": 824602,
+        "assistant/message": 1582,
+        "tool/call": 1595,
+        "tool/result": 1688,
+        "step/end": 1575,
+        "turn/end": 200,
+        "goal/change": 5,
+        "compaction/prune": 104,
+        "compaction/start": 23,
+        "compaction/summary": 23,
+        "compaction/end": 23,
+        "todo/write": 15,
+        "session/end-seed": 2,
+        "llm/retry": 1,
+        "llm/retry-started": 1
+      },
+      "dcpEventCounts": {
+        "user/message": 1845,
+        "assistant/message": 1582,
+        "tool/call": 1595,
+        "tool/result": 1688,
+        "compaction/prune": 104,
+        "compaction/start": 23,
+        "compaction/summary": 23,
+        "compaction/end": 23
+      },
+      "dcp": {
+        "nativeCompressCalls": 25,
+        "matchedNativeCompressResults": 25,
+        "submittedAssistantMessageEventsWithCompressBlock": 36,
+        "uniqueSubmittedCompressCallIds": 25,
+        "executedCompressCallIds": 25,
+        "executedCompressCallIdsWithAppendAuthor": 25,
+        "executedCompressCallIdsWithReplacementAuthor": 11,
+        "executedCallIdsWithBothAppendAndReplacementAuthor": 11,
+        "assistantAuthorCallIdsWithoutExecution": 0,
+        "callIdsWithoutAssistantAuthor": 0,
+        "callDiagnostics": {
+          "unparseableArguments": 0,
+          "missingResult": 0,
+          "noAssistantAuthorMatch": 0
+        },
+        "dcpSummaryCheckpoints": 0,
+        "resultStatusCounts": {
+          "unknown": 25
+        },
+        "resultCodeCounts": {},
+        "checkpointCommitCoverage": {
+          "allSubmittedRangesHaveCheckpoint": 11,
+          "someSubmittedRangesHaveCheckpoint": 0,
+          "noRangeCheckpointObserved": 14,
+          "unparseableOrEmptyArguments": 0,
+          "submittedRangeCount": 48,
+          "checkpointedRangeCount": 22,
+          "caveat": "inferred only from structurally valid source.dcp metadata matched by compressCallId and refs; calls with no checkpoint are unknown, not labeled rejected"
+        },
+        "resultMetrics": {
+          "missingResults": 0,
+          "isErrorFlags": 0,
+          "textLengthMedianChars": 0,
+          "contentBlockTypes": {
+            "other": 25
+          },
+          "statusPatternCounts": {
+            "unknown": 25,
+            "empty-result-text": 25
+          }
+        },
+        "executedAuthorPayloadMetrics": {
+          "uniqueSelectedAuthorMessages": 25,
+          "distinctExecutedCompressCallIds": 25,
+          "uniqueAuthorMessagesContainingReasoning": 25,
+          "uniqueAuthorMessagesContainingText": 0,
+          "reasoningCharsMedian": 2417,
+          "reasoningCharsP90": 7159,
+          "assistantTextCharsMedian": 0,
+          "toolArgumentCharsMedian": 1505,
+          "authorMessageHeuristicTokensMedian": 1003,
+          "caveat": "length/token estimates only; reasoning and tool arguments were never exported"
+        },
+        "refLengthCounts": {
+          "start:<8": 48,
+          "end:<8": 48
+        },
+        "refKindCounts": {
+          "start:message": 44,
+          "end:message": 47,
+          "start:block": 4,
+          "end:block": 1
+        },
+        "refDistanceBuckets": {
+          "32-63": 25,
+          "256-511": 6,
+          "64-127": 5,
+          "16-31": 8,
+          "8-15": 1,
+          "<8": 1,
+          "512+": 2
+        },
+        "submittedSummaryLengthChars": {
+          "count": 48,
+          "median": 528,
+          "p90": 917
+        },
+        "checkpointLengthChars": {
+          "count": 0,
+          "median": null,
+          "p90": null
+        },
+        "tokenHeuristic": {
+          "method": "persisted compaction/summary.shadowedTokenCount for input; current dsh-token-meter estimateMessage for checkpoint; both estimates, not provider API usage",
+          "matchedCheckpointPairs": 0,
+          "inputTokensSum": 0,
+          "outputTokensSum": 0,
+          "netSavedTokensSum": 0,
+          "negativeNetSavedCount": 0
+        },
+        "nestedAppendix": {
+          "nestedCheckpointCount": 0,
+          "consumedBlockRefs": 0,
+          "checkpointCharsMedian": null,
+          "appendixCharsMedian": null,
+          "growthOutsideAppendixCharsMedian": null
+        },
+        "cleanup": {
+          "submittedAssistantMessageEventsWithCompress": 36,
+          "uniqueSubmittedCompressCallIds": 25,
+          "executedCompressCallIds": 25,
+          "executedCompressCallIdsWithAppendAuthor": 25,
+          "executedCompressCallIdsWithReplacementAuthor": 11,
+          "executedCallIdsWithBothAppendAndReplacementAuthor": 11,
+          "executedCallIdsWithNoAssistantAuthor": 0,
+          "assistantAuthorCallIdsWithoutExecution": 0,
+          "pureCompressExecutedCallIds": 0,
+          "mixedTextExecutedCallIds": 0,
+          "mixedReasoningExecutedCallIds": 25,
+          "mixedOtherExecutedCallIds": 0,
+          "pairedComplete": 0,
+          "observedByLaterClosedAssistant": 0,
+          "contiguousSurfaceAtObservation": 0,
+          "estimatedPositiveSavings": 0,
+          "recordedCurrentCleanupCallIds": 0,
+          "missingSurfaceProjection": true,
+          "recordedRateAmongPureCompress": null,
+          "estimatedPositiveSavingsRateAmongObservedContiguous": null,
+          "inputMessageTokensMedian": null,
+          "predictedCleanupMessageTokensMedian": null
+        },
+        "nativeCompactionOrder": {
+          "dcpSummaryEventCount": 22,
+          "unknownCompactionSummaryEventCount": 1,
+          "directlyNamedNativeCompactionToolCalls": 0,
+          "dcpAfterAtLeastOneUnknownCompaction": 21,
+          "unknownCompactionAfterAtLeastOneDcp": 1,
+          "unknownCompactionSummaryAbsorbedDcpCheckpointCount": 0,
+          "dcpSummaryAbsorbedUnknownCompactionCount": 0,
+          "attribution": "a compaction/summary without DCP checkpoint metadata or an in-band compress tool call is classified unknown, not native"
+        },
+        "sourceKindsInDcpRanges": {},
+        "sourceFormsInDcpRanges": {},
+        "allUserMessageSourceKinds": {
+          "other-kind": 1605,
+          "user": 117,
+          "subagent-report": 12,
+          "subagent-settled": 111
+        },
+        "allUserMessageSourceForms": {
+          "missing": 1721,
+          "other-form": 13,
+          "notice": 111
+        },
+        "userMessageWrapperAndMetadataShapes": {
+          "direct-content/other-kind/no-recognized-meta-field": 1583,
+          "direct-content/user/no-recognized-meta-field": 117,
+          "direct-content/other-kind/source-dcp-field": 22,
+          "direct-content/subagent-report/no-recognized-meta-field": 12,
+          "direct-content/subagent-settled/no-recognized-meta-field": 111
+        },
+        "surfaceOperationFieldShapes": {
+          "append": 4988,
+          "sourceEventSeqs-missing": 1822,
+          "sourceEventSeqs-present": 3293,
+          "replace": 127
+        },
+        "userMessageDataDcpFieldKeys": {
+          "v": 22,
+          "kind": 22,
+          "blockRef": 22,
+          "mode": 22,
+          "topic": 22,
+          "startRef": 22,
+          "endRef": 22,
+          "authorMessageId": 22,
+          "compressCallId": 22,
+          "consumedBlockRefs": 22,
+          "protectedKinds": 22
+        },
+        "structurallyIdentifiedLegacyCheckpoints": {
+          "sourceDcpFieldObjects": 22,
+          "structurallyValidV1Metadata": 22,
+          "acceptedByCurrentDecoder": 0,
+          "rejectedByCurrentDecoderBecauseSourceKindDiffers": 22,
+          "compactionIdPresent": 22,
+          "pairedCompactionSummaryEvents": 22,
+          "exactSummaryTextMatches": 22,
+          "matchingCompressCallIds": 22,
+          "matchingSubmittedRanges": 22,
+          "uniqueCompressCallsWithCheckpoint": 11,
+          "nestedCheckpointCount": 0,
+          "consumedBlockRefs": 0,
+          "checkpointTextCharsMedian": 893.5,
+          "appendixTextCharsMedian": 0,
+          "hostRecordedShadowedTokenCountSum": 1122931,
+          "currentMeterOutputHeuristicTokensSum": 5763,
+          "crossVersionNetHeuristicTokensSum": 1117168,
+          "tokenMetricPairs": 22,
+          "tokenMetricCaveat": "input is persisted host shadowedTokenCount; output is current token-meter estimate of a text-identical checkpoint; neither is provider API usage, and host/DCP build version is unknown"
+        },
+        "sourceKindsInLegacyCompressedRanges": {
+          "other-kind": 1236,
+          "user": 68,
+          "subagent-settled": 96,
+          "subagent-report": 8
+        },
+        "sourceFormsInLegacyCompressedRanges": {
+          "missing": 1303,
+          "other-form": 9,
+          "notice": 96
+        },
+        "uniqueUserMessagesInLegacyCompressedRanges": 1408,
+        "uniqueSubagentSourceEventsInLegacyCompressedRanges": {
+          "subagent-settled/notice": 96,
+          "subagent-report/other-form": 8
+        },
+        "dcpMetadataKeyPaths": {
+          "other.metadata-field": 179,
+          "source.dcp-field": 22
+        },
+        "legacyCompactionCorrelation": {
+          "compressCallsWithInBandCompactionSummary": 11,
+          "pairedCompactionSummaries": 22,
+          "checkpointMessageDcpFieldRecognizedByCurrentDecoder": 0,
+          "checkpointMessageDcpFieldPresentButNotRecognizedByCurrentDecoder": 22,
+          "checkpointMessageWithoutRecognizedDcpField": 0,
+          "checkpointLikeMessagesInCompressInterval": 22,
+          "checkpointSourceKinds": {
+            "other-kind": 44
+          },
+          "correlatedCompactionSummaryEventTextCharsMedian": 893.5,
+          "correlatedCompactionSummaryEventTextCharsP90": 1480,
+          "summaryAppendixCharsMedian": 0,
+          "nestedBlockBoundaryRefs": 0,
+          "hostRecordedShadowedTokenCountSum": 1122931,
+          "netSavedTokens": null,
+          "netSavedReason": "checkpoint source is not recognized well enough to pair output token price; no net-savings claim emitted",
+          "subagentSourceKindFormCounts": {
+            "subagent-settled/notice": 96,
+            "subagent-report/other-form": 8
+          },
+          "subagentFormsMatchingCurrentProtectedSources": 0,
+          "subagentFormsNotMatchingCurrentProtectedSources": 104,
+          "subagentVerbatimOccurrencesInsideMatchedCheckpoint": 0,
+          "subagentProtectedAppendixMarkers": 0
+        },
+        "subagentSourceAudit": {
+          "sourceKindFormCounts": {},
+          "protectedByCurrentSourceFormRule": 0,
+          "notProtectedByCurrentSourceFormRule": 0,
+          "verbatimOccurrencesInsideCheckpoint": 0,
+          "caveat": "absence from the protected appendix is not evidence that a fact was lost; content was not exported"
+        },
+        "dcpStructureFamilies": {
+          "inlineCleanup": 0,
+          "storedPointer": 0,
+          "cleanup": 0,
+          "dcpCustomEvents": 0,
+          "oldCheckpointShape": 0
+        },
+        "runCodeParenting": {
+          "calls": 0,
+          "compressMentions": 0,
+          "compressErrors": 0,
+          "ptcDispatchEvents": 0,
+          "codeDispatchEvents": 0,
+          "parentKinds": {},
+          "compressNativeCallCount": 25,
+          "compressParentCallCount": 0
+        },
+        "selectedTraceBytes": 14834453,
+        "selectedTraceUncompressedBytes": 33851149
+      },
+      "cohort": "cross-project-stratified-probe"
+    }
+  ],
+  "footprintOnlySessionHashes": [
+    "4a2645938ee937d72f89",
+    "0485bf6c3fe483e0caaf",
+    "34476891197b6c3cc5b8"
+  ],
+  "sampleAudits": [
+    {
+      "sessionHash": "4a2645938ee937d72f89",
+      "headerVersion": 0,
+      "cohort": "dcp-repository-project",
+      "dcpPresence": {
+        "hasDcpPresence": false,
+        "hasConfirmedCompression": false,
+        "hasExecutedNativeCompressCall": false,
+        "hasDcpCompactionSummaryMetadata": false,
+        "hasLegacyInBandCompactionSummary": false,
+        "hasDcpSourceMarker": false,
+        "footprintOnlyStoredPointer": true
+      },
+      "runCodeParenting": {
+        "calls": 0,
+        "compressMentions": 0,
+        "compressErrors": 0,
+        "ptcDispatchEvents": 0,
+        "codeDispatchEvents": 0,
+        "parentKinds": {},
+        "compressNativeCallCount": 0,
+        "compressParentCallCount": 0
+      },
+      "eventCounts": {
+        "permission/preset": 1,
+        "sandbox/mode": 4,
+        "approval/policy": 3,
+        "agent-preset/selected": 1,
+        "agent/inbox/spliced": 34,
+        "turn/start": 10,
+        "step/start": 231,
+        "user/message": 250,
+        "session/title": 2,
+        "request/header": 3,
+        "request/context": 1,
+        "session/title-llm-request": 1,
+        "unknown-event-type": 90628,
+        "assistant/message": 230,
+        "tool/call": 238,
+        "tool/result": 246,
+        "step/end": 231,
+        "turn/end": 10,
+        "goal/change": 4,
+        "todo/write": 4,
+        "session/end-seed": 1,
+        "command/run": 2,
+        "plan/mode": 2,
+        "command/done": 2,
+        "compaction/prune": 8
+      },
+      "nativeCompressCalls": 0,
+      "matchedNativeCompressResults": 0
+    },
+    {
+      "sessionHash": "d12108b4e9ad32ce3bd2",
+      "headerVersion": 0,
+      "cohort": "dcp-repository-project",
+      "dcpPresence": {
+        "hasDcpPresence": true,
+        "hasConfirmedCompression": true,
+        "hasExecutedNativeCompressCall": true,
+        "hasDcpCompactionSummaryMetadata": false,
+        "hasLegacyInBandCompactionSummary": true,
+        "hasDcpSourceMarker": false,
+        "footprintOnlyStoredPointer": false
+      },
+      "runCodeParenting": {
+        "calls": 0,
+        "compressMentions": 0,
+        "compressErrors": 0,
+        "ptcDispatchEvents": 0,
+        "codeDispatchEvents": 0,
+        "parentKinds": {},
+        "compressNativeCallCount": 3,
+        "compressParentCallCount": 0
+      },
+      "eventCounts": {
+        "permission/preset": 1,
+        "sandbox/mode": 1,
+        "approval/policy": 1,
+        "agent/inbox/spliced": 6,
+        "turn/start": 3,
+        "step/start": 11,
+        "user/message": 16,
+        "session/title": 2,
+        "request/header": 4,
+        "request/context": 1,
+        "session/title-llm-request": 1,
+        "unknown-event-type": 12180,
+        "assistant/message": 11,
+        "tool/call": 8,
+        "tool/result": 8,
+        "step/end": 10,
+        "turn/end": 2,
+        "compaction/start": 1,
+        "compaction/summary": 1,
+        "compaction/end": 1,
+        "compaction/prune": 1
+      },
+      "nativeCompressCalls": 3,
+      "matchedNativeCompressResults": 3
+    },
+    {
+      "sessionHash": "715fd85694ac1a9f9e49",
+      "headerVersion": 0,
+      "cohort": "dcp-repository-project",
+      "dcpPresence": {
+        "hasDcpPresence": false,
+        "hasConfirmedCompression": false,
+        "hasExecutedNativeCompressCall": false,
+        "hasDcpCompactionSummaryMetadata": false,
+        "hasLegacyInBandCompactionSummary": false,
+        "hasDcpSourceMarker": false,
+        "footprintOnlyStoredPointer": false
+      },
+      "runCodeParenting": {
+        "calls": 0,
+        "compressMentions": 0,
+        "compressErrors": 0,
+        "ptcDispatchEvents": 0,
+        "codeDispatchEvents": 0,
+        "parentKinds": {},
+        "compressNativeCallCount": 0,
+        "compressParentCallCount": 0
+      },
+      "eventCounts": {
+        "permission/preset": 1,
+        "sandbox/mode": 1,
+        "approval/policy": 1
+      },
+      "nativeCompressCalls": 0,
+      "matchedNativeCompressResults": 0
+    },
+    {
+      "sessionHash": "9f031066aae205993367",
+      "headerVersion": 0,
+      "cohort": "dcp-repository-project",
+      "dcpPresence": {
+        "hasDcpPresence": true,
+        "hasConfirmedCompression": true,
+        "hasExecutedNativeCompressCall": true,
+        "hasDcpCompactionSummaryMetadata": false,
+        "hasLegacyInBandCompactionSummary": true,
+        "hasDcpSourceMarker": false,
+        "footprintOnlyStoredPointer": false
+      },
+      "runCodeParenting": {
+        "calls": 0,
+        "compressMentions": 0,
+        "compressErrors": 0,
+        "ptcDispatchEvents": 0,
+        "codeDispatchEvents": 0,
+        "parentKinds": {},
+        "compressNativeCallCount": 4,
+        "compressParentCallCount": 0
+      },
+      "eventCounts": {
+        "permission/preset": 1,
+        "sandbox/mode": 1,
+        "approval/policy": 1,
+        "agent/inbox/spliced": 20,
+        "turn/start": 10,
+        "step/start": 32,
+        "user/message": 47,
+        "session/title": 2,
+        "request/header": 6,
+        "request/context": 1,
+        "session/title-llm-request": 1,
+        "unknown-event-type": 53014,
+        "assistant/message": 35,
+        "tool/call": 23,
+        "tool/result": 23,
+        "step/end": 32,
+        "turn/end": 10,
+        "compaction/start": 4,
+        "compaction/summary": 4,
+        "compaction/end": 4,
+        "compaction/prune": 3
+      },
+      "nativeCompressCalls": 4,
+      "matchedNativeCompressResults": 4
+    },
+    {
+      "sessionHash": "f1ec44916eb4e1b62c26",
+      "headerVersion": 0,
+      "cohort": "dcp-repository-project",
+      "dcpPresence": {
+        "hasDcpPresence": true,
+        "hasConfirmedCompression": true,
+        "hasExecutedNativeCompressCall": true,
+        "hasDcpCompactionSummaryMetadata": false,
+        "hasLegacyInBandCompactionSummary": true,
+        "hasDcpSourceMarker": false,
+        "footprintOnlyStoredPointer": false
+      },
+      "runCodeParenting": {
+        "calls": 0,
+        "compressMentions": 0,
+        "compressErrors": 0,
+        "ptcDispatchEvents": 0,
+        "codeDispatchEvents": 0,
+        "parentKinds": {},
+        "compressNativeCallCount": 1,
+        "compressParentCallCount": 0
+      },
+      "eventCounts": {
+        "permission/preset": 1,
+        "sandbox/mode": 1,
+        "approval/policy": 1,
+        "agent/inbox/spliced": 8,
+        "turn/start": 4,
+        "step/start": 20,
+        "user/message": 27,
+        "session/title": 2,
+        "request/header": 4,
+        "request/context": 1,
+        "session/title-llm-request": 1,
+        "unknown-event-type": 27560,
+        "assistant/message": 21,
+        "tool/call": 19,
+        "tool/result": 19,
+        "step/end": 20,
+        "turn/end": 4,
+        "compaction/start": 2,
+        "compaction/summary": 2,
+        "compaction/end": 2,
+        "compaction/prune": 1
+      },
+      "nativeCompressCalls": 1,
+      "matchedNativeCompressResults": 1
+    },
+    {
+      "sessionHash": "26f0570c917704f0e108",
+      "headerVersion": 0,
+      "cohort": "dcp-repository-project",
+      "dcpPresence": {
+        "hasDcpPresence": false,
+        "hasConfirmedCompression": false,
+        "hasExecutedNativeCompressCall": false,
+        "hasDcpCompactionSummaryMetadata": false,
+        "hasLegacyInBandCompactionSummary": false,
+        "hasDcpSourceMarker": false,
+        "footprintOnlyStoredPointer": false
+      },
+      "runCodeParenting": {
+        "calls": 0,
+        "compressMentions": 0,
+        "compressErrors": 0,
+        "ptcDispatchEvents": 0,
+        "codeDispatchEvents": 0,
+        "parentKinds": {},
+        "compressNativeCallCount": 0,
+        "compressParentCallCount": 0
+      },
+      "eventCounts": {
+        "permission/preset": 1,
+        "sandbox/mode": 1,
+        "approval/policy": 1
+      },
+      "nativeCompressCalls": 0,
+      "matchedNativeCompressResults": 0
+    },
+    {
+      "sessionHash": "f284ab58a2ebe5812418",
+      "headerVersion": 0,
+      "cohort": "dcp-repository-project",
+      "dcpPresence": {
+        "hasDcpPresence": false,
+        "hasConfirmedCompression": false,
+        "hasExecutedNativeCompressCall": false,
+        "hasDcpCompactionSummaryMetadata": false,
+        "hasLegacyInBandCompactionSummary": false,
+        "hasDcpSourceMarker": false,
+        "footprintOnlyStoredPointer": false
+      },
+      "runCodeParenting": {
+        "calls": 0,
+        "compressMentions": 0,
+        "compressErrors": 0,
+        "ptcDispatchEvents": 0,
+        "codeDispatchEvents": 0,
+        "parentKinds": {},
+        "compressNativeCallCount": 0,
+        "compressParentCallCount": 0
+      },
+      "eventCounts": {
+        "permission/preset": 1,
+        "sandbox/mode": 1,
+        "approval/policy": 1
+      },
+      "nativeCompressCalls": 0,
+      "matchedNativeCompressResults": 0
+    },
+    {
+      "sessionHash": "397bf59e9d712e2924a6",
+      "headerVersion": 0,
+      "cohort": "dcp-repository-project",
+      "dcpPresence": {
+        "hasDcpPresence": false,
+        "hasConfirmedCompression": false,
+        "hasExecutedNativeCompressCall": false,
+        "hasDcpCompactionSummaryMetadata": false,
+        "hasLegacyInBandCompactionSummary": false,
+        "hasDcpSourceMarker": false,
+        "footprintOnlyStoredPointer": false
+      },
+      "runCodeParenting": {
+        "calls": 0,
+        "compressMentions": 0,
+        "compressErrors": 0,
+        "ptcDispatchEvents": 0,
+        "codeDispatchEvents": 0,
+        "parentKinds": {},
+        "compressNativeCallCount": 0,
+        "compressParentCallCount": 0
+      },
+      "eventCounts": {
+        "permission/preset": 1,
+        "sandbox/mode": 1,
+        "approval/policy": 1,
+        "agent/inbox/spliced": 18,
+        "turn/start": 9,
+        "step/start": 111,
+        "user/message": 121,
+        "session/title": 2,
+        "request/header": 2,
+        "request/context": 1,
+        "session/title-llm-request": 1,
+        "unknown-event-type": 50799,
+        "assistant/message": 111,
+        "tool/call": 121,
+        "tool/result": 126,
+        "step/end": 111,
+        "turn/end": 9,
+        "compaction/prune": 5
+      },
+      "nativeCompressCalls": 0,
+      "matchedNativeCompressResults": 0
+    },
+    {
+      "sessionHash": "9264898737c53c081710",
+      "headerVersion": 0,
+      "cohort": "dcp-repository-project",
+      "dcpPresence": {
+        "hasDcpPresence": false,
+        "hasConfirmedCompression": false,
+        "hasExecutedNativeCompressCall": false,
+        "hasDcpCompactionSummaryMetadata": false,
+        "hasLegacyInBandCompactionSummary": false,
+        "hasDcpSourceMarker": false,
+        "footprintOnlyStoredPointer": false
+      },
+      "runCodeParenting": {
+        "calls": 0,
+        "compressMentions": 0,
+        "compressErrors": 0,
+        "ptcDispatchEvents": 0,
+        "codeDispatchEvents": 0,
+        "parentKinds": {},
+        "compressNativeCallCount": 0,
+        "compressParentCallCount": 0
+      },
+      "eventCounts": {
+        "permission/preset": 1,
+        "sandbox/mode": 1,
+        "approval/policy": 1,
+        "agent/inbox/spliced": 2,
+        "turn/start": 1,
+        "step/start": 20,
+        "user/message": 22,
+        "session/title": 2,
+        "request/header": 2,
+        "request/context": 1,
+        "session/title-llm-request": 1,
+        "unknown-event-type": 5081,
+        "assistant/message": 20,
+        "tool/call": 26,
+        "tool/result": 26,
+        "step/end": 20,
+        "turn/end": 1
+      },
+      "nativeCompressCalls": 0,
+      "matchedNativeCompressResults": 0
+    },
+    {
+      "sessionHash": "0485bf6c3fe483e0caaf",
+      "headerVersion": 0,
+      "cohort": "dcp-repository-project",
+      "dcpPresence": {
+        "hasDcpPresence": false,
+        "hasConfirmedCompression": false,
+        "hasExecutedNativeCompressCall": false,
+        "hasDcpCompactionSummaryMetadata": false,
+        "hasLegacyInBandCompactionSummary": false,
+        "hasDcpSourceMarker": false,
+        "footprintOnlyStoredPointer": true
+      },
+      "runCodeParenting": {
+        "calls": 0,
+        "compressMentions": 0,
+        "compressErrors": 0,
+        "ptcDispatchEvents": 0,
+        "codeDispatchEvents": 0,
+        "parentKinds": {},
+        "compressNativeCallCount": 0,
+        "compressParentCallCount": 0
+      },
+      "eventCounts": {
+        "permission/preset": 1,
+        "sandbox/mode": 1,
+        "approval/policy": 1,
+        "agent/inbox/spliced": 14,
+        "turn/start": 4,
+        "step/start": 29,
+        "user/message": 35,
+        "session/title": 2,
+        "request/header": 2,
+        "request/context": 1,
+        "session/title-llm-request": 1,
+        "unknown-event-type": 9553,
+        "assistant/message": 29,
+        "tool/call": 26,
+        "tool/result": 26,
+        "step/end": 29,
+        "turn/end": 4
+      },
+      "nativeCompressCalls": 0,
+      "matchedNativeCompressResults": 0
+    },
+    {
+      "sessionHash": "2048f6d971f0fc94119f",
+      "headerVersion": 0,
+      "cohort": "dcp-repository-project",
+      "dcpPresence": {
+        "hasDcpPresence": false,
+        "hasConfirmedCompression": false,
+        "hasExecutedNativeCompressCall": false,
+        "hasDcpCompactionSummaryMetadata": false,
+        "hasLegacyInBandCompactionSummary": false,
+        "hasDcpSourceMarker": false,
+        "footprintOnlyStoredPointer": false
+      },
+      "runCodeParenting": {
+        "calls": 0,
+        "compressMentions": 0,
+        "compressErrors": 0,
+        "ptcDispatchEvents": 0,
+        "codeDispatchEvents": 0,
+        "parentKinds": {},
+        "compressNativeCallCount": 0,
+        "compressParentCallCount": 0
+      },
+      "eventCounts": {
+        "permission/preset": 1,
+        "sandbox/mode": 1,
+        "approval/policy": 1,
+        "agent/inbox/spliced": 2,
+        "turn/start": 1,
+        "step/start": 1,
+        "user/message": 2,
+        "session/title": 2,
+        "request/header": 1,
+        "request/context": 1,
+        "session/title-llm-request": 1,
+        "unknown-event-type": 70,
+        "assistant/message": 1,
+        "step/end": 1,
+        "turn/end": 1
+      },
+      "nativeCompressCalls": 0,
+      "matchedNativeCompressResults": 0
+    },
+    {
+      "sessionHash": "123709be3ce899556637",
+      "headerVersion": 0,
+      "cohort": "dcp-repository-project",
+      "dcpPresence": {
+        "hasDcpPresence": false,
+        "hasConfirmedCompression": false,
+        "hasExecutedNativeCompressCall": false,
+        "hasDcpCompactionSummaryMetadata": false,
+        "hasLegacyInBandCompactionSummary": false,
+        "hasDcpSourceMarker": false,
+        "footprintOnlyStoredPointer": false
+      },
+      "runCodeParenting": {
+        "calls": 0,
+        "compressMentions": 0,
+        "compressErrors": 0,
+        "ptcDispatchEvents": 0,
+        "codeDispatchEvents": 0,
+        "parentKinds": {},
+        "compressNativeCallCount": 0,
+        "compressParentCallCount": 0
+      },
+      "eventCounts": {
+        "permission/preset": 1,
+        "sandbox/mode": 1,
+        "approval/policy": 1
+      },
+      "nativeCompressCalls": 0,
+      "matchedNativeCompressResults": 0
+    },
+    {
+      "sessionHash": "c30ce8823b829076eee8",
+      "headerVersion": 0,
+      "cohort": "dcp-repository-project",
+      "dcpPresence": {
+        "hasDcpPresence": false,
+        "hasConfirmedCompression": false,
+        "hasExecutedNativeCompressCall": false,
+        "hasDcpCompactionSummaryMetadata": false,
+        "hasLegacyInBandCompactionSummary": false,
+        "hasDcpSourceMarker": false,
+        "footprintOnlyStoredPointer": false
+      },
+      "runCodeParenting": {
+        "calls": 0,
+        "compressMentions": 0,
+        "compressErrors": 0,
+        "ptcDispatchEvents": 0,
+        "codeDispatchEvents": 0,
+        "parentKinds": {},
+        "compressNativeCallCount": 0,
+        "compressParentCallCount": 0
+      },
+      "eventCounts": {
+        "permission/preset": 1,
+        "sandbox/mode": 1,
+        "approval/policy": 1,
+        "session/end-seed": 1,
+        "agent/inbox/spliced": 2,
+        "turn/start": 1,
+        "step/start": 5,
+        "user/message": 7,
+        "session/title": 1,
+        "request/header": 2,
+        "request/context": 1,
+        "unknown-event-type": 1848,
+        "assistant/message": 5,
+        "tool/call": 7,
+        "tool/result": 7,
+        "step/end": 5,
+        "turn/end": 1
+      },
+      "nativeCompressCalls": 0,
+      "matchedNativeCompressResults": 0
+    },
+    {
+      "sessionHash": "8df9efa3b9a3467362c5",
+      "headerVersion": 0,
+      "cohort": "dcp-repository-project",
+      "dcpPresence": {
+        "hasDcpPresence": false,
+        "hasConfirmedCompression": false,
+        "hasExecutedNativeCompressCall": false,
+        "hasDcpCompactionSummaryMetadata": false,
+        "hasLegacyInBandCompactionSummary": false,
+        "hasDcpSourceMarker": false,
+        "footprintOnlyStoredPointer": false
+      },
+      "runCodeParenting": {
+        "calls": 0,
+        "compressMentions": 0,
+        "compressErrors": 0,
+        "ptcDispatchEvents": 0,
+        "codeDispatchEvents": 0,
+        "parentKinds": {},
+        "compressNativeCallCount": 0,
+        "compressParentCallCount": 0
+      },
+      "eventCounts": {
+        "permission/preset": 1,
+        "sandbox/mode": 1,
+        "approval/policy": 1,
+        "agent/inbox/spliced": 2,
+        "turn/start": 1,
+        "step/start": 1,
+        "user/message": 1,
+        "session/title": 2,
+        "request/header": 1,
+        "request/context": 1,
+        "session/title-llm-request": 1,
+        "unknown-event-type": 100,
+        "assistant/message": 1,
+        "step/end": 1,
+        "turn/end": 1
+      },
+      "nativeCompressCalls": 0,
+      "matchedNativeCompressResults": 0
+    },
+    {
+      "sessionHash": "4ef41afd993466747544",
+      "headerVersion": 0,
+      "cohort": "dcp-repository-project",
+      "dcpPresence": {
+        "hasDcpPresence": false,
+        "hasConfirmedCompression": false,
+        "hasExecutedNativeCompressCall": false,
+        "hasDcpCompactionSummaryMetadata": false,
+        "hasLegacyInBandCompactionSummary": false,
+        "hasDcpSourceMarker": false,
+        "footprintOnlyStoredPointer": false
+      },
+      "runCodeParenting": {
+        "calls": 0,
+        "compressMentions": 0,
+        "compressErrors": 0,
+        "ptcDispatchEvents": 0,
+        "codeDispatchEvents": 0,
+        "parentKinds": {},
+        "compressNativeCallCount": 0,
+        "compressParentCallCount": 0
+      },
+      "eventCounts": {
+        "permission/preset": 1,
+        "sandbox/mode": 1,
+        "approval/policy": 1,
+        "agent/inbox/spliced": 4,
+        "turn/start": 2,
+        "step/start": 2,
+        "user/message": 2,
+        "session/title": 2,
+        "request/header": 1,
+        "request/context": 1,
+        "session/title-llm-request": 1,
+        "unknown-event-type": 695,
+        "assistant/message": 2,
+        "step/end": 2,
+        "turn/end": 2
+      },
+      "nativeCompressCalls": 0,
+      "matchedNativeCompressResults": 0
+    },
+    {
+      "sessionHash": "193b121e199e5e444445",
+      "headerVersion": 0,
+      "cohort": "dcp-repository-project",
+      "dcpPresence": {
+        "hasDcpPresence": false,
+        "hasConfirmedCompression": false,
+        "hasExecutedNativeCompressCall": false,
+        "hasDcpCompactionSummaryMetadata": false,
+        "hasLegacyInBandCompactionSummary": false,
+        "hasDcpSourceMarker": false,
+        "footprintOnlyStoredPointer": false
+      },
+      "runCodeParenting": {
+        "calls": 0,
+        "compressMentions": 0,
+        "compressErrors": 0,
+        "ptcDispatchEvents": 0,
+        "codeDispatchEvents": 0,
+        "parentKinds": {},
+        "compressNativeCallCount": 0,
+        "compressParentCallCount": 0
+      },
+      "eventCounts": {
+        "permission/preset": 1,
+        "sandbox/mode": 1,
+        "approval/policy": 1,
+        "agent/inbox/spliced": 6,
+        "turn/start": 3,
+        "step/start": 5,
+        "user/message": 3,
+        "session/title": 2,
+        "request/header": 1,
+        "request/context": 1,
+        "session/title-llm-request": 1,
+        "unknown-event-type": 1221,
+        "assistant/message": 5,
+        "step/end": 5,
+        "turn/end": 3,
+        "tool/call": 3,
+        "tool/result": 3
+      },
+      "nativeCompressCalls": 0,
+      "matchedNativeCompressResults": 0
+    },
+    {
+      "sessionHash": "0068db5ae7556fad31ea",
+      "headerVersion": 0,
+      "cohort": "dcp-repository-project",
+      "dcpPresence": {
+        "hasDcpPresence": true,
+        "hasConfirmedCompression": true,
+        "hasExecutedNativeCompressCall": true,
+        "hasDcpCompactionSummaryMetadata": false,
+        "hasLegacyInBandCompactionSummary": true,
+        "hasDcpSourceMarker": false,
+        "footprintOnlyStoredPointer": false
+      },
+      "runCodeParenting": {
+        "calls": 0,
+        "compressMentions": 0,
+        "compressErrors": 0,
+        "ptcDispatchEvents": 0,
+        "codeDispatchEvents": 0,
+        "parentKinds": {},
+        "compressNativeCallCount": 4,
+        "compressParentCallCount": 0
+      },
+      "eventCounts": {
+        "permission/preset": 1,
+        "sandbox/mode": 1,
+        "approval/policy": 1,
+        "agent-preset/selected": 1,
+        "agent/inbox/spliced": 10,
+        "turn/start": 4,
+        "step/start": 46,
+        "user/message": 54,
+        "session/title": 2,
+        "request/header": 2,
+        "request/context": 1,
+        "session/title-llm-request": 1,
+        "unknown-event-type": 33775,
+        "assistant/message": 47,
+        "step/end": 46,
+        "turn/end": 4,
+        "tool/call": 60,
+        "tool/result": 60,
+        "compaction/start": 1,
+        "compaction/summary": 1,
+        "compaction/end": 1,
+        "compaction/prune": 1
+      },
+      "nativeCompressCalls": 4,
+      "matchedNativeCompressResults": 4
+    },
+    {
+      "sessionHash": "27d7a124f32ee8e3fb9c",
+      "headerVersion": 0,
+      "cohort": "dcp-repository-project",
+      "dcpPresence": {
+        "hasDcpPresence": false,
+        "hasConfirmedCompression": false,
+        "hasExecutedNativeCompressCall": false,
+        "hasDcpCompactionSummaryMetadata": false,
+        "hasLegacyInBandCompactionSummary": false,
+        "hasDcpSourceMarker": false,
+        "footprintOnlyStoredPointer": false
+      },
+      "runCodeParenting": {
+        "calls": 0,
+        "compressMentions": 0,
+        "compressErrors": 0,
+        "ptcDispatchEvents": 0,
+        "codeDispatchEvents": 0,
+        "parentKinds": {},
+        "compressNativeCallCount": 0,
+        "compressParentCallCount": 0
+      },
+      "eventCounts": {
+        "permission/preset": 1,
+        "sandbox/mode": 1,
+        "approval/policy": 1
+      },
+      "nativeCompressCalls": 0,
+      "matchedNativeCompressResults": 0
+    },
+    {
+      "sessionHash": "cacb2e5bc8a6a0097af6",
+      "headerVersion": 0,
+      "cohort": "dcp-repository-project",
+      "dcpPresence": {
+        "hasDcpPresence": false,
+        "hasConfirmedCompression": false,
+        "hasExecutedNativeCompressCall": false,
+        "hasDcpCompactionSummaryMetadata": false,
+        "hasLegacyInBandCompactionSummary": false,
+        "hasDcpSourceMarker": false,
+        "footprintOnlyStoredPointer": false
+      },
+      "runCodeParenting": {
+        "calls": 0,
+        "compressMentions": 0,
+        "compressErrors": 0,
+        "ptcDispatchEvents": 0,
+        "codeDispatchEvents": 0,
+        "parentKinds": {},
+        "compressNativeCallCount": 0,
+        "compressParentCallCount": 0
+      },
+      "eventCounts": {
+        "permission/preset": 1,
+        "sandbox/mode": 1,
+        "approval/policy": 1,
+        "model/selection": 2,
+        "agent/inbox/spliced": 2,
+        "turn/start": 1,
+        "step/start": 1,
+        "user/message": 3,
+        "session/title": 1,
+        "request/header": 1,
+        "request/context": 1,
+        "unknown-event-type": 129,
+        "assistant/message": 1,
+        "step/end": 1,
+        "turn/end": 1
+      },
+      "nativeCompressCalls": 0,
+      "matchedNativeCompressResults": 0
+    },
+    {
+      "sessionHash": "d5f180ee8af524ddcbbc",
+      "headerVersion": 0,
+      "cohort": "dcp-repository-project",
+      "dcpPresence": {
+        "hasDcpPresence": false,
+        "hasConfirmedCompression": false,
+        "hasExecutedNativeCompressCall": false,
+        "hasDcpCompactionSummaryMetadata": false,
+        "hasLegacyInBandCompactionSummary": false,
+        "hasDcpSourceMarker": false,
+        "footprintOnlyStoredPointer": false
+      },
+      "runCodeParenting": {
+        "calls": 0,
+        "compressMentions": 0,
+        "compressErrors": 0,
+        "ptcDispatchEvents": 0,
+        "codeDispatchEvents": 0,
+        "parentKinds": {},
+        "compressNativeCallCount": 0,
+        "compressParentCallCount": 0
+      },
+      "eventCounts": {
+        "permission/preset": 1,
+        "sandbox/mode": 1,
+        "approval/policy": 1,
+        "model/selection": 9,
+        "agent/inbox/spliced": 14,
+        "turn/start": 4,
+        "step/start": 87,
+        "user/message": 97,
+        "session/title": 1,
+        "request/header": 1,
+        "request/context": 1,
+        "unknown-event-type": 78176,
+        "assistant/message": 87,
+        "tool/call": 118,
+        "tool/result": 118,
+        "step/end": 87,
+        "turn/end": 4,
+        "todo/write": 3
+      },
+      "nativeCompressCalls": 0,
+      "matchedNativeCompressResults": 0
+    },
+    {
+      "sessionHash": "1266a9e28f18b4dbeaf3",
+      "headerVersion": 3,
+      "cohort": "dcp-repository-project",
+      "dcpPresence": {
+        "hasDcpPresence": false,
+        "hasConfirmedCompression": false,
+        "hasExecutedNativeCompressCall": false,
+        "hasDcpCompactionSummaryMetadata": false,
+        "hasLegacyInBandCompactionSummary": false,
+        "hasDcpSourceMarker": false,
+        "footprintOnlyStoredPointer": false
+      },
+      "runCodeParenting": {
+        "calls": 0,
+        "compressMentions": 0,
+        "compressErrors": 0,
+        "ptcDispatchEvents": 0,
+        "codeDispatchEvents": 0,
+        "parentKinds": {},
+        "compressNativeCallCount": 0,
+        "compressParentCallCount": 0
+      },
+      "eventCounts": {
+        "permission/preset": 1,
+        "sandbox/mode": 1,
+        "approval/policy": 1,
+        "agent/inbox/spliced": 2,
+        "turn/start": 1,
+        "turn/end": 1
+      },
+      "nativeCompressCalls": 0,
+      "matchedNativeCompressResults": 0
+    },
+    {
+      "sessionHash": "23dc41f5c51784c6bbab",
+      "headerVersion": 3,
+      "cohort": "dcp-repository-project",
+      "dcpPresence": {
+        "hasDcpPresence": false,
+        "hasConfirmedCompression": false,
+        "hasExecutedNativeCompressCall": false,
+        "hasDcpCompactionSummaryMetadata": false,
+        "hasLegacyInBandCompactionSummary": false,
+        "hasDcpSourceMarker": false,
+        "footprintOnlyStoredPointer": false
+      },
+      "runCodeParenting": {
+        "calls": 0,
+        "compressMentions": 0,
+        "compressErrors": 0,
+        "ptcDispatchEvents": 0,
+        "codeDispatchEvents": 0,
+        "parentKinds": {},
+        "compressNativeCallCount": 0,
+        "compressParentCallCount": 0
+      },
+      "eventCounts": {
+        "permission/preset": 1,
+        "sandbox/mode": 1,
+        "approval/policy": 1,
+        "agent/inbox/spliced": 2,
+        "turn/start": 1,
+        "turn/end": 1
+      },
+      "nativeCompressCalls": 0,
+      "matchedNativeCompressResults": 0
+    },
+    {
+      "sessionHash": "34476891197b6c3cc5b8",
+      "headerVersion": 3,
+      "cohort": "dcp-repository-project",
+      "dcpPresence": {
+        "hasDcpPresence": false,
+        "hasConfirmedCompression": false,
+        "hasExecutedNativeCompressCall": false,
+        "hasDcpCompactionSummaryMetadata": false,
+        "hasLegacyInBandCompactionSummary": false,
+        "hasDcpSourceMarker": false,
+        "footprintOnlyStoredPointer": true
+      },
+      "runCodeParenting": {
+        "calls": 0,
+        "compressMentions": 0,
+        "compressErrors": 0,
+        "ptcDispatchEvents": 0,
+        "codeDispatchEvents": 0,
+        "parentKinds": {},
+        "compressNativeCallCount": 0,
+        "compressParentCallCount": 0
+      },
+      "eventCounts": {
+        "permission/preset": 1,
+        "sandbox/mode": 1,
+        "approval/policy": 1,
+        "agent/inbox/spliced": 44,
+        "turn/start": 20,
+        "step/start": 274,
+        "system/message": 1,
+        "user/message": 22,
+        "request/header": 2,
+        "request/context": 1,
+        "session/title": 2,
+        "session/title-llm-request": 1,
+        "assistant/message": 274,
+        "tool/call": 277,
+        "tool/result": 277,
+        "step/end": 274,
+        "turn/end": 20
+      },
+      "nativeCompressCalls": 0,
+      "matchedNativeCompressResults": 0
+    },
+    {
+      "sessionHash": "475b3497f3441236185e",
+      "headerVersion": 3,
+      "cohort": "dcp-repository-project",
+      "dcpPresence": {
+        "hasDcpPresence": false,
+        "hasConfirmedCompression": false,
+        "hasExecutedNativeCompressCall": false,
+        "hasDcpCompactionSummaryMetadata": false,
+        "hasLegacyInBandCompactionSummary": false,
+        "hasDcpSourceMarker": false,
+        "footprintOnlyStoredPointer": false
+      },
+      "runCodeParenting": {
+        "calls": 0,
+        "compressMentions": 0,
+        "compressErrors": 0,
+        "ptcDispatchEvents": 0,
+        "codeDispatchEvents": 0,
+        "parentKinds": {},
+        "compressNativeCallCount": 0,
+        "compressParentCallCount": 0
+      },
+      "eventCounts": {
+        "permission/preset": 1,
+        "sandbox/mode": 1,
+        "approval/policy": 1,
+        "agent/inbox/spliced": 2,
+        "turn/start": 1,
+        "step/start": 1,
+        "system/message": 1,
+        "user/message": 4,
+        "request/header": 1,
+        "request/context": 1,
+        "session/title": 1,
+        "session/title-llm-request": 1,
+        "assistant/message": 1,
+        "step/end": 1,
+        "turn/end": 1
+      },
+      "nativeCompressCalls": 0,
+      "matchedNativeCompressResults": 0
+    },
+    {
+      "sessionHash": "af678b68e963be5c408e",
+      "headerVersion": 3,
+      "cohort": "dcp-repository-project",
+      "dcpPresence": {
+        "hasDcpPresence": false,
+        "hasConfirmedCompression": false,
+        "hasExecutedNativeCompressCall": false,
+        "hasDcpCompactionSummaryMetadata": false,
+        "hasLegacyInBandCompactionSummary": false,
+        "hasDcpSourceMarker": false,
+        "footprintOnlyStoredPointer": false
+      },
+      "runCodeParenting": {
+        "calls": 0,
+        "compressMentions": 0,
+        "compressErrors": 0,
+        "ptcDispatchEvents": 0,
+        "codeDispatchEvents": 0,
+        "parentKinds": {},
+        "compressNativeCallCount": 0,
+        "compressParentCallCount": 0
+      },
+      "eventCounts": {
+        "permission/preset": 1,
+        "sandbox/mode": 1,
+        "approval/policy": 1,
+        "agent/inbox/spliced": 6,
+        "turn/start": 3,
+        "step/start": 26,
+        "system/message": 1,
+        "user/message": 5,
+        "request/header": 1,
+        "request/context": 1,
+        "session/title": 2,
+        "session/title-llm-request": 1,
+        "assistant/message": 26,
+        "tool/call": 35,
+        "tool/result": 35,
+        "step/end": 26,
+        "turn/end": 3,
+        "todo/write": 2
+      },
+      "nativeCompressCalls": 0,
+      "matchedNativeCompressResults": 0
+    },
+    {
+      "sessionHash": "7ee6378916009293037f",
+      "headerVersion": 0,
+      "cohort": "cross-project-stratified-probe",
+      "dcpPresence": {
+        "hasDcpPresence": false,
+        "hasConfirmedCompression": false,
+        "hasExecutedNativeCompressCall": false,
+        "hasDcpCompactionSummaryMetadata": false,
+        "hasLegacyInBandCompactionSummary": false,
+        "hasDcpSourceMarker": false,
+        "footprintOnlyStoredPointer": false
+      },
+      "runCodeParenting": {
+        "calls": 0,
+        "compressMentions": 0,
+        "compressErrors": 0,
+        "ptcDispatchEvents": 0,
+        "codeDispatchEvents": 0,
+        "parentKinds": {},
+        "compressNativeCallCount": 0,
+        "compressParentCallCount": 0
+      },
+      "eventCounts": {
+        "permission/preset": 1,
+        "sandbox/mode": 1,
+        "approval/policy": 1
+      },
+      "nativeCompressCalls": 0,
+      "matchedNativeCompressResults": 0
+    },
+    {
+      "sessionHash": "108005a67c80ba629c32",
+      "headerVersion": 0,
+      "cohort": "cross-project-stratified-probe",
+      "dcpPresence": {
+        "hasDcpPresence": false,
+        "hasConfirmedCompression": false,
+        "hasExecutedNativeCompressCall": false,
+        "hasDcpCompactionSummaryMetadata": false,
+        "hasLegacyInBandCompactionSummary": false,
+        "hasDcpSourceMarker": false,
+        "footprintOnlyStoredPointer": false
+      },
+      "runCodeParenting": {
+        "calls": 0,
+        "compressMentions": 0,
+        "compressErrors": 0,
+        "ptcDispatchEvents": 0,
+        "codeDispatchEvents": 0,
+        "parentKinds": {},
+        "compressNativeCallCount": 0,
+        "compressParentCallCount": 0
+      },
+      "eventCounts": {
+        "permission/preset": 1,
+        "sandbox/mode": 1,
+        "approval/policy": 1,
+        "model/selection": 2,
+        "agent-preset/selected": 1,
+        "agent/inbox/spliced": 2,
+        "turn/start": 1,
+        "step/start": 1,
+        "user/message": 2,
+        "session/title": 1,
+        "request/header": 1,
+        "request/context": 1,
+        "unknown-event-type": 89,
+        "assistant/message": 1,
+        "step/end": 1,
+        "turn/end": 1
+      },
+      "nativeCompressCalls": 0,
+      "matchedNativeCompressResults": 0
+    },
+    {
+      "sessionHash": "2fb3bb18fc0cbca297df",
+      "headerVersion": 0,
+      "cohort": "cross-project-stratified-probe",
+      "dcpPresence": {
+        "hasDcpPresence": false,
+        "hasConfirmedCompression": false,
+        "hasExecutedNativeCompressCall": false,
+        "hasDcpCompactionSummaryMetadata": false,
+        "hasLegacyInBandCompactionSummary": false,
+        "hasDcpSourceMarker": false,
+        "footprintOnlyStoredPointer": false
+      },
+      "runCodeParenting": {
+        "calls": 0,
+        "compressMentions": 0,
+        "compressErrors": 0,
+        "ptcDispatchEvents": 0,
+        "codeDispatchEvents": 0,
+        "parentKinds": {},
+        "compressNativeCallCount": 0,
+        "compressParentCallCount": 0
+      },
+      "eventCounts": {
+        "subagent/descriptor": 1,
+        "session/end-seed": 1,
+        "sandbox/mode": 1,
+        "approval/policy": 1,
+        "permission/preset": 1,
+        "agent/inbox/spliced": 2,
+        "turn/start": 1,
+        "step/start": 74,
+        "user/message": 76,
+        "session/title": 1,
+        "request/header": 2,
+        "request/context": 1,
+        "unknown-event-type": 36062,
+        "assistant/message": 74,
+        "tool/call": 75,
+        "tool/result": 75,
+        "step/end": 74,
+        "turn/end": 1
+      },
+      "nativeCompressCalls": 0,
+      "matchedNativeCompressResults": 0
+    },
+    {
+      "sessionHash": "a4426ab979673bce9d36",
+      "headerVersion": 0,
+      "cohort": "cross-project-stratified-probe",
+      "dcpPresence": {
+        "hasDcpPresence": false,
+        "hasConfirmedCompression": false,
+        "hasExecutedNativeCompressCall": false,
+        "hasDcpCompactionSummaryMetadata": false,
+        "hasLegacyInBandCompactionSummary": false,
+        "hasDcpSourceMarker": false,
+        "footprintOnlyStoredPointer": false
+      },
+      "runCodeParenting": {
+        "calls": 0,
+        "compressMentions": 0,
+        "compressErrors": 0,
+        "ptcDispatchEvents": 0,
+        "codeDispatchEvents": 0,
+        "parentKinds": {},
+        "compressNativeCallCount": 0,
+        "compressParentCallCount": 0
+      },
+      "eventCounts": {
+        "subagent/descriptor": 1,
+        "session/end-seed": 1,
+        "sandbox/mode": 1,
+        "approval/policy": 1,
+        "permission/preset": 1,
+        "agent/inbox/spliced": 2,
+        "turn/start": 1,
+        "step/start": 78,
+        "user/message": 80,
+        "session/title": 1,
+        "request/header": 2,
+        "request/context": 1,
+        "unknown-event-type": 49339,
+        "assistant/message": 78,
+        "tool/call": 96,
+        "tool/result": 96,
+        "step/end": 78,
+        "turn/end": 1
+      },
+      "nativeCompressCalls": 0,
+      "matchedNativeCompressResults": 0
+    },
+    {
+      "sessionHash": "82cbcb4509ba863df089",
+      "headerVersion": 0,
+      "cohort": "cross-project-stratified-probe",
+      "dcpPresence": {
+        "hasDcpPresence": false,
+        "hasConfirmedCompression": false,
+        "hasExecutedNativeCompressCall": false,
+        "hasDcpCompactionSummaryMetadata": false,
+        "hasLegacyInBandCompactionSummary": false,
+        "hasDcpSourceMarker": false,
+        "footprintOnlyStoredPointer": false
+      },
+      "runCodeParenting": {
+        "calls": 0,
+        "compressMentions": 0,
+        "compressErrors": 0,
+        "ptcDispatchEvents": 0,
+        "codeDispatchEvents": 0,
+        "parentKinds": {},
+        "compressNativeCallCount": 0,
+        "compressParentCallCount": 0
+      },
+      "eventCounts": {
+        "subagent/descriptor": 1,
+        "session/end-seed": 1,
+        "sandbox/mode": 1,
+        "approval/policy": 1,
+        "permission/preset": 1,
+        "agent/inbox/spliced": 4,
+        "turn/start": 1,
+        "step/start": 30,
+        "user/message": 4,
+        "session/title": 1,
+        "request/header": 1,
+        "request/context": 1,
+        "unknown-event-type": 18793,
+        "assistant/message": 30,
+        "tool/call": 57,
+        "tool/result": 57,
+        "step/end": 30,
+        "turn/end": 1
+      },
+      "nativeCompressCalls": 0,
+      "matchedNativeCompressResults": 0
+    },
+    {
+      "sessionHash": "d6b704e582f793a2eb79",
+      "headerVersion": 0,
+      "cohort": "cross-project-stratified-probe",
+      "dcpPresence": {
+        "hasDcpPresence": false,
+        "hasConfirmedCompression": false,
+        "hasExecutedNativeCompressCall": false,
+        "hasDcpCompactionSummaryMetadata": false,
+        "hasLegacyInBandCompactionSummary": false,
+        "hasDcpSourceMarker": false,
+        "footprintOnlyStoredPointer": false
+      },
+      "runCodeParenting": {
+        "calls": 0,
+        "compressMentions": 0,
+        "compressErrors": 0,
+        "ptcDispatchEvents": 0,
+        "codeDispatchEvents": 0,
+        "parentKinds": {},
+        "compressNativeCallCount": 0,
+        "compressParentCallCount": 0
+      },
+      "eventCounts": {
+        "subagent/descriptor": 1,
+        "session/end-seed": 2,
+        "sandbox/mode": 1,
+        "approval/policy": 1,
+        "permission/preset": 1,
+        "agent/inbox/spliced": 4,
+        "turn/start": 2,
+        "step/start": 248,
+        "user/message": 251,
+        "session/title": 1,
+        "request/header": 3,
+        "request/context": 1,
+        "unknown-event-type": 168168,
+        "assistant/message": 248,
+        "tool/call": 246,
+        "tool/result": 246,
+        "step/end": 248,
+        "turn/end": 2
+      },
+      "nativeCompressCalls": 0,
+      "matchedNativeCompressResults": 0
+    },
+    {
+      "sessionHash": "50e22c762cb5662822a8",
+      "headerVersion": 0,
+      "cohort": "cross-project-stratified-probe",
+      "dcpPresence": {
+        "hasDcpPresence": true,
+        "hasConfirmedCompression": true,
+        "hasExecutedNativeCompressCall": true,
+        "hasDcpCompactionSummaryMetadata": false,
+        "hasLegacyInBandCompactionSummary": false,
+        "hasDcpSourceMarker": false,
+        "footprintOnlyStoredPointer": false
+      },
+      "runCodeParenting": {
+        "calls": 0,
+        "compressMentions": 0,
+        "compressErrors": 0,
+        "ptcDispatchEvents": 0,
+        "codeDispatchEvents": 0,
+        "parentKinds": {},
+        "compressNativeCallCount": 2,
+        "compressParentCallCount": 0
+      },
+      "eventCounts": {
+        "subagent/descriptor": 1,
+        "session/end-seed": 1,
+        "sandbox/mode": 1,
+        "approval/policy": 1,
+        "permission/preset": 1,
+        "agent/inbox/spliced": 2,
+        "turn/start": 1,
+        "step/start": 223,
+        "user/message": 225,
+        "session/title": 1,
+        "request/header": 2,
+        "request/context": 1,
+        "unknown-event-type": 84798,
+        "assistant/message": 223,
+        "tool/call": 235,
+        "tool/result": 235,
+        "step/end": 223,
+        "turn/end": 1
+      },
+      "nativeCompressCalls": 2,
+      "matchedNativeCompressResults": 2
+    },
+    {
+      "sessionHash": "70d4482364d015e8b5d6",
+      "headerVersion": 0,
+      "cohort": "cross-project-stratified-probe",
+      "dcpPresence": {
+        "hasDcpPresence": true,
+        "hasConfirmedCompression": true,
+        "hasExecutedNativeCompressCall": true,
+        "hasDcpCompactionSummaryMetadata": false,
+        "hasLegacyInBandCompactionSummary": true,
+        "hasDcpSourceMarker": false,
+        "footprintOnlyStoredPointer": false
+      },
+      "runCodeParenting": {
+        "calls": 0,
+        "compressMentions": 0,
+        "compressErrors": 0,
+        "ptcDispatchEvents": 0,
+        "codeDispatchEvents": 0,
+        "parentKinds": {},
+        "compressNativeCallCount": 25,
+        "compressParentCallCount": 0
+      },
+      "eventCounts": {
+        "permission/preset": 1,
+        "sandbox/mode": 1,
+        "approval/policy": 1,
+        "agent/inbox/spliced": 505,
+        "turn/start": 204,
+        "step/start": 1575,
+        "user/message": 1845,
+        "session/title": 2,
+        "request/header": 23,
+        "request/context": 1,
+        "session/title-llm-request": 1,
+        "unknown-event-type": 824602,
+        "assistant/message": 1582,
+        "tool/call": 1595,
+        "tool/result": 1688,
+        "step/end": 1575,
+        "turn/end": 200,
+        "goal/change": 5,
+        "compaction/prune": 104,
+        "compaction/start": 23,
+        "compaction/summary": 23,
+        "compaction/end": 23,
+        "todo/write": 15,
+        "session/end-seed": 2,
+        "llm/retry": 1,
+        "llm/retry-started": 1
+      },
+      "nativeCompressCalls": 25,
+      "matchedNativeCompressResults": 25
+    },
+    {
+      "sessionHash": "c77b50051a019b7791af",
+      "headerVersion": 3,
+      "cohort": "cross-project-stratified-probe",
+      "dcpPresence": {
+        "hasDcpPresence": false,
+        "hasConfirmedCompression": false,
+        "hasExecutedNativeCompressCall": false,
+        "hasDcpCompactionSummaryMetadata": false,
+        "hasLegacyInBandCompactionSummary": false,
+        "hasDcpSourceMarker": false,
+        "footprintOnlyStoredPointer": false
+      },
+      "runCodeParenting": {
+        "calls": 0,
+        "compressMentions": 0,
+        "compressErrors": 0,
+        "ptcDispatchEvents": 0,
+        "codeDispatchEvents": 0,
+        "parentKinds": {},
+        "compressNativeCallCount": 0,
+        "compressParentCallCount": 0
+      },
+      "eventCounts": {
+        "sandbox/mode": 1,
+        "approval/policy": 1,
+        "permission/preset": 1,
+        "agent/inbox/spliced": 2,
+        "turn/start": 1,
+        "subagent/descriptor": 1,
+        "step/start": 79,
+        "system/message": 1,
+        "user/message": 2,
+        "request/header": 2,
+        "request/context": 1,
+        "session/title": 1,
+        "assistant/message": 79,
+        "tool/call": 78,
+        "tool/result": 78,
+        "step/end": 79,
+        "turn/end": 1
+      },
+      "nativeCompressCalls": 0,
+      "matchedNativeCompressResults": 0
+    },
+    {
+      "sessionHash": "c117f37fa4099a19243a",
+      "headerVersion": 3,
+      "cohort": "cross-project-stratified-probe",
+      "dcpPresence": {
+        "hasDcpPresence": false,
+        "hasConfirmedCompression": false,
+        "hasExecutedNativeCompressCall": false,
+        "hasDcpCompactionSummaryMetadata": false,
+        "hasLegacyInBandCompactionSummary": false,
+        "hasDcpSourceMarker": false,
+        "footprintOnlyStoredPointer": false
+      },
+      "runCodeParenting": {
+        "calls": 0,
+        "compressMentions": 0,
+        "compressErrors": 0,
+        "ptcDispatchEvents": 0,
+        "codeDispatchEvents": 0,
+        "parentKinds": {},
+        "compressNativeCallCount": 0,
+        "compressParentCallCount": 0
+      },
+      "eventCounts": {
+        "permission/preset": 1,
+        "sandbox/mode": 1,
+        "approval/policy": 1
+      },
+      "nativeCompressCalls": 0,
+      "matchedNativeCompressResults": 0
+    },
+    {
+      "sessionHash": "484ae7c065e0fb4c2673",
+      "headerVersion": 3,
+      "cohort": "cross-project-stratified-probe",
+      "dcpPresence": {
+        "hasDcpPresence": false,
+        "hasConfirmedCompression": false,
+        "hasExecutedNativeCompressCall": false,
+        "hasDcpCompactionSummaryMetadata": false,
+        "hasLegacyInBandCompactionSummary": false,
+        "hasDcpSourceMarker": false,
+        "footprintOnlyStoredPointer": false
+      },
+      "runCodeParenting": {
+        "calls": 0,
+        "compressMentions": 0,
+        "compressErrors": 0,
+        "ptcDispatchEvents": 0,
+        "codeDispatchEvents": 0,
+        "parentKinds": {},
+        "compressNativeCallCount": 0,
+        "compressParentCallCount": 0
+      },
+      "eventCounts": {
+        "subagent/descriptor": 1,
+        "sandbox/mode": 1,
+        "approval/policy": 1,
+        "permission/preset": 1,
+        "agent/inbox/spliced": 2,
+        "turn/start": 1,
+        "step/start": 123,
+        "system/message": 1,
+        "user/message": 2,
+        "request/header": 2,
+        "request/context": 1,
+        "session/title": 1,
+        "assistant/message": 123,
+        "tool/call": 141,
+        "tool/result": 141,
+        "step/end": 123,
+        "todo/write": 3,
+        "turn/end": 1
+      },
+      "nativeCompressCalls": 0,
+      "matchedNativeCompressResults": 0
+    },
+    {
+      "sessionHash": "2c44e588f381287346ea",
+      "headerVersion": 3,
+      "cohort": "cross-project-stratified-probe",
+      "dcpPresence": {
+        "hasDcpPresence": false,
+        "hasConfirmedCompression": false,
+        "hasExecutedNativeCompressCall": false,
+        "hasDcpCompactionSummaryMetadata": false,
+        "hasLegacyInBandCompactionSummary": false,
+        "hasDcpSourceMarker": false,
+        "footprintOnlyStoredPointer": false
+      },
+      "runCodeParenting": {
+        "calls": 0,
+        "compressMentions": 0,
+        "compressErrors": 0,
+        "ptcDispatchEvents": 0,
+        "codeDispatchEvents": 0,
+        "parentKinds": {},
+        "compressNativeCallCount": 0,
+        "compressParentCallCount": 0
+      },
+      "eventCounts": {
+        "subagent/descriptor": 1,
+        "sandbox/mode": 1,
+        "approval/policy": 1,
+        "permission/preset": 1,
+        "agent/inbox/spliced": 2,
+        "turn/start": 1,
+        "step/start": 98,
+        "system/message": 1,
+        "user/message": 1,
+        "request/header": 2,
+        "request/context": 1,
+        "session/title": 1,
+        "assistant/message": 98,
+        "tool/call": 131,
+        "tool/result": 131,
+        "step/end": 98,
+        "todo/write": 4,
+        "turn/end": 1
+      },
+      "nativeCompressCalls": 0,
+      "matchedNativeCompressResults": 0
+    },
+    {
+      "sessionHash": "417a29270996f71069fb",
+      "headerVersion": 3,
+      "cohort": "cross-project-stratified-probe",
+      "dcpPresence": {
+        "hasDcpPresence": false,
+        "hasConfirmedCompression": false,
+        "hasExecutedNativeCompressCall": false,
+        "hasDcpCompactionSummaryMetadata": false,
+        "hasLegacyInBandCompactionSummary": false,
+        "hasDcpSourceMarker": false,
+        "footprintOnlyStoredPointer": false
+      },
+      "runCodeParenting": {
+        "calls": 0,
+        "compressMentions": 0,
+        "compressErrors": 0,
+        "ptcDispatchEvents": 0,
+        "codeDispatchEvents": 0,
+        "parentKinds": {},
+        "compressNativeCallCount": 0,
+        "compressParentCallCount": 0
+      },
+      "eventCounts": {
+        "subagent/descriptor": 1,
+        "sandbox/mode": 1,
+        "approval/policy": 1,
+        "permission/preset": 1,
+        "agent/inbox/spliced": 2,
+        "turn/start": 1,
+        "step/start": 201,
+        "system/message": 1,
+        "user/message": 2,
+        "request/header": 2,
+        "request/context": 1,
+        "session/title": 1,
+        "assistant/message": 201,
+        "tool/call": 214,
+        "tool/result": 214,
+        "step/end": 201,
+        "todo/write": 2,
+        "turn/end": 1
+      },
+      "nativeCompressCalls": 0,
+      "matchedNativeCompressResults": 0
+    },
+    {
+      "sessionHash": "be5b56189e57184a3329",
+      "headerVersion": 3,
+      "cohort": "cross-project-stratified-probe",
+      "dcpPresence": {
+        "hasDcpPresence": false,
+        "hasConfirmedCompression": false,
+        "hasExecutedNativeCompressCall": false,
+        "hasDcpCompactionSummaryMetadata": false,
+        "hasLegacyInBandCompactionSummary": false,
+        "hasDcpSourceMarker": false,
+        "footprintOnlyStoredPointer": false
+      },
+      "runCodeParenting": {
+        "calls": 0,
+        "compressMentions": 0,
+        "compressErrors": 0,
+        "ptcDispatchEvents": 0,
+        "codeDispatchEvents": 0,
+        "parentKinds": {},
+        "compressNativeCallCount": 0,
+        "compressParentCallCount": 0
+      },
+      "eventCounts": {
+        "subagent/descriptor": 1,
+        "sandbox/mode": 1,
+        "approval/policy": 1,
+        "permission/preset": 1,
+        "agent/inbox/spliced": 2,
+        "turn/start": 1,
+        "step/start": 144,
+        "system/message": 1,
+        "user/message": 2,
+        "request/header": 2,
+        "request/context": 1,
+        "session/title": 1,
+        "assistant/message": 144,
+        "tool/call": 163,
+        "tool/result": 163,
+        "step/end": 144,
+        "todo/write": 3,
+        "turn/end": 1
+      },
+      "nativeCompressCalls": 0,
+      "matchedNativeCompressResults": 0
+    },
+    {
+      "sessionHash": "ac5968c06aa9017cce00",
+      "headerVersion": 3,
+      "cohort": "cross-project-stratified-probe",
+      "dcpPresence": {
+        "hasDcpPresence": false,
+        "hasConfirmedCompression": false,
+        "hasExecutedNativeCompressCall": false,
+        "hasDcpCompactionSummaryMetadata": false,
+        "hasLegacyInBandCompactionSummary": false,
+        "hasDcpSourceMarker": false,
+        "footprintOnlyStoredPointer": false
+      },
+      "runCodeParenting": {
+        "calls": 0,
+        "compressMentions": 0,
+        "compressErrors": 0,
+        "ptcDispatchEvents": 0,
+        "codeDispatchEvents": 0,
+        "parentKinds": {},
+        "compressNativeCallCount": 0,
+        "compressParentCallCount": 0
+      },
+      "eventCounts": {
+        "subagent/descriptor": 1,
+        "sandbox/mode": 1,
+        "approval/policy": 1,
+        "permission/preset": 1,
+        "agent/inbox/spliced": 10,
+        "turn/start": 3,
+        "step/start": 180,
+        "system/message": 1,
+        "user/message": 6,
+        "request/header": 4,
+        "request/context": 1,
+        "session/title": 1,
+        "assistant/message": 180,
+        "tool/call": 204,
+        "tool/result": 204,
+        "step/end": 180,
+        "turn/end": 3,
+        "session/end-seed": 2
+      },
+      "nativeCompressCalls": 0,
+      "matchedNativeCompressResults": 0
+    },
+    {
+      "sessionHash": "2a9d9ffa9a0ef72e91d3",
+      "headerVersion": 3,
+      "cohort": "cross-project-stratified-probe",
+      "dcpPresence": {
+        "hasDcpPresence": false,
+        "hasConfirmedCompression": false,
+        "hasExecutedNativeCompressCall": false,
+        "hasDcpCompactionSummaryMetadata": false,
+        "hasLegacyInBandCompactionSummary": false,
+        "hasDcpSourceMarker": false,
+        "footprintOnlyStoredPointer": false
+      },
+      "runCodeParenting": {
+        "calls": 0,
+        "compressMentions": 0,
+        "compressErrors": 0,
+        "ptcDispatchEvents": 0,
+        "codeDispatchEvents": 0,
+        "parentKinds": {},
+        "compressNativeCallCount": 0,
+        "compressParentCallCount": 0
+      },
+      "eventCounts": {
+        "permission/preset": 1,
+        "sandbox/mode": 1,
+        "approval/policy": 1,
+        "agent/inbox/spliced": 1077,
+        "turn/start": 321,
+        "step/start": 2774,
+        "system/message": 1,
+        "user/message": 547,
+        "request/header": 8,
+        "request/context": 1,
+        "session/title": 2,
+        "session/title-llm-request": 1,
+        "assistant/message": 2772,
+        "tool/call": 2597,
+        "tool/result": 2605,
+        "step/end": 2774,
+        "turn/end": 320,
+        "subagent/catalog": 126,
+        "todo/write": 21,
+        "compaction/start": 4,
+        "compaction/summary": 4,
+        "compaction/end": 4,
+        "web/deepseek-search-llm-request": 11,
+        "assistant/attempt": 4,
+        "compaction/prune": 8
+      },
+      "nativeCompressCalls": 0,
+      "matchedNativeCompressResults": 0
+    }
+  ],
+  "aggregate": {
+    "compressToolCalls": 39,
+    "matchingToolResults": 39,
+    "resultStatusCounts": {
+      "unknown": 39
+    },
+    "resultCodeCounts": {},
+    "toolResultErrorFlags": 0,
+    "assistantMessageEventsWithCompress": 55,
+    "uniqueCompressCallIds": 39,
+    "appendAuthorCallIds": 39,
+    "replacementAuthorCallIds": 17,
+    "callIdsWithAppendAndReplacementAuthor": 17,
+    "uniqueAuthorShapeCounts": {
+      "pureToolCallOnly": 0,
+      "reasoningMixed": 39,
+      "textMixed": 4
+    },
+    "metadata": {
+      "structurallyValidV1SourceDcpObjects": 30,
+      "acceptedByCurrentDecoder": 0,
+      "rejectedByCurrentDecoderOnSourceKind": 30,
+      "exactCompactionSummaryTextMatches": 30,
+      "distinctCompressCallsWithCheckpoint": 17,
+      "nestedCheckpointCount": 0,
+      "consumedBlockRefs": 0,
+      "hostRecordedShadowedTokenCount": 1142010,
+      "currentMeterOutputHeuristicTokens": 10841,
+      "crossVersionNetHeuristicTokens": 1131169,
+      "tokenMetricPairs": 30
+    },
+    "submittedSummaryCharMediansBySession": [1748, 3526, 1504.5, 402.5, 2519, 528],
+    "outputCheckpointCharMediansBySession": [1944, 3272.5, 1575.5, 316, null, 893.5],
+    "sourceKindsInCompressedRanges": {
+      "other-kind": 1259,
+      "user": 76,
+      "subagent-settled": 96,
+      "subagent-report": 8
+    },
+    "sourceFormsInCompressedRanges": {
+      "missing": 1331,
+      "other-form": 12,
+      "notice": 96
+    },
+    "uniqueSubagentSourceEventsInRanges": {
+      "subagent-settled/notice": 96,
+      "subagent-report/other-form": 8
+    },
+    "runCodeWorkflowSample": {
+      "topLevelRunCodeCalls": 0,
+      "runCodeArgumentsMentioningCompress": 0,
+      "ptcDispatchEvents": 0,
+      "codeDispatchEvents": 0,
+      "dispatchParentKinds": {},
+      "limitation": "top-level tool/call events do not expose nested calls hidden inside PTC/code dispatch; zero dispatch in this sample is not a corpus-wide estimate."
+    }
+  }
+}

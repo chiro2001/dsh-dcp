@@ -12,6 +12,7 @@ import { mountContractFixture, type ContractFixture } from './fixture.js'
 import { buildHistorySession } from './helpers.js'
 import { reduceDcpState } from '../../src/protocol/replay.js'
 import { resolveRange } from '../../src/refs/resolver.js'
+import { cleanupPendingCompressSteps } from '../../src/compress/step-cleanup.js'
 
 describe('E-01: persistent transaction, metering, inline cleanup', () => {
   let fixture: ContractFixture
@@ -76,7 +77,7 @@ describe('E-01: persistent transaction, metering, inline cleanup', () => {
     })
 
     const replace = session.append('user/message', checkpoint, {
-      surfaceOp: { op: 'replace', start: seqs.u1, end: seqs.a1 },
+      surfaceOp: { op: 'replace', startSeq: seqs.u1, endSeq: seqs.a1 },
       sourceEventSeqs: [seqs.u1, summarySeq, seqs.a1],
     })
     session.append('compaction/end', { compactionId, turn: 3 })
@@ -108,14 +109,14 @@ describe('E-01: persistent transaction, metering, inline cleanup', () => {
     // Surface now: checkpoint (replace), u2, a2, result, c2-result.
     const derived = session.deriveMessages()
     expect(
-      derived.some((message: { content: Array<{ type: string; text?: string }> }) =>
+      derived.some((message) =>
         message.content.some(
           (block) => block.type === 'text' && block.text?.includes('consolidated summary'),
         ),
       ),
     ).toBe(true)
     expect(
-      derived.some((message: { content: Array<{ type: string; text?: string }> }) =>
+      derived.some((message) =>
         message.content.some(
           (block) => block.type === 'text' && block.text?.includes('first user'),
         ),
@@ -168,7 +169,7 @@ describe('E-01: persistent transaction, metering, inline cleanup', () => {
         source: source as never,
       }),
       {
-        surfaceOp: { op: 'replace', start: seqs.u1, end: seqs.a1 },
+        surfaceOp: { op: 'replace', startSeq: seqs.u1, endSeq: seqs.a1 },
         sourceEventSeqs: [seqs.u1, seqs.a1],
       },
     )
@@ -193,7 +194,7 @@ describe('E-01: persistent transaction, metering, inline cleanup', () => {
       'user/message',
       createUserMessage({
         content: [{ type: 'text', text: '<dcp-boundary ref="m0001" turn="1" step="1" />' }],
-        source: { kind: 'plugin', plugin: 'dsh-dcp' },
+        source: { kind: 'dsh-dcp' },
       }),
       { surfaceOp: 'append' },
     )
@@ -202,18 +203,19 @@ describe('E-01: persistent transaction, metering, inline cleanup', () => {
       {
         turn: 1,
         step: 1,
+        stream: [],
         message: createAssistantMessage({
           content: [{ type: 'text', text: 'legacy conversation content' }],
           source: { provider: 'mock', model: 'mock' },
         }),
       },
-      { surfaceOp: 'append', sourceEventSeqs: [] },
+      { surfaceOp: 'append' },
     )
     const secondMarker = session.append(
       'user/message',
       createUserMessage({
         content: [{ type: 'text', text: '<dcp-boundary ref="m0002" turn="1" step="1" />' }],
-        source: { kind: 'plugin', plugin: 'dsh-dcp' },
+        source: { kind: 'dsh-dcp' },
       }),
       { surfaceOp: 'append' },
     )
@@ -251,7 +253,7 @@ describe('E-01: persistent transaction, metering, inline cleanup', () => {
         } as never,
       }),
       {
-        surfaceOp: { op: 'replace', start: firstMarker.seq, end: firstMarker.seq },
+        surfaceOp: { op: 'replace', startSeq: firstMarker.seq, endSeq: firstMarker.seq },
         sourceEventSeqs: [firstMarker.seq, dcpSummary.seq],
       },
     )
@@ -275,7 +277,7 @@ describe('E-01: persistent transaction, metering, inline cleanup', () => {
         source: compactCheckpointSource(nativeId),
       }),
       {
-        surfaceOp: { op: 'replace', start: secondMarker.seq, end: secondMarker.seq },
+        surfaceOp: { op: 'replace', startSeq: secondMarker.seq, endSeq: secondMarker.seq },
         sourceEventSeqs: [secondMarker.seq, nativeSummary.seq],
       },
     )
@@ -290,7 +292,7 @@ describe('E-01: persistent transaction, metering, inline cleanup', () => {
             text: `<dcp-boundary ref="m0003" turn="1" step="1" />\nalias m0002=s${nativeCheckpoint.seq}`,
           },
         ],
-        source: { kind: 'plugin', plugin: 'dsh-dcp' },
+        source: { kind: 'dsh-dcp' },
       }),
       { surfaceOp: 'append' },
     )
@@ -360,23 +362,19 @@ describe('E-01: persistent transaction, metering, inline cleanup', () => {
       header: { config: { provider: 'mock', model: 'mock' } },
       reason: 'initial',
     })
-    const usageChunk = session.append('assistant/chunk', {
-      turn: 3,
-      step: 1,
-      chunk: { type: 'usage', usage: { inputTokens: 500, outputTokens: 20 } },
-    })
     const anchorAssistant = session.append(
       'assistant/message',
       {
         turn: 3,
         step: 1,
+        stream: [],
         message: createAssistantMessage({
           content: [{ type: 'text', text: 'usage anchor assistant' }],
           source: { provider: 'mock', model: 'mock' },
         }),
         usage: { inputTokens: 500, outputTokens: 20 },
       },
-      { surfaceOp: 'append', sourceEventSeqs: [usageChunk.seq] },
+      { surfaceOp: 'append' },
     )
     session.append('step/end', { turn: 3, step: 1 })
     session.append('turn/end', { turn: 3, reason: { kind: 'completed' } })
@@ -396,13 +394,8 @@ describe('E-01: persistent transaction, metering, inline cleanup', () => {
     const originalResult = resultEvent.data.message
     const prunedMessage = freezeMessage({
       ...originalResult,
-      content: [
-        {
-          ...originalResult.content[0],
-          content: [{ type: 'text', text: '[tool output pruned]' }],
-        },
-      ],
-    } as never)
+      content: [{ type: 'text', text: '[tool output pruned]' }],
+    })
     const prunedTokenCount = fixture.ctx.tokenMeter.estimateMessage(resultEvent.data.message)
     session.append('compaction/prune', {
       shadowedRange: { start: seqs.result, end: seqs.result },
@@ -417,7 +410,7 @@ describe('E-01: persistent transaction, metering, inline cleanup', () => {
         message: prunedMessage,
       },
       {
-        surfaceOp: { op: 'replace', start: seqs.result, end: seqs.result },
+        surfaceOp: { op: 'replace', startSeq: seqs.result, endSeq: seqs.result },
         sourceEventSeqs: [seqs.result],
       },
     )
@@ -438,8 +431,9 @@ describe('E-01: persistent transaction, metering, inline cleanup', () => {
     void anchorAssistant
   })
 
-  it('inline summary can be cleaned with a same-step assistant replacement', () => {
+  it('inline summary can be pruned with deferred pair cleanup', () => {
     const { session } = buildHistorySession(fixture.ctx)
+    const inlineSummary = 'long inline summary that duplicates '.repeat(200)
 
     session.append('turn/start', { turn: 3 })
     session.append('step/start', { turn: 3, step: 1 })
@@ -455,19 +449,19 @@ describe('E-01: persistent transaction, metering, inline cleanup', () => {
           {
             startRef: 'm0001',
             endRef: 'm0002',
-            summary: 'long inline summary that duplicates',
+            summary: inlineSummary,
           },
         ],
       }),
     })
-    const assistant = session.append(
+    session.append(
       'assistant/message',
       {
         turn: 3,
         step: 1,
+        stream: [],
         message: createAssistantMessage({
           content: [
-            { type: 'text', text: 'I will compress the earlier turn.' },
             {
               type: 'tool-call',
               id: ToolCallId('dcp-call'),
@@ -478,7 +472,7 @@ describe('E-01: persistent transaction, metering, inline cleanup', () => {
                   {
                     startRef: 'm0001',
                     endRef: 'm0002',
-                    summary: 'long inline summary that duplicates',
+                    summary: inlineSummary,
                   },
                 ],
               }),
@@ -487,60 +481,8 @@ describe('E-01: persistent transaction, metering, inline cleanup', () => {
           source: { provider: 'mock', model: 'mock' },
         }),
       },
-      { surfaceOp: 'append', sourceEventSeqs: [] },
+      { surfaceOp: 'append' },
     )
-
-    // Clean the inline summary argument via a content-only assistant replacement.
-    const original = assistant.data.message
-    const cleaned = createAssistantMessage({
-      content: [
-        original.content[0]!,
-        {
-          type: 'tool-call',
-          id: ToolCallId('dcp-call'),
-          name: 'compress',
-          arguments: JSON.stringify({
-            topic: 'demo',
-            content: [{ startRef: 'm0001', endRef: 'm0002', summary: '[stored in b1]' }],
-          }),
-        },
-      ],
-      source: { provider: 'mock', model: 'mock' },
-    })
-    session.append('compaction/prune', {
-      shadowedRange: { start: assistant.seq, end: assistant.seq },
-      shadowedSeqs: [assistant.seq],
-      shadowedTokenCount: fixture.ctx.tokenMeter.estimateMessage(original),
-    })
-    session.append(
-      'assistant/message',
-      {
-        turn: 3,
-        step: 1,
-        message: cleaned,
-      },
-      {
-        surfaceOp: { op: 'replace', start: assistant.seq, end: assistant.seq },
-        sourceEventSeqs: [assistant.seq],
-      },
-    )
-
-    const derived = session.deriveMessages()
-    const assistantDerived = derived.find(
-      (message: { role: string; content: Array<{ type: string }> }) =>
-        message.role === 'assistant' &&
-        message.content.some((block) => block.type === 'tool-call'),
-    )
-    expect(assistantDerived).toBeDefined()
-    const toolCall = assistantDerived!.content.find(
-      (block: { type: string }) => block.type === 'tool-call',
-    )
-    expect(toolCall?.type).toBe('tool-call')
-    expect(JSON.parse((toolCall as { arguments: string }).arguments).content[0].summary).toBe(
-      '[stored in b1]',
-    )
-
-    // Close the turn normally and verify reconstruction.
     session.append(
       'tool/result',
       {
@@ -555,13 +497,40 @@ describe('E-01: persistent transaction, metering, inline cleanup', () => {
       { surfaceOp: 'append', sourceEventSeqs: [call.seq] },
     )
     session.append('step/end', { turn: 3, step: 1 })
+    session.append('step/start', { turn: 3, step: 2 })
+    session.append(
+      'assistant/message',
+      {
+        turn: 3,
+        step: 2,
+        stream: [],
+        message: createAssistantMessage({
+          content: [{ type: 'text', text: 'I observed the compress result.' }],
+          source: { provider: 'mock', model: 'mock' },
+        }),
+      },
+      { surfaceOp: 'append' },
+    )
+    session.append('step/end', { turn: 3, step: 2 })
     session.append('turn/end', { turn: 3, reason: { kind: 'completed' } })
+
+    expect(cleanupPendingCompressSteps(session, fixture.ctx.tokenMeter)).toEqual([])
+    const derived = session.deriveMessages()
+    const cleanupText = derived
+      .flatMap((message) => message.content)
+      .filter((block) => block.type === 'text')
+      .map((block) => (block.type === 'text' ? block.text : ''))
+      .find((value) => value.startsWith('<dcp-cleanup'))
+    expect(cleanupText).toBeDefined()
+    expect(cleanupText).toContain('status="rejected"')
+    expect(cleanupText).not.toContain(inlineSummary)
+    expect(cleanupText).not.toContain('Compressed 2 messages.')
 
     const restored = Session.create(
       SessionId(session.id),
       structuredClone([...session.snapshotEvents()]),
     )
-    expect(restored.deriveMessages()).toEqual(session.deriveMessages())
+    expect(restored.deriveMessages()).toEqual(derived)
   })
 
   it('exact multi-node decompress is not expressible with current replace', () => {
@@ -601,7 +570,7 @@ describe('E-01: persistent transaction, metering, inline cleanup', () => {
         } as never,
       }),
       {
-        surfaceOp: { op: 'replace', start: seqs.u1, end: seqs.a1 },
+        surfaceOp: { op: 'replace', startSeq: seqs.u1, endSeq: seqs.a1 },
         sourceEventSeqs: [seqs.u1, seqs.a1],
       },
     )
@@ -646,7 +615,7 @@ describe('E-01: persistent transaction, metering, inline cleanup', () => {
         } as never,
       }),
       {
-        surfaceOp: { op: 'replace', start: checkpoint.seq, end: checkpoint.seq },
+        surfaceOp: { op: 'replace', startSeq: checkpoint.seq, endSeq: checkpoint.seq },
         sourceEventSeqs: [checkpoint.seq],
       },
     )

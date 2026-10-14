@@ -5,6 +5,8 @@
  * @module dsh-dcp/stats/session
  */
 
+import { isDcpSource } from '../protocol/source.js'
+
 import type { SessionEvent } from '@deepseek-ai/dsh-session'
 import type { Message } from '@deepseek-ai/dsh-llm'
 import { decodeDcpMeta } from '../protocol/metadata.js'
@@ -37,11 +39,6 @@ function heuristicTokens(text: string): number {
 
 function textOf(message: Message): string {
   return message.content
-    .flatMap((block): Array<{ type: string; text?: string }> =>
-      block.type === 'tool-result'
-        ? (block.content as Array<{ type: string; text?: string }>)
-        : [block as { type: string; text?: string }],
-    )
     .filter((block) => block.type === 'text')
     .map((block) => (block.type === 'text' ? (block.text ?? '') : ''))
     .join('\n')
@@ -110,7 +107,8 @@ function isInlineCleanupAssistantReplacement(
   ) {
     return false
   }
-  if (next.surfaceOp.start !== sources[0] || next.surfaceOp.end !== sources[0]) return false
+  if (next.surfaceOp.startSeq !== sources[0] || next.surfaceOp.endSeq !== sources[0])
+    return false
   const previous = events.find((event) => event.seq === sources[0])
   if (previous?.type !== 'assistant/message') return false
   if (next.data.message.id !== previous.data.message.id) return false
@@ -126,6 +124,48 @@ function isInlineCleanupAssistantReplacement(
       ) &&
       hasInlineCleanupMarker(block.arguments),
   )
+}
+
+/**
+ * Recognize the deferred dsh >= 0.1.5 cleanup shape: one prune shadow price
+ * followed by a plugin-source user/message cleanup record replacing the whole
+ * compress call/result span.
+ */
+function isStepCleanupUserReplacement(
+  events: readonly SessionEvent[],
+  prune: Extract<SessionEvent, { type: 'compaction/prune' }>,
+  next: SessionEvent | undefined,
+): next is Extract<SessionEvent, { type: 'user/message' }> {
+  if (next?.type !== 'user/message') return false
+  if (
+    next.surfaceOp === undefined ||
+    next.surfaceOp === 'append' ||
+    next.surfaceOp.op !== 'replace'
+  ) {
+    return false
+  }
+  if (!isDcpSource(next.data.source) || !textOf(next.data).includes('<dcp-cleanup')) {
+    return false
+  }
+  const sources = next.sourceEventSeqs ?? []
+  if (
+    sources.length === 0 ||
+    sources.length !== prune.data.shadowedSeqs.length ||
+    sources.some((seq, index) => seq !== prune.data.shadowedSeqs[index]) ||
+    next.surfaceOp.startSeq !== sources[0] ||
+    next.surfaceOp.endSeq !== sources.at(-1)
+  ) {
+    return false
+  }
+  return prune.data.shadowedSeqs.some((seq) => {
+    const event = events.find((candidate) => candidate.seq === seq)
+    return (
+      event?.type === 'assistant/message' &&
+      event.data.message.content.some(
+        (block) => block.type === 'tool-call' && block.name === 'compress',
+      )
+    )
+  })
 }
 
 export function computeSessionStats(
@@ -170,7 +210,9 @@ export function computeSessionStats(
         const isDcpStrategy =
           (next?.type === 'tool/result' && nextText.includes('[duplicate ')) ||
           (next?.type === 'user/message' && nextText.startsWith('[errored tool unit removed]'))
-        const isDcpInlineCleanup = isInlineCleanupAssistantReplacement(events, event, next)
+        const isDcpInlineCleanup =
+          isInlineCleanupAssistantReplacement(events, event, next) ||
+          isStepCleanupUserReplacement(events, event, next)
         const isDcp = isDcpStrategy || isDcpInlineCleanup
         if (isDcp) {
           pruneTokens += event.data.shadowedTokenCount
@@ -185,7 +227,6 @@ export function computeSessionStats(
       }
       case 'user/message': {
         const decoded = decodeDcpMeta(event.data.source)
-        const text = textOf(event.data)
         if (decoded.ok) {
           if (decoded.meta.kind === 'expansion') {
             blockCount++
@@ -201,7 +242,9 @@ export function computeSessionStats(
             // replacement text is not double-counted here.
           }
         }
-        if (text.includes('<dcp-boundary')) markerTokens += estimate(event.data)
+        if (isDcpSource(event.data.source) && event.surfaceOp === 'append' && !decoded.ok) {
+          markerTokens += estimate(event.data)
+        }
         break
       }
     }

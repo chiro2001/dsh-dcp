@@ -35,7 +35,7 @@ describe('protected content (M5 coverage)', () => {
       'user/message',
       createUserMessage({
         content: [{ type: 'text', text: 'report content' }],
-        source: { kind: 'plugin', plugin: 'subagent', form: 'notice', summary: 'report' },
+        source: { kind: 'subagent-test', form: 'notice', summary: 'report' },
       }),
       { surfaceOp: 'append' },
     )

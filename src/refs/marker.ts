@@ -65,7 +65,7 @@ export function buildStepMarkerMessage(
   const text = [base, nudgeText, extraText].filter(Boolean).join('\n')
   return createUserMessage({
     content: [{ type: 'text', text }],
-    source: { kind: 'plugin', plugin: 'dsh-dcp' },
+    source: { kind: 'dsh-dcp' },
   })
 }
 
