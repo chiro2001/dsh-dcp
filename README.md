@@ -23,6 +23,10 @@ HTTP/SSE 桥并拉起官方 TUI），它属于界面层；实现本插件时**�
 
 ## 安装预览
 
+以下默认分支安装适用于 dsh **`0.2.0-rc.2`**；从旧版更新时先升级宿主。
+仍使用 dsh `0.1.1-rc.2` 的用户请固定下方 `v0.1.0-rc.6-1` tag。
+主分支合入与正式版本发布分别进行，rc.9 的 tag 和 GitHub Release 尚未创建。
+
 ```bash
 dsh plugin --profile web add chiro2001/dsh-dcp
 ```

@@ -1,15 +1,41 @@
-# Release & npm 决策（M6.2）
+# 发布与安装策略
 
 ## 下一版本（尚未发布）
 
-- 目标：`v0.1.0-rc.8`，精确支持 dsh `0.1.2-rc.1`。
-- 范围：包含 rc.7 的宿主 API 兼容迁移，并优化压缩首次调用模板、结果状态机、
-  失败后的 inline cleanup、精确 correction 与任意输入顺序的 multi-range 处理；
-  DCP protocol 保持 v1。
-- 兼容策略：不在一个构建中同时适配 dsh `0.1.1-rc.2` 和 `0.1.2-rc.1`；旧宿主
-  固定使用 `v0.1.0-rc.6-1`。
+- 目标：`v0.1.0-rc.9`，精确支持 dsh `0.2.0-rc.2`、Cordis `4.0.4`、
+  Schemastery `3.18.4`。
+- 范围：包含 rc.7/rc.8 的历史工作，并完成 dsh 0.2 宿主 API 迁移、低开销提示、
+  system/developer 硬保护、模型消费原生结果后的延迟 cleanup，以及真实模型验证
+  和可审计的费用评估。DCP protocol 保持 v1。
+- 兼容策略：一个构建只声明已验证的宿主兼容范围，不维护跨 breaking rc shim。
+  dsh `0.1.1-rc.2` 用户固定 `v0.1.0-rc.6-1`；其它旧 rc 用户升级到
+  `0.2.0-rc.2` 后再使用当前分支。rc.7/rc.8 未创建 tag，不作为可安装的发布版本。
 - 发布前必须通过 `pnpm peers check`、`check-all.sh --coverage --e2e` 和可用时的
   `e2e:real`；tag 与 GitHub Release 不在功能修复提交中提前创建。
+
+## 主分支安装与正式发布
+
+默认 GitHub 源跟随 `main`，主分支合入后，新安装或更新会得到 rc.9 工作版本及
+其 dsh `0.2.0-rc.2` peer 要求。升级前先核对宿主版本；旧宿主使用上面的固定 tag。
+直接使用分支不要求该版本已经发布到 npm 或创建 tag。
+
+合入 `main` 前，目标提交必须通过本地门禁和 GitHub CI/安装 E2E，并同步构建
+产物、README、支持矩阵与已知限制。合入本身不创建 rc.9 tag 或 GitHub Release；
+正式发布仍需单独执行发布流程，npm 继续遵守下方决策门。
+
+## rc.9 的验证与结论边界
+
+- 最新离线 suite 为 280 项通过、5 项真实模型测试跳过，行覆盖率 90.54%；
+  contract/integration E2E 47/47、隔离安装激活与 Harbor 控制器测试 3/3 通过。
+  源码对应提交的 GitHub CI、Coverage、Package check 与安装 E2E 均须为绿。
+- 官方 `deepseek-flash`、thinking disabled 的三轮真实回归 15/15 通过；
+  默认配置复验 5/5 通过。报告及指纹见 [README 自测](../README.md#自测)。
+- [单场景费用报告](evaluation-runs/2026-10-14T13-30-33-997Z-single-ledger/report.md)
+  中两边独立验收均通过，但平均输入下降 93.1% 后续作费用增加 6.7%。
+  费用稳定收益和自动阶段选择尚未证实，不能将功能验收当作省钱承诺。
+- 当前仍有最近 turn 保护粒度较粗等限制；闭合 step 候选属于后续设计，
+  见 [评估方案](EVALUATION.md)。精确多节点 decompress、message-mode、Code Mode
+  和 child-session 深读取的限制见 [README](../README.md#已知限制v01)。
 
 ## 当前发布路径（已执行）
 
@@ -36,8 +62,8 @@
 
 ## 支持矩阵
 
-- `v0.1.0-rc.8`：dsh `0.1.2-rc.1`（下一发布目标，尚未创建 tag 或发布）。
-- `v0.1.0-rc.7`：dsh `0.1.2-rc.1`（完整本地门禁与真实模型 E2E 已通过，尚未发布）。
+- `v0.1.0-rc.9`：dsh `0.2.0-rc.2`（当前工作版本，尚未创建 tag 或发布）。
+- `v0.1.0-rc.7` / `v0.1.0-rc.8`：历史工作版本，目标为 dsh `0.1.2-rc.1`，未发布。
 - `v0.1.0-rc.6-1`：dsh `0.1.1-rc.2`（已通过 M0 contract、deterministic
   AgentLoop、重启、e2e 安装和真实模型 smoke/probes）。
 - 其他版本未实测前不进入 peer 范围。
